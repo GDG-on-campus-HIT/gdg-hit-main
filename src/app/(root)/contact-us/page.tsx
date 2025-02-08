@@ -26,7 +26,7 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen bg-transparent">
-      <Background />
+      {/* <Background /> */}
       <div className="flex flex-col lg:flex-row p-4 md:p-9 gap-8">
         {/* Left Section */}
         <div className="w-full lg:w-1/2 px-4 md:px-11">

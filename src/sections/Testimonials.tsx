@@ -1,73 +1,71 @@
-"use client";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+import React from "react";
 
-import React, { useEffect, useRef } from 'react';
-import { testimonials } from '@/data/testimonials';
-import { TestimonialColumn } from '@/components/TestimonialColumn';
-
-export const TestimonialsSection: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isMobileRef = useRef<boolean>(false);
-
-  useEffect(() => {
-    const updateIsMobile = () => {
-      isMobileRef.current = window.innerWidth < 768;
-    };
-    updateIsMobile();
-
-    const handleResize = () => {
-      updateIsMobile();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+function Testimonials() {
   return (
-    <div 
-      ref={containerRef}
-      className="
-        min-h-screen 
-        flex 
-        items-center 
-        justify-center 
-        p-4 
-        relative 
-        bg-white
-        dark:bg-darkgray
-        transition-colors
-        duration-700
-      "
-    >
-      <div className="relative max-w-6xl w-full">
-        <div className="absolute top-0 left-0 right-0 h-32 md:h-48 bg-gradient-to-b from-white via-white/95 to-transparent dark:from-darkgray dark:via-darkgray/95 dark:to-transparent z-10" />
-        <div className="absolute bottom-0 left-0 right-0 h-32 md:h-48 bg-gradient-to-t from-white via-white/95 to-transparent dark:from-darkgray dark:via-darkgray/95 dark:to-transparent z-10" />
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-6xl w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-8rem)] overflow-hidden">
-          {[0, 1, 2].map((columnIndex) => (
-            <TestimonialColumn
-              key={columnIndex}
-              testimonials={testimonials}
-              columnIndex={columnIndex}
-              isMobile={isMobileRef.current}
-            />
-          ))}
+    <section className="w-full py-16">
+      <div className="max-container">
+        <div className=" mb-8">
+          <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl text-center white-gradient-text mb-3 leading-[1.25]">
+            Words from Our {" "}
+            <span className="from-blue-400  to-blue-600 bg-gradient-to-b bg-clip-text text-transparent">
+              Community
+            </span>
+          </h2>
+          <p className="max-w-2xl text-center mx-auto text-base text-gray-700 dark:text-gray-400 leading-relaxed">
+            A student-led community exploring Google Developer technologies,
+            fostering innovation, and empowering students through hands-on
+            learning.
+          </p>
         </div>
       </div>
-
-      <div 
-        className="
-          absolute 
-          inset-0 
-          pointer-events-none 
-          opacity-10
-          bg-dot-black/[0.2]
-          dark:bg-dot-white/[0.2]
-          transition-opacity
-          duration-700
-        "
+      <div className=" rounded-md flex flex-col antialiased  dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+      <InfiniteMovingCards
+        items={testimonials}
+        direction="right"
+        speed="slow"
       />
     </div>
+    </section>
   );
-};
+}
 
-export default TestimonialsSection;
+export default Testimonials;
+
+
+const testimonials = [
+  {
+    quote:
+      "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
+    name: "Charles Dickens",
+    title: "A Tale of Two Cities",
+    subtitle:"GDG HIT Member"
+  },
+  {
+    quote:
+      "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.",
+    name: "William Shakespeare",
+    title: "Hamlet",
+    subtitle:"GDG HIT Member"
+  },
+  {
+    quote: "All that we see or seem is but a dream within a dream.",
+    name: "Edgar Allan Poe",
+    title: "A Dream Within a Dream",
+    subtitle:"GDG HIT Member"
+  },
+  {
+    quote:
+      "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+    name: "Jane Austen",
+    title: "Pride and Prejudice",
+    subtitle:"GDG HIT Member"
+  },
+  {
+    quote:
+      "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
+    name: "Herman Melville",
+    title: "Moby-Dick",
+    subtitle:"GDG HIT Member"
+  },
+];

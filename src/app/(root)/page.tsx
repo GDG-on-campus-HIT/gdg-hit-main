@@ -1,29 +1,26 @@
 import About from "@/sections/About";
 import Events from "@/sections/Events";
-import Hero from "@/sections/Hero";
-import Members from "@/sections/Members";
 import TestimonialsSection from "@/sections/Testimonials";
-import Background from "@/components/ui/Background";
 import WhyChooseSection from "@/sections/WhyUs";
 import ActivitiesComponent from "@/sections/Activities";
 import React from "react";
+import TeamMembers from "@/sections/TeamMembers";
+import { HeroSection } from "@/sections/HeroSection";
+import NewsletterSection from "@/sections/NewsletterSection";
 
 const LandingPage = () => {
   return (
-    <div className="relative overflow-hidden bg-white dark:bg-darkgray">
-      <Background />  {/* Background applied globally */}
-      
-      <Hero />
-      <section id="about">
-  <About />
-</section>
+    <div className="relative overflow-hidden ">
+
+      <HeroSection/>
+      <About />
       <WhyChooseSection />
-      <ActivitiesComponent /> 
-      <Members />
+      <ActivitiesComponent />
+      <TeamMembers/>
+      {/* <Members /> */}
       <Events />
-      <section id="testimonials">
-  <TestimonialsSection />
-</section>
+        <TestimonialsSection />
+        <NewsletterSection/>
     </div>
   );
 };

@@ -27,8 +27,8 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 transition-colors duration-300">
-      <div className="container mx-auto px-6 max-w-6xl py-12">
+    <footer className=" transition-colors duration-300">
+      <div className="max-container py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* GDG On Campus Section */}
           <div className="space-y-4">

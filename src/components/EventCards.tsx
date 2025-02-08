@@ -7,15 +7,15 @@ import { Calendar, MapPin, ArrowRight } from "lucide-react";
 interface EventCardProps {
   event: EventType;
   category: EventCategory;
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
   className?: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ 
-  event, 
-  category, 
-  variant = 'default', 
-  className = '' 
+const EventCard: React.FC<EventCardProps> = ({
+  event,
+  category,
+  variant = "default",
+  className = "",
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -26,21 +26,23 @@ const EventCard: React.FC<EventCardProps> = ({
     gsap.set(card, { clearProps: "transform" });
 
     const enterAnimation = {
-      y: variant === 'default' ? -8 : -5,
+      y: variant === "default" ? -8 : -5,
       duration: 0.3,
       ease: "power2.out",
-      boxShadow: variant === 'default' 
-        ? "0 20px 30px rgba(0,0,0,0.2)" 
-        : "0 10px 15px rgba(0,0,0,0.1)",
+      boxShadow:
+        variant === "default"
+          ? "0 20px 30px rgba(0,0,0,0.2)"
+          : "0 10px 15px rgba(0,0,0,0.1)",
     };
 
     const leaveAnimation = {
       y: 0,
       duration: 0.3,
       ease: "power2.out",
-      boxShadow: variant === 'default'
-        ? "0 10px 20px rgba(0,0,0,0.1)"
-        : "0 4px 6px rgba(0,0,0,0.05)",
+      boxShadow:
+        variant === "default"
+          ? "0 10px 20px rgba(0,0,0,0.1)"
+          : "0 4px 6px rgba(0,0,0,0.05)",
     };
 
     card.addEventListener("mouseenter", () => {
@@ -58,10 +60,9 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const baseClasses = `
     relative 
-    bg-white dark:bg-black 
-    rounded-2xl 
+    
     overflow-hidden 
-    border border-gray-200 dark:border-gray-800
+    gradient-card 
     shadow-lg hover:shadow-xl
     transition-shadow duration-300
     will-change-transform
@@ -70,27 +71,27 @@ const EventCard: React.FC<EventCardProps> = ({
   const variantClasses = {
     default: `
       ${baseClasses}
-      h-[500px]
+      h-auto
     `,
     compact: `
       ${baseClasses}
-      h-[380px] flex flex-col
-    `
+      h-auto flex flex-col
+    `,
   };
 
   const titleClasses = {
     default: "text-2xl font-bold",
-    compact: "text-lg font-bold line-clamp-2"
+    compact: "text-lg font-bold line-clamp-2",
   };
 
   const imageClasses = {
     default: "h-56",
-    compact: "h-40"
+    compact: "h-40",
   };
 
   const textSizeClasses = {
     default: "text-sm",
-    compact: "text-xs"
+    compact: "text-xs",
   };
 
   return (
@@ -99,7 +100,7 @@ const EventCard: React.FC<EventCardProps> = ({
       style={{ transform: "translate3d(0, 0, 0)" }}
       className={`
         ${variantClasses[variant]} 
-        ${className}
+        ${className} border-[1px] border-white/5
       `}
     >
       {/* Image Section */}
@@ -113,55 +114,81 @@ const EventCard: React.FC<EventCardProps> = ({
       </div>
 
       {/* Content Section */}
-      <div className={`p-${variant === 'default' ? '6' : '4'} ${variant === 'default' ? 'space-y-4' : 'flex-grow flex flex-col'}`}>
-        <h3 className={`
+      <div
+        className={`p-${variant === "default" ? "6" : "4"} ${
+          variant === "default" ? "space-y-4" : "flex-grow flex flex-col"
+        }`}
+      >
+        <h3
+          className={`
           ${titleClasses[variant]} 
           text-gray-900 dark:text-white 
-          ${variant === 'compact' ? 'mb-2' : ''}
-        `}>
+          ${variant === "compact" ? "mb-2" : ""}
+        `}
+        >
           {event.title}
         </h3>
 
-        <div className={`space-y-2 text-gray-600 dark:text-gray-400 ${variant === 'compact' ? 'mb-2' : ''}`}>
+        <div
+          className={`space-y-2 text-gray-600 dark:text-gray-400 ${
+            variant === "compact" ? "mb-2" : ""
+          }`}
+        >
           <div className="flex items-center">
-            <Calendar className={`mr-3 w-5 h-5 text-blue-500 ${textSizeClasses[variant]}`} />
+            <Calendar
+              className={`mr-3 w-5 h-5 text-blue-500 ${textSizeClasses[variant]}`}
+            />
             <span className={textSizeClasses[variant]}>
               {new Date(event.date).toLocaleDateString("en-US", {
                 year: "numeric",
-                month: variant === 'default' ? "long" : "short",
+                month: variant === "default" ? "long" : "short",
                 day: "numeric",
               })}
             </span>
           </div>
           <div className="flex items-center">
-            <MapPin className={`mr-3 w-5 h-5 text-green-500 ${textSizeClasses[variant]}`} />
-            <span className={`${textSizeClasses[variant]} truncate`}>{event.location}</span>
+            <MapPin
+              className={`mr-3 w-5 h-5 text-green-500 ${textSizeClasses[variant]}`}
+            />
+            <span className={`${textSizeClasses[variant]} truncate`}>
+              {event.location}
+            </span>
           </div>
         </div>
 
-        <p className={`
+        <p
+          className={`
           text-gray-700 dark:text-gray-300 
           ${textSizeClasses[variant]} 
           line-clamp-2 
-          ${variant === 'compact' ? 'mb-3' : ''}
-        `}>
+          ${variant === "compact" ? "mb-3" : ""}
+        `}
+        >
           {event.description}
         </p>
 
-        <div className={`
-          ${variant === 'default' ? 'flex justify-between' : 'mt-auto flex justify-between'} 
+        <div
+          className={`
+          ${
+            variant === "default"
+              ? "flex justify-between"
+              : "mt-auto flex justify-between"
+          } 
           items-center
-        `}>
-          {category === "upcoming" && (
+        `}
+        >
+          {/* {category === "upcoming" && (
             <a
               href={event.registrationLink}
               target="_blank"
               rel="noopener noreferrer"
               className={`
                 group inline-flex items-center 
-                ${variant === 'default' 
-                  ? 'px-5 py-2.5 text-sm' 
-                  : 'px-3 py-1.5 text-xs'}
+                ${
+                  variant === "default"
+                    ? "px-5 py-2.5 text-sm"
+                    : "px-3 py-1.5 text-xs"
+                }
                 bg-blue-600 hover:bg-blue-700 
                 text-white 
                 rounded-full 
@@ -169,20 +196,26 @@ const EventCard: React.FC<EventCardProps> = ({
                 shadow-md hover:shadow-lg
               `}
             >
-              <span className={`mr-${variant === 'default' ? '2' : '1'}`}>Register</span>
-              <ArrowRight className={`
-                ${variant === 'default' ? 'w-4 h-4' : 'w-3 h-3'} 
+              <span className={`mr-${variant === "default" ? "2" : "1"}`}>
+                Register
+              </span>
+              <ArrowRight
+                className={`
+                ${variant === "default" ? "w-4 h-4" : "w-3 h-3"} 
                 transition-transform group-hover:translate-x-1
-              `} />
+              `}
+              />
             </a>
           )}
 
-          <span className={`
-            ${variant === 'default' ? 'text-xs' : 'text-[10px]'} 
+          <span
+            className={`
+            ${variant === "default" ? "text-xs" : "text-[10px]"} 
             text-gray-500 dark:text-gray-600
-          `}>
+          `}
+          >
             Event ID: {event.id}
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

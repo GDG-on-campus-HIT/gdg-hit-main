@@ -76,9 +76,21 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .gradient-card {
+    @apply bg-gradient-to-bl from-[#0E0E10] to-[#17171a97] rounded-xl
+  }
+
+  .max-container {
+    @apply max-w-screen-xl mx-auto px-4
+  }
+
+  .white-gradient-text{
+    @apply from-gray-50  to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent
   }
 }

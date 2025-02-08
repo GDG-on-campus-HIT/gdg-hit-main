@@ -1,65 +1,43 @@
 "use client";
+import { cn } from "@/lib/utils";
+import React from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-import React from "react";
-import type { Testimonial } from "@/data/testimonials";
-import Image from "next/image";
 
-interface TestimonialCardProps {
-  testimonial: Testimonial;
-  className?: string;
-}
-
-export const TestimonialCard: React.FC<TestimonialCardProps> = ({
-  testimonial,
-  className = "",
-}) => (
-  <div
-    className={`
-      ${className} 
-      testimonial-card 
-      bg-white dark:bg-[#2e2e2e]
-      backdrop-blur-lg 
-      border 
-      border-gray-200 dark:border-gray-700
-      rounded-xl 
-      shadow-md
-      dark:shadow-xl 
-      p-4 md:p-6 
-      mb-4 md:mb-6 
-      transform 
-      motion-safe:transition-all
-      motion-safe:duration-700
-      hover:shadow-xl
-      hover:bg-gray-50 dark:hover:bg-[#363636]
-      relative
-      z-0
-      h-fit
-      opacity-100
-      w-full
-      max-w-md
-      mx-auto
-      md:max-w-none
-    `}
-  >
-    <div className="flex items-center mb-3 md:mb-4">
-      <Image
-        height={100}
-        width={100}
-        src={testimonial.avatar}
-        alt={testimonial.name}
-        className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3 md:mr-4 flex-shrink-0"
-      />
-      <div>
-        <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">
-          {testimonial.name}
-        </h3>
-        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300">
-          {testimonial.role}
-        </p>
+export const TestimonialCard = ({
+  name,
+  department,
+  message,
+}: {
+  name: string;
+  department: string;
+  message: string;
+}) => {
+  return (
+    <figure
+      className={cn(
+        "relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4 ",
+        // light styles
+        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.09]",
+        // dark styles
+        "dark:border-gray-50/[.1] dark:bg-brandPrimary-10 dark:hover:bg-brandPrimary-0"
+      )}
+    >
+      <div className="flex flex-row items-center gap-2">
+        <Avatar>
+          <AvatarImage src="#" alt="@shadcn" />
+          <AvatarFallback className="uppercase">
+            {name.substring(0, 1)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <figcaption className="text-sm font-medium dark:text-white">
+            {name}
+          </figcaption>
+          <p className="text-xs font-medium dark:text-white/40">{department}</p>
+        </div>
       </div>
-    </div>
-    <p className="text-sm md:text-base text-gray-800 dark:text-gray-200 italic">
-      {testimonial.text}
-    </p>
-  </div>
-);
+      <blockquote className="mt-2 text-sm">{message}</blockquote>
+    </figure>
+  );
+};
