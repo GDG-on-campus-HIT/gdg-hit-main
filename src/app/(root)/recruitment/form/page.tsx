@@ -5,13 +5,10 @@ import { Button } from "@/components/ui/button";
 import CustomInput from "./CustomInput";
 import CustomSelector from "./CustomSelector";
 import CustomMultiSelector from "./CustomMultiSelector";
-import {
-  getStep3Schema,
-  step1Schema,
-  step2Schema,
-  step4Schema,
-} from "./schema";
+import { getStep3Schema, step1Schema, step4Schema } from "./schema";
 import CustomTextArea from "./CustomTextArea";
+import { MdKeyboardArrowRight } from "react-icons/md";
+import { branch, position, year } from "./data";
 
 const Page = () => {
   const [step, setStep] = useState(1);
@@ -27,10 +24,6 @@ const Page = () => {
       branch: "",
       branchYear: "",
       positions: [],
-
-      // Step 2
-      perspective: "",
-      eventIdeas: "",
 
       // Step 3
       webDeveloper: {
@@ -75,15 +68,11 @@ const Page = () => {
       linkedIn: "",
       portfolio: "",
       previousClubs: "",
-      timeCommitment: "",
-      reasonToJoin: "",
     },
     validationSchema:
       step === 1
         ? step1Schema
         : step === 2
-        ? step2Schema
-        : step === 3
         ? getStep3Schema(selectedPositions)
         : step4Schema,
     onSubmit: async (values) => {
@@ -98,11 +87,9 @@ const Page = () => {
     // Trigger form validation for the current step
     const isValid = await formik.validateForm();
 
-    // Check if the current form is valid before proceeding
-    console.log(Object.keys(isValid).length === 0);
     if (Object.keys(isValid).length === 0) {
       // If the form is valid, proceed to the next step
-      if (step < 4) {
+      if (step < 3) {
         setStep(step + 1);
       }
     } else {
@@ -128,17 +115,17 @@ const Page = () => {
 
   return (
     <div className="min-h-screen w-full relative">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto shadow-lg rounded-lg border border-slate-200 dark:border-white/10 dark:bg-black/20 bg-slate-300  backdrop-filter backdrop-blur-lg bg-opacity-10  backdrop-saturate-100 backdrop-contrast-100 bg-blend-overlay dark:bg-blend-normal">
+      <div className="container mx-auto px-4 py-20">
+        <div className="max-w-4xl mx-auto shadow-lg rounded-lg  gradient-card">
           <div className="p-6 md:p-8">
             {/* Heading and descriptions */}
             <div className="flex justify-between items-center mb-8">
               <div className="space-y-1">
-                <h1 className="text-3xl max-md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                <h1 className="text-3xl max-md:text-2xl font-bold from-blue-400  to-blue-600 bg-gradient-to-b bg-clip-text text-transparent">
                   GDG HIT Recruitment
                 </h1>
                 <div className="flex space-x-2 my-2">
-                  {[1, 2, 3, 4].map((i) => (
+                  {[1, 2, 3].map((i) => (
                     <div
                       key={i}
                       className={`h-2 rounded-full transition-all  ${
@@ -151,7 +138,7 @@ const Page = () => {
                 </div>
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-300 text-nowrap ms-4">
-                Step {step} of 4
+                Step {step} of 3
               </span>
             </div>
 
@@ -198,7 +185,7 @@ const Page = () => {
                     <CustomInput
                       label="Roll Number"
                       id="rollNumber"
-                      type="number"
+                      type="text"
                       placeholder="Enter your class roll no."
                       handleChange={handleChange}
                       value={values.rollNumber}
@@ -215,7 +202,7 @@ const Page = () => {
                       error={errors.branch}
                       touched={touched.branch}
                       setFieldValue={setFieldValue}
-                      list={["Computer Science", "Mechanical", "Electrical"]}
+                      list={branch}
                     />
 
                     <CustomSelector
@@ -225,7 +212,7 @@ const Page = () => {
                       error={errors.branchYear}
                       touched={touched.branchYear}
                       setFieldValue={setFieldValue}
-                      list={["1st Year", "2nd Year", "3rd Year", "4th Year"]}
+                      list={year}
                     />
                   </div>
 
@@ -239,56 +226,19 @@ const Page = () => {
                       setFieldValue(field, value);
                       setSelectedPositions(value);
                     }}
-                    list={[
-                      { label: "Web Developer", value: "webDeveloper" },
-                      { label: "App Developer", value: "appDeveloper" },
-                      { label: "Public Relations", value: "publicRelations" },
-                      { label: "Graphics Designer", value: "graphicsDesigner" },
-                      { label: "Video Editor", value: "videoEditor" },
-                      { label: "Content Writer", value: "contentWriter" },
-                      { label: "Photographer", value: "photographer" },
-                    ]}
+                    list={position}
                   />
                 </>
               )}
 
               {step === 2 && (
                 <>
-                  <h2 className="text-xl font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
-                    Perspective on GDG HIT
-                  </h2>
-                  <CustomTextArea
-                    label="What do you think GDG HIT stands for? How does it benefit students?"
-                    id="perspective"
-                    placeholder=""
-                    handleChange={handleChange}
-                    value={values.perspective}
-                    error={errors.perspective}
-                    touched={touched.perspective}
-                    rows={4}
-                  />
-
-                  <CustomTextArea
-                    label="What kind of events or initiatives would you like to see?"
-                    id="eventIdeas"
-                    placeholder=""
-                    handleChange={handleChange}
-                    value={values.eventIdeas}
-                    error={errors.eventIdeas}
-                    touched={touched.eventIdeas}
-                    rows={4}
-                  />
-                </>
-              )}
-
-              {step === 3 && (
-                <>
-                  <h2 className="text-xl mb-3 font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                  <h2 className="text-xl mb-3 font-bold from-red-400  to-red-600 bg-gradient-to-b bg-clip-text text-transparent">
                     Role-Specific Questions
                   </h2>
                   {selectedPositions.includes("webDeveloper") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
                         Web Developer
                       </h2>
                       <CustomTextArea
@@ -338,7 +288,7 @@ const Page = () => {
 
                   {selectedPositions.includes("appDeveloper") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
                         App Developer
                       </h2>
                       <CustomTextArea
@@ -388,7 +338,7 @@ const Page = () => {
 
                   {selectedPositions.includes("publicRelations") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
                         Public Relations
                       </h2>
                       <CustomTextArea
@@ -417,7 +367,7 @@ const Page = () => {
 
                   {selectedPositions.includes("videoEditor") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
                         Video Editor
                       </h2>
                       <CustomTextArea
@@ -457,7 +407,7 @@ const Page = () => {
 
                   {selectedPositions.includes("contentWriter") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
                         Content Writer
                       </h2>
                       <CustomTextArea
@@ -475,7 +425,7 @@ const Page = () => {
 
                   {selectedPositions.includes("graphicsDesigner") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
                         Graphic Designer
                       </h2>
                       <CustomTextArea
@@ -513,11 +463,10 @@ const Page = () => {
                     </>
                   )}
 
-
-{selectedPositions.includes("photographer") && (
+                  {selectedPositions.includes("photographer") && (
                     <>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-slate-700 dark:from-gray-400  to-slate-400 dark:to-gray-300 bg-clip-text text-transparent">
-                       Photographer
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
+                        Photographer
                       </h2>
                       <CustomTextArea
                         label="What type of photography are you skilled in?"
@@ -552,7 +501,7 @@ const Page = () => {
                         rows={1}
                       />
 
-<CustomTextArea
+                      <CustomTextArea
                         label="Do you own a DSLR/Mirrorless camera or use a smartphone for photography?"
                         id="photographer.cameraModel"
                         placeholder=""
@@ -568,7 +517,7 @@ const Page = () => {
                 </>
               )}
 
-              {step === 4 && (
+              {step === 3 && (
                 <>
                   <CustomInput
                     label="LinkedIn URL"
@@ -602,28 +551,6 @@ const Page = () => {
                     error={errors.previousClubs}
                     touched={touched.previousClubs}
                   />
-
-                  <CustomInput
-                    label="Time Commitment"
-                    id="timeCommitment"
-                    type="text"
-                    placeholder=""
-                    handleChange={handleChange}
-                    value={values.timeCommitment}
-                    error={errors.timeCommitment}
-                    touched={touched.timeCommitment}
-                  />
-
-                  <CustomInput
-                    label="Reason to Join"
-                    id="reasonToJoin"
-                    type="text"
-                    placeholder=""
-                    handleChange={handleChange}
-                    value={values.reasonToJoin}
-                    error={errors.reasonToJoin}
-                    touched={touched.reasonToJoin}
-                  />
                 </>
               )}
 
@@ -638,13 +565,13 @@ const Page = () => {
                   </Button>
                 )}
 
-                {step < 4 ? (
+                {step < 3 ? (
                   <Button
                     type="button"
                     onClick={handleNext}
-                    className="font-semibold ms-auto dark:text-white bg-blue-600 dark:bg-blue-700 text-base hover:bg-blue-700 transition-colors duration-300 ease-in-out mt-2"
+                    className="font-semibold ms-auto bg-gradient-to-bl from-blue-600 to-blue-950  text-white transition-colors duration-300 ease-in-out mt-2"
                   >
-                    Next
+                    Next <MdKeyboardArrowRight />
                   </Button>
                 ) : (
                   <Button

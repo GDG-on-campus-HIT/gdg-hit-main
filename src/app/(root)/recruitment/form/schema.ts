@@ -7,7 +7,7 @@ export const step1Schema = Yup.object().shape({
     .email("Please enter a valid email")
     .required("Please enter your email"),
   phoneNumber: Yup.number().required("Please enter your phone number"),
-  rollNumber: Yup.number().required("Please enter your roll number"),
+  rollNumber: Yup.string().required("Please enter your roll number"),
   branch: Yup.string().required("Please select your branch"),
   branchYear: Yup.string().required("Please select your year"),
   positions: Yup.array()
@@ -16,11 +16,6 @@ export const step1Schema = Yup.object().shape({
     .required("Please select the position(s) you are applying for"),
 });
 
-// Step 2: Perspective on GDG HIT
-export const step2Schema = Yup.object().shape({
-  perspective: Yup.string().required("This field is required"),
-  eventIdeas: Yup.string().required("This field is required"),
-});
 
 // Step 3: Role-Specific Questions
 export const getStep3Schema = (selectedPositions: string[]) => {
@@ -83,11 +78,5 @@ export const getStep3Schema = (selectedPositions: string[]) => {
 export const step4Schema = Yup.object().shape({
   linkedIn: Yup.string().url("Please enter a valid LinkedIn URL").nullable(),
   portfolio: Yup.string().url("Please enter a valid portfolio URL").nullable(),
-  previousClubs: Yup.string().nullable(),
-  timeCommitment: Yup.string().required(
-    "Please specify your weekly commitment"
-  ),
-  reasonToJoin: Yup.string()
-    .max(200, "Answer should not exceed 200 words")
-    .required("Please provide a reason for joining GDG HIT"),
+  previousClubs: Yup.string().required("Please select your branch"),
 });

@@ -39,10 +39,10 @@ const CustomMultiSelector: React.FC<CustomMultiSelectorProps> = ({
             key={item.value}
             type="button"
             onClick={() => handleSelect(item.value)}
-            className={`px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-800 text-sm transition-all ${
+            className={`px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 text-sm transition-all ${
               value.includes(item.value)
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-900 dark:text-gray-300"
+                ? "from-blue-500 to-blue-700 bg-gradient-to-b text-white "
+                : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-white/5 dark:text-gray-300"
             }`}
           >
             {item.label}

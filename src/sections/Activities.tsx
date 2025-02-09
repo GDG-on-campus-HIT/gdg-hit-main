@@ -62,13 +62,13 @@ const ActivitiesComponent = () => {
   return (
     <div className="w-full py-20 max-sm:py-12">
       <div className="max-container transition-colors duration-300">
-      <div className=" mb-8">
+        <div className=" mb-8">
           <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25]">
             What We Do at
             <br />
             <span className="from-green-400  to-green-600 bg-gradient-to-b bg-clip-text text-transparent">
               {" "}
-             GDG HIT
+              GDG HIT
             </span>
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">

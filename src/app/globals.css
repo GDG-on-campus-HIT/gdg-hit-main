@@ -91,6 +91,6 @@ body {
   }
 
   .white-gradient-text{
-    @apply from-gray-50  to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent
+    @apply from-gray-50 to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent
   }
 }
