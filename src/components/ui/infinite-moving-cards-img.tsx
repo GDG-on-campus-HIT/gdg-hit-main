@@ -87,7 +87,7 @@ export const InfiniteMovingCardImg = ({
         {items.map((item, idx) => (
           <li
             className="w-[250px] aspect-video gradient-card max-w-full relative rounded-2xl border overflow-hidden border-b-0  border-white/10  md:w-[300px]"
-            key={item.image}
+            key={item.image + idx}
           >
             <img src={item.image} alt="" className="w-full h-full object-cover" />
           </li>
