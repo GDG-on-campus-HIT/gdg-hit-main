@@ -32,12 +32,12 @@ export const navBarLinks = [
     route: "/members",
   },
   {
-    label: "About",
-    route: "/about",
+    label: "About us",
+    route: "/about-us",
   },
   {
-    label: "Contact",
-    route: "/contact",
+    label: "Contact us",
+    route: "/contact-us",
   },
 ];
 
@@ -50,7 +50,7 @@ const NavBar = () => {
     <nav className="w-full top-0 z-50 backdrop-blur-lg  fixed">
       <ScrollProgress className="top-[65px]" />
       {/* main nav bar  */}
-      <div className="max-w-screen-xl mx-auto max-xl:mx-4 py-3 flex justify-between items-center ">
+      <div className="max-container py-3 flex justify-between items-center ">
         <div className="flex items-center space-x-2">
           <Link href="/">
             <img src="/assets/gdg-hit-logo.svg" alt="" className="h-10" />
