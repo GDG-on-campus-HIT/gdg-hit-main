@@ -78,5 +78,5 @@ export const getStep3Schema = (selectedPositions: string[]) => {
 export const step4Schema = Yup.object().shape({
   linkedIn: Yup.string().url("Please enter a valid LinkedIn URL").nullable(),
   portfolio: Yup.string().url("Please enter a valid portfolio URL").nullable(),
-  previousClubs: Yup.string().required("Please select your branch"),
+  previousClubs: Yup.string().required("fgfgfg"),
 });

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
-import EventCard from '@/app/(root)/events/components/EventCard';
-import { EventType, EventCategory } from '@/app/(root)/events/types';
-import { gsap } from 'gsap';
+import React, { useEffect, useRef } from "react";
+import { EventType, EventCategory } from "@/app/(root)/events/types";
+import { gsap } from "gsap";
+import EventCard from "@/components/EventCards";
 
 interface EventSectionProps {
   events: EventType[];
@@ -34,7 +34,7 @@ const EventSection: React.FC<EventSectionProps> = ({ events, category }) => {
           scale: 1,
           duration: 0.5,
           stagger: 0.1,
-          ease: 'power3.out',
+          ease: "power3.out",
         }
       );
     }
@@ -47,12 +47,17 @@ const EventSection: React.FC<EventSectionProps> = ({ events, category }) => {
   return (
     <div
       ref={containerRef}
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5"
     >
       {events.length > 0 ? (
         events.map((event, index) => (
           <div key={event.id} ref={handleRef(index)}>
-            <EventCard event={event} category={category} />
+            <EventCard
+              event={event}
+              category={category}
+              variant="compact"
+              className="w-full"
+            />
           </div>
         ))
       ) : (

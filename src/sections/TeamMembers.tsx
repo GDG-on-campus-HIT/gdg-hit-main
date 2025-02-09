@@ -1,3 +1,4 @@
+import MemberCard from "@/components/MemberCard";
 import React from "react";
 
 interface Member {
@@ -91,36 +92,7 @@ function TeamMembers() {
         </div>
         <div className="grid grid-cols-4 gap-5 my-20 max-sm:my-5 max-sm:gap-10  max-md:grid-cols-3 max-sm:grid-cols-1 max-sm:p-4">
           {members.map((item, index) => (
-            <div className="w-full " key={`${index} ${item.name}`}>
-              <div className="w-full relative aspect-square overflow-hidden items-center flex justify-center ">
-                <img
-                  src={item.imageSrc}
-                  alt=""
-                  className=" h-auto aspect-square object-bottom object-contain grayscale-0 dark:grayscale dark:hover:grayscale-0 group"
-                />
-                <img
-                  src="/assets/Rectangle.svg"
-                  alt=""
-                  className="absolute bottom-0 -z-10 w-full dark:opacity-80 grayscale hover:grayscale-0 opacity-20"
-                />
-                <img
-                  src="/assets/linkedin.png"
-                  alt=""
-                  className="absolute bottom-2 right-2 w-10"
-                />
-              </div>
-              <div className="p-2">
-                <h3 className="dark:text-gray-300 font-semibold text-xl ">
-                  {item.name}
-                </h3>
-                <h4 className={`text-sm text-gray-400 mb-1 dark:text-blue-400`}>
-                  {item.role}
-                </h4>
-                <p className="dark:text-gray-500 text-sm line-clamp-2">
-                  {item.bio}
-                </p>
-              </div>
-            </div>
+            <MemberCard key={`${index} ${item.name}`} name={item.name} role={item.role} bio={item.bio || ""} imageSrc={item.imageSrc}/>
           ))}
         </div>
       </div>
