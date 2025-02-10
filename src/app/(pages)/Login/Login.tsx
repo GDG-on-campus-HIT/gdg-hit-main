@@ -1,12 +1,12 @@
 "use client";
-import React, { useState } from 'react';
-import { Mail, Lock, LogIn } from 'lucide-react';
-import { Spotlight } from '@/components/ui/spotlight';
+import React, { useState } from "react";
+import { Mail, Lock, LogIn } from "lucide-react";
+import { Spotlight } from "@/components/ui/spotlight";
 
 const LoginComponent = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [activeInput, setActiveInput] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [activeInput, setActiveInput] = useState("");
 
   const handleEmailLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,7 +18,7 @@ const LoginComponent = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-black flex items-center justify-center p-4 overflow-hidden">
+    <div className="w-full min-h-screen  flex items-center justify-center p-4 overflow-hidden">
       <Spotlight
         className="hidden md:block -top-40 left-0 md:left-60 md:-top-20"
         fill="white"
@@ -27,7 +27,7 @@ const LoginComponent = () => {
         {/* Background Effects - Adjusted for mobile */}
         <div className="absolute -top-20 -right-20 w-48 md:w-64 h-48 md:h-64 bg-green-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-20 -left-20 w-48 md:w-64 h-48 md:h-64 bg-blue-500/10 rounded-full blur-3xl" />
-        
+
         {/* Main Container - Added mobile padding adjustments */}
         <div className="relative backdrop-blur-xl bg-gray-950/50 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8">
           {/* Header - Responsive text sizes */}
@@ -43,21 +43,27 @@ const LoginComponent = () => {
           {/* Login Form - Adjusted spacing for mobile */}
           <form onSubmit={handleEmailLogin} className="space-y-4 md:space-y-6">
             {/* Email Input */}
-            <div 
+            <div
               className={`
                 relative transition-all duration-300
-                ${activeInput === 'email' ? 'scale-[1.02]' : ''}
+                ${activeInput === "email" ? "scale-[1.02]" : ""}
               `}
             >
               <div className="relative bg-gray-900/80 rounded-xl backdrop-blur-sm">
                 <div className="flex items-center p-2 md:p-3 rounded-lg">
-                  <Mail className={`w-4 md:w-5 h-4 md:h-5 ${activeInput === 'email' ? 'text-green-400' : 'text-gray-500'} transition-colors`} />
+                  <Mail
+                    className={`w-4 md:w-5 h-4 md:h-5 ${
+                      activeInput === "email"
+                        ? "text-green-400"
+                        : "text-gray-500"
+                    } transition-colors`}
+                  />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    onFocus={() => setActiveInput('email')}
-                    onBlur={() => setActiveInput('')}
+                    onFocus={() => setActiveInput("email")}
+                    onBlur={() => setActiveInput("")}
                     placeholder="Enter your email"
                     className="w-full bg-transparent border-none focus:outline-none text-gray-100 placeholder-gray-500 ml-3 text-sm md:text-base"
                   />
@@ -66,21 +72,27 @@ const LoginComponent = () => {
             </div>
 
             {/* Password Input */}
-            <div 
+            <div
               className={`
                 relative transition-all duration-300
-                ${activeInput === 'password' ? 'scale-[1.02]' : ''}
+                ${activeInput === "password" ? "scale-[1.02]" : ""}
               `}
             >
               <div className="relative bg-gray-900/80 rounded-xl backdrop-blur-sm">
                 <div className="flex items-center p-2 md:p-3 rounded-lg">
-                  <Lock className={`w-4 md:w-5 h-4 md:h-5 ${activeInput === 'password' ? 'text-green-400' : 'text-gray-500'} transition-colors`} />
+                  <Lock
+                    className={`w-4 md:w-5 h-4 md:h-5 ${
+                      activeInput === "password"
+                        ? "text-green-400"
+                        : "text-gray-500"
+                    } transition-colors`}
+                  />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onFocus={() => setActiveInput('password')}
-                    onBlur={() => setActiveInput('')}
+                    onFocus={() => setActiveInput("password")}
+                    onBlur={() => setActiveInput("")}
                     placeholder="Enter your password"
                     className="w-full bg-transparent border-none focus:outline-none text-gray-100 placeholder-gray-500 ml-3 text-sm md:text-base"
                   />
@@ -146,11 +158,17 @@ const LoginComponent = () => {
 
           {/* Footer Links - Adjusted text size and spacing */}
           <div className="mt-6 md:mt-8 text-center text-xs md:text-sm">
-            <a href="#" className="text-gray-500 hover:text-gray-400 transition-colors">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-gray-400 transition-colors"
+            >
               Forgot password?
             </a>
             <span className="mx-2 text-gray-800">•</span>
-            <a href="#" className="text-gray-500 hover:text-gray-400 transition-colors">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-gray-400 transition-colors"
+            >
               Sign up for an account
             </a>
           </div>

@@ -4,7 +4,7 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -69,7 +69,7 @@ const NavBar = () => {
                   href={link.route}
                   key={link.label}
                   className={cn(
-                    "text-brand-primary font-medium hover:text-brand-500-main dark:hover:text-brand-500-main underline-offset-4 transition duration-200 dark:text-gray-100",
+                    "text-brand-primary font-medium hover:text-brand-500-main dark:hover:text-brand-500-main underline-offset-4 transition duration-200 dark:text-gray-100 text-sm",
                     {
                       " font-medium text-brand-500-main dark:text-brand-500-main":
                         isActive,
@@ -96,10 +96,12 @@ const NavBar = () => {
             :
             <ProfileDropDown />
             } */}
+            <Link href="/login">
               <button className="px-8 py-2 rounded-full relative gradient-card text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
                 <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                 <span className="relative z-20 font-medium">Login</span>
               </button>
+            </Link>
               <SheetTrigger className="lg:hidden  text-gray-700  border-none dark:hover:text-white dark:text-gray-400 p-2 rounded-md">
                 <BiMenu size={25} className="" />
               </SheetTrigger>
@@ -124,7 +126,7 @@ const NavBar = () => {
                         <Link
                           href={link.route}
                           className={cn(
-                            "text-brand-primary font-semibold hover:underline underline-offset-4 transition duration-200 dark:text-gray-400",
+                            "text-brand-primary text-sm font-semibold hover:underline underline-offset-4 transition duration-200 dark:text-gray-400",
                             {
                               "font-medium text-brand-500-main dark:text-brand-500-main":
                                 isActive,
@@ -137,10 +139,17 @@ const NavBar = () => {
                     );
                   })}
                 </div>
-                <SheetDescription className="flex justify-center pt-5">
-                  © 2025 GDG on campus HIT.
-                </SheetDescription>
               </SheetHeader>
+              <SheetFooter className="">
+                <div className="text-center ">
+                  <p className="text-xs text-neutral-600 dark:text-neutral-500">
+                    © 2024 GDG On Campus HIT. All rights reserved.
+                  </p>
+                  <p className="mt-2 text-xs text-neutral-600 dark:text-neutral-500">
+                    Made with ❤️ by GDG HIT Team
+                  </p>
+                </div>
+              </SheetFooter>
             </SheetContent>
           </Sheet>
         </div>
