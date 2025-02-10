@@ -1,21 +1,106 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { Spotlight } from "@/components/ui/spotlight";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useTheme } from "next-themes";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import { Bounce, toast } from "react-toastify";
+import { useRouter, useSearchParams } from "next/navigation";
+
+const schema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email!")
+    .required("please enter your email!"),
+  password: Yup.string().required("Please enter your password!").min(6),
+});
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [activeInput, setActiveInput] = useState("");
 
-  const handleEmailLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle email login logic here
-  };
+  const { theme } = useTheme();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/";
 
-  const handleGoogleLogin = () => {
-    // Handle Google login logic here
+  const [login, { data, isSuccess, error, isLoading }] = useLoginMutation();
+  const { refetch } = useLoadUserQuery({}, { refetchOnMountOrArgChange: true });
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data?.message || "Sign in successful";
+      toast.success(message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: theme,
+        transition: Bounce,
+      });
+      refetch();
+      router.push(redirectUrl);
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        console.log(errorData.data.message);
+        toast.error(errorData.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          transition: Bounce,
+          theme: theme,
+        });
+      }
+    }
+  }, [isSuccess, error]);
+
+  const formik = useFormik({
+    initialValues: { email: "", password: "" },
+    validationSchema: schema,
+    onSubmit: async ({ email, password }) => {
+      const data = {
+        email,
+        password,
+        role: "user",
+      };
+      await login(data);
+    },
+  });
+
+  const { errors, touched, handleChange, handleSubmit } = formik;
+
+  const handleGoogleSignin = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectTo = searchParams.get("redirectTo") || "/";
+  
+    document.cookie = `redirect_url=${redirectTo}; path=/; samesite=lax`;
+  
+    const authWindow = window.open("http://localhost:8080/auth/google", "_blank", "width=500,height=600");
+  
+    window.addEventListener("message", (event) => {
+      if (event.data?.success) {
+        authWindow?.close();
+        window.location.href = event.data.redirectUrl;
+      }
+    }, { once: true });
   };
+  
+  
+  
+  
+  
 
   return (
     <div className="w-full min-h-screen  flex items-center justify-center p-4 overflow-hidden">
@@ -41,7 +126,7 @@ const LoginComponent = () => {
           </div>
 
           {/* Login Form - Adjusted spacing for mobile */}
-          <form onSubmit={handleEmailLogin} className="space-y-4 md:space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
             {/* Email Input */}
             <div
               className={`
@@ -60,14 +145,17 @@ const LoginComponent = () => {
                   />
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleChange}
+                    id="email"
                     onFocus={() => setActiveInput("email")}
                     onBlur={() => setActiveInput("")}
                     placeholder="Enter your email"
                     className="w-full bg-transparent border-none focus:outline-none text-gray-100 placeholder-gray-500 ml-3 text-sm md:text-base"
                   />
                 </div>
+                {errors.email && touched.email && (
+              <span className="text-red-500 text-sm block">{errors.email}</span>
+            )}
               </div>
             </div>
 
@@ -88,15 +176,20 @@ const LoginComponent = () => {
                     } transition-colors`}
                   />
                   <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                     type="password"
+                     onChange={handleChange}
+                     id="password"
                     onFocus={() => setActiveInput("password")}
                     onBlur={() => setActiveInput("")}
                     placeholder="Enter your password"
                     className="w-full bg-transparent border-none focus:outline-none text-gray-100 placeholder-gray-500 ml-3 text-sm md:text-base"
                   />
                 </div>
+                {errors.password && touched.password && (
+              <span className="text-red-500 text-sm block">
+                {errors.password}
+              </span>
+            )}
               </div>
             </div>
 
@@ -126,7 +219,7 @@ const LoginComponent = () => {
 
           {/* Google Login - Adjusted padding and text size */}
           <button
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleSignin}
             className="w-full bg-gray-900/80 text-gray-200 rounded-xl py-2.5 md:py-3 px-4 text-sm md:text-base font-medium transition-all duration-300 hover:bg-gray-800/80 active:scale-[0.98] backdrop-blur-sm"
           >
             <span className="flex items-center justify-center">

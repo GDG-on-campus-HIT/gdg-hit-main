@@ -1,7 +1,8 @@
 "use client";
-
 import MemberCard from "@/components/MemberCard";
-import React, { useState } from "react";
+import { useMemberQuery } from "@/redux/features/api/member/memberApi";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface ProfileImage {
   public_id: string;
@@ -25,280 +26,73 @@ interface Member {
   __v: number;
 }
 
-const members = {
-  coreTeam: [
-    {
-      _id: "1",
-      name: "John Doe",
-      designation: "President",
-      profile_image: {
-        url: "/assets/members/deepak-kumar.png",
-      },
-      bio: "Experienced leader with a passion for technology and innovation.",
-      batch: "2021-25",
-      leader: true,
-    },
-    {
-      _id: "2",
-      name: "Jane Smith",
-      designation: "Vice-President",
-      profile_image: {
-        url: "/assets/members/deepak-kumar.png",
-      },
-      bio: "Dedicated to fostering collaboration and driving impactful projects.",
-      batch: "2021-25",
-      leader: true,
-    },
-  ],
-  mediaTeam: {
-    mediaHead: [
-      {
-        _id: "3",
-        name: "Alice Johnson",
-        designation: "Media Head",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Creative professional with expertise in media and content strategy.",
-        batch: "2021-25",
-        leader: true,
-      },
-    ],
-    photographer: [
-      {
-        _id: "4",
-        name: "Bob Brown",
-        designation: "Photographer",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Passionate about capturing moments and telling stories through photography.",
-        batch: "2022-26",
-        leader: false,
-      },
-    ],
-    graphicDesigner: [
-      {
-        _id: "5",
-        name: "Charlie Davis",
-        designation: "Graphic Designer",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Transforming ideas into visually stunning designs.",
-        batch: "2022-26",
-        leader: false,
-      },
-    ],
-    contentWriter: [
-      {
-        _id: "6",
-        name: "Diana Evans",
-        designation: "Content Writer",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Crafting compelling narratives that resonate with audiences.",
-        batch: "2022-26",
-        leader: false,
-      },
-    ],
-    videoEditor: [
-      {
-        _id: "7",
-        name: "Ethan Harris",
-        designation: "Video Editor",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Bringing stories to life through seamless video editing.",
-        batch: "2022-26",
-        leader: false,
-      },
-    ],
-  },
-  prTeam: [
-    {
-      _id: "8",
-      name: "Fiona Clark",
-      designation: "PR Head",
-      profile_image: {
-        url: "/assets/members/deepak-kumar.png",
-      },
-      bio: "Building strong relationships and promoting the club's mission.",
-      batch: "2021-25",
-      leader: true,
-    },
-    {
-      _id: "9",
-      name: "George Lewis",
-      designation: "PR",
-      profile_image: {
-        url: "/assets/members/deepak-kumar.png",
-      },
-      bio: "Effective communicator with a knack for public relations.",
-      batch: "2022-26",
-      leader: false,
-    },
-  ],
-  techTeam: {
-    webDeveloper: [
-      {
-        _id: "10",
-        name: "Hannah White",
-        designation: "Web Developer",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Passionate about building user-friendly and responsive websites.",
-        batch: "2022-26",
-        leader: false,
-      },
-    ],
-    appDeveloper: [
-      {
-        _id: "11",
-        name: "Ian Green",
-        designation: "App Developer",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Creating innovative mobile applications that solve real-world problems.",
-        batch: "2023-27",
-        leader: false,
-      },
-    ],
-    machineLearning: [
-      {
-        _id: "12",
-        name: "Jessica King",
-        designation: "Machine Learning",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Exploring the potential of AI and machine learning to drive innovation.",
-        batch: "2023-27",
-        leader: false,
-      },
-    ],
-    techMember: [
-      {
-        _id: "13",
-        name: "Kevin Adams",
-        designation: "Technical Member",
-        profile_image: {
-          url: "/assets/members/deepak-kumar.png",
-        },
-        bio: "Enthusiastic about coding and solving technical challenges.",
-        batch: "2023-27",
-        leader: false,
-      },
-    ],
-  },
-};
+interface MembersState {
+  coreTeam: Member[];
+  mediaTeam: Record<string, Member[]>;
+  prTeam: Member[];
+  techTeam: Record<string, Member[]>;
+}
 
 const MembersPage: React.FC = () => {
+  const { isLoading, isError, data } = useMemberQuery({});
+  const { members } = useSelector(
+    (state: { member: { members: MembersState } }) => state.member
+  );
+
   const [activeTab, setActiveTab] = useState<"core" | "media" | "pr" | "tech">(
     "core"
   );
+  const [isClient, setIsClient] = useState(false); // Track client-side rendering
 
-  // Render members based on the active tab and subcategory
-  const renderMembers = () => {
-    if (!members) return null;
+  useEffect(() => {
+    setIsClient(true); // Set to true after component mounts on the client
+  }, []);
 
-    switch (activeTab) {
-      case "core":
-        return (
-          <div className="space-y-8">
-            <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-              Core Team
+  const renderMemberCards = (members: Member[]) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {members.map((member, index) => (
+        <MemberCard
+          key={`${index}-${member._id}`}
+          name={member.name}
+          role={member.designation}
+          bio={member.bio}
+          imageSrc={member.profile_image.url}
+        />
+      ))}
+    </div>
+  );
+
+  const renderTeamSection = (
+    title: string,
+    members: Member[] | Record<string, Member[]>
+  ) => (
+    <div className="space-y-8">
+      {Array.isArray(members) ? (
+        <>
+          <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+            {title}
+          </h3>
+          {renderMemberCards(members)}
+        </>
+      ) : (
+        Object.entries(members).map(([subcategory, members]) => (
+          <div key={subcategory} className="my-4">
+            <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white capitalize">
+              {subcategory.replace(/([A-Z])/g, " $1").trim()}
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {members.coreTeam.map((member, index) => (
-                <MemberCard
-                  key={`${index} ${member.name}`}
-                  name={member.name}
-                  role={member.designation}
-                  bio={member.bio}
-                  imageSrc={member.profile_image.url}
-                />
-              ))}
-            </div>
+            {renderMemberCards(members)}
           </div>
-        );
+        ))
+      )}
+    </div>
+  );
 
-      case "media":
-        return (
-          <div className="space-y-8">
-            {Object.entries(members.mediaTeam).map(([subcategory, members]) => (
-              <div key={subcategory} className="my-4">
-                <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white capitalize">
-                  {subcategory.replace(/([A-Z])/g, " $1").trim()}
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {members.map((member, index) => (
-                    <MemberCard
-                      key={`${index} ${member.name}`}
-                      name={member.name}
-                      role={member.designation}
-                      bio={member.bio}
-                      imageSrc={member.profile_image.url}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        );
+  if (!isClient) {
+    return null; // Return nothing during SSR to avoid hydration mismatch
+  }
 
-      case "pr":
-        return (
-          <div className="space-y-8">
-            <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-              PR Team
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {members.prTeam.map((member, index) => (
-                <MemberCard
-                  key={`${index} ${member.name}`}
-                  name={member.name}
-                  role={member.designation}
-                  bio={member.bio}
-                  imageSrc={member.profile_image.url}
-                />
-              ))}
-            </div>
-          </div>
-        );
-
-      case "tech":
-        return (
-          <div className="space-y-8">
-            {Object.entries(members.techTeam).map(([subcategory, members]) => (
-              <div key={subcategory}>
-                <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white capitalize">
-                  {subcategory.replace(/([A-Z])/g, " $1").trim()}
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {members.map((member, index) => (
-                    <MemberCard
-                      key={`${index} ${member.name}`}
-                      name={member.name}
-                      role={member.designation}
-                      bio={member.bio}
-                      imageSrc={member.profile_image.url}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading members</div>;
 
   return (
     <div className="relative min-h-screen transition-colors duration-300">
@@ -319,51 +113,40 @@ const MembersPage: React.FC = () => {
         </div>
 
         {/* Tabs for Categories */}
-        <div className="flex justify-center gap-4 mb-8">
-          <button
-            onClick={() => setActiveTab("core")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              activeTab === "core"
-                ? "bg-yellow-400 text-black"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
-          >
-            Core Team
-          </button>
-          <button
-            onClick={() => setActiveTab("tech")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              activeTab === "tech"
-                ? "bg-yellow-400 text-black"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
-          >
-            Tech Team
-          </button>
-          <button
-            onClick={() => setActiveTab("media")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              activeTab === "media"
-                ? "bg-yellow-400 text-black"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
-          >
-            Media Team
-          </button>
-          <button
-            onClick={() => setActiveTab("pr")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-              activeTab === "pr"
-                ? "bg-yellow-400 text-black"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
-          >
-            PR Team
-          </button>
+        <div className="flex justify-center gap-4 mb-8 max-sm:flex-col items-center">
+          {(["core", "tech", "media", "pr"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+                activeTab === tab
+                  ? "bg-yellow-400 text-black"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+              }`}
+            >
+              {tab === "core"
+                ? "Core Team"
+                : tab === "tech"
+                ? "Tech Team"
+                : tab === "media"
+                ? "Media Team"
+                : "PR Team"}
+            </button>
+          ))}
         </div>
 
         {/* Render Members */}
-        {renderMembers()}
+        {members && (
+          <>
+            {activeTab === "core" &&
+              renderTeamSection("Core Team", members.coreTeam)}
+            {activeTab === "media" &&
+              renderTeamSection("Media Team", members.mediaTeam)}
+            {activeTab === "pr" && renderTeamSection("PR Team", members.prTeam)}
+            {activeTab === "tech" &&
+              renderTeamSection("Tech Team", members.techTeam)}
+          </>
+        )}
       </div>
     </div>
   );

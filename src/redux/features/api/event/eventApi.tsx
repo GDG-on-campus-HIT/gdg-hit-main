@@ -1,0 +1,228 @@
+import { apiSlice } from "../../api/apiSlice";
+import { eventList, registrationList } from "./eventSlice";
+
+
+
+export const eventApi = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    event: builder.query({
+        query: () => ({
+          url: "events",
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+            dispatch(
+              eventList({
+                event: result.data.events,
+              })
+            );
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+      eventByID: builder.query({
+        query: (id:string) => ({
+          url: `events/${id}`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            const result = await queryFulfilled;
+            return result.data.event
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      eventAdd: builder.mutation({
+        query: (data:any) => ({
+          url: "events",
+          method: "POST",
+          body: data,
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      eventDelete: builder.mutation({
+        query: (id: string) => ({
+          url: `events/${id}`,
+          method: "DELETE",
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      eventUpdate: builder.mutation({
+        query: ({ id, ...data }: { id: string; [key: string]: any }) => ({
+          url: `events/${id}`,
+          method: "PUT",
+          body: data,
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      eventRegister: builder.mutation({
+        query: (data:any) => ({
+          url: "event-registrations",
+          method: "POST",
+          body: data,
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      eventGalleryAdd: builder.mutation({
+        query: ({ id, galleryImages }: { id: string; [key: string]: any }) => ({
+          url: `event-gallery/${id}`,
+          method: "POST",
+          body: {galleryImages},
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      eventGalleryUpdate: builder.mutation({
+        query: ({
+          id,
+          galleryImages, // Base64 image data to be added
+          imagesToRemove, // IDs of images to be removed
+        }: {
+          id: string;
+          galleryImages?: string[];
+          imagesToRemove?: string[];
+        }) => ({
+          url: `event-gallery/${id}`,
+          method: "PUT",
+          body: { galleryImages, imagesToRemove },
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+            // Optionally, handle any actions or state updates upon success
+          } catch (error: any) {
+            console.log(error);
+            // Optionally, handle errors or state updates upon failure
+          }
+        },
+      }),
+
+      // admin only
+      registrationAllEvent: builder.query({
+        query: () => ({
+          url: `all-event-registrations`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled,dispatch }) {
+          try {
+            const result = await queryFulfilled;
+            dispatch(
+              registrationList({
+                registration: result.data.registrations,
+              })
+            );
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      registrationByEventId: builder.query({
+        query: (id:string) => ({
+          url: `events/${id}/registrations`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            const result = await queryFulfilled;
+            return result.data.registrations
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      registrationUpdate: builder.mutation({
+        query: ({ id, ...data }: { id: string; [key: string]: any }) => ({
+          url: `event-registrations/${id}`,
+          method: "PUT",
+          body: data,
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      checkIfEventRegistered: builder.query({
+        query: (event:any) => ({
+          url: `event-register-check/${event}`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            const result = await queryFulfilled;
+            return result.data.registrations
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+  }),
+});
+
+export const {
+  useEventQuery,
+  useEventByIDQuery,
+  useEventAddMutation,
+  useEventDeleteMutation,
+  useEventUpdateMutation,
+  useEventRegisterMutation,
+  useEventGalleryAddMutation,
+  useEventGalleryUpdateMutation,
+
+  useRegistrationAllEventQuery,
+  useRegistrationByEventIdQuery,
+  useRegistrationUpdateMutation,
+  useCheckIfEventRegisteredQuery
+} = eventApi;

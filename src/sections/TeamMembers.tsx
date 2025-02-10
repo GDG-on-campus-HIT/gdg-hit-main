@@ -1,83 +1,59 @@
+"use client";
 import MemberCard from "@/components/MemberCard";
-import React from "react";
+import { useMemberQuery } from "@/redux/features/api/member/memberApi";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
+interface ProfileImage {
+  public_id: string;
+  url: string;
+}
 
 interface Member {
-  role: string;
+  profile_image: ProfileImage;
+  _id: string;
   name: string;
-  color: string;
-  imageSrc: string;
-  bgSrc: string;
-  bio?: string;
-  social?: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-  };
+  department: string;
+  designation: string;
+  email_id: string;
+  batch: string;
+  bio: string;
+  github_url: string;
+  linkedin_url: string;
+  leader: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 function TeamMembers() {
-  const members: Member[] = [
-    {
-      role: "GDSC LEAD",
-      name: "Rishabh Kumar",
-      color: "#7E9EFF",
-      bgSrc: "/assets/RectangleBlue.svg",
-      imageSrc: "/assets/members/member2.png",
-      bio: "Google Developer Student Clubs Lead, passionate about building tech communities.",
-      social: {
-        github: "https://github.com/rishabhkumar",
-        linkedin: "https://linkedin.com/in/rishabhkumar",
-        twitter: "https://twitter.com/rishabhkumar",
-      },
-    },
-    {
-      role: "WEB DEVELOPMENT LEAD",
-      name: "Deepak Kumar",
-      color: "#79F77D",
-      bgSrc: "/assets/RectangleGreen.svg",
-      imageSrc: "/assets/members/deepak-kumar.png",
-      bio: "Web Development Lead with expertise in modern frontend frameworks and responsive design.",
-      social: {
-        github: "https://github.com/deepakkumar",
-        linkedin: "https://linkedin.com/in/deepakkumar",
-        twitter: "https://twitter.com/deepakkumar",
-      },
-    },
-    {
-      role: "APP DEVELOPMENT LEAD",
-      name: "Chinmay Verma",
-      color: "#FF5752",
-      bgSrc: "/assets/RectangleRed.svg",
-      imageSrc: "/assets/members/member3.png",
-      bio: "Mobile App Development Lead specializing in cross-platform development.",
-      social: {
-        github: "https://github.com/chinmayverma",
-        linkedin: "https://linkedin.com/in/chinmayverma",
-        twitter: "https://twitter.com/chinmayverma",
-      },
-    },
-    {
-      role: "WEB DEVELOPMENT LEAD",
-      name: "Deepak Kumar",
-      color: "#79F77D",
-      bgSrc: "/assets/RectangleYellow.svg",
-      imageSrc: "/assets/members/member4.png",
-      bio: "Web Development Lead with expertise in modern frontend frameworks and responsive design.",
-      social: {
-        github: "https://github.com/deepakkumar",
-        linkedin: "https://linkedin.com/in/deepakkumar",
-        twitter: "https://twitter.com/deepakkumar",
-      },
-    },
-  ];
+  const { isLoading, isError, data } = useMemberQuery({});
+  const { members } = useSelector((state: any) => state.member);
+  const [isClient, setIsClient] = useState(false); // Track client-side rendering
+
+  useEffect(() => {
+    setIsClient(true); // Set to true after component mounts on the client
+  }, []);
+
+  if (!isClient) {
+    return null; // Return nothing during SSR to avoid hydration mismatch
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Show loading state while data is being fetched
+  }
+
+  if (isError) {
+    return <div>Error loading members</div>; // Show error state if the query fails
+  }
 
   return (
     <section className="">
       <div className="max-container">
-        <div className=" mb-8">
+        <div className="mb-8">
           <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25]">
             The{" "}
-            <span className="from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
+            <span className="from-yellow-400 to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
               Faces
             </span>{" "}
             Behind
@@ -90,10 +66,17 @@ function TeamMembers() {
             learning.
           </p>
         </div>
-        <div className="grid grid-cols-4 gap-5 my-20 max-sm:my-5 max-sm:gap-10  max-md:grid-cols-3 max-sm:grid-cols-1 max-sm:p-4">
-          {members.map((item, index) => (
-            <MemberCard key={`${index} ${item.name}`} name={item.name} role={item.role} bio={item.bio || ""} imageSrc={item.imageSrc}/>
-          ))}
+        <div className="grid grid-cols-4 gap-5 my-20 max-sm:my-5 max-sm:gap-10 max-md:grid-cols-3 max-sm:grid-cols-1 max-sm:p-4">
+          {members &&
+            members.coreTeam.map((item: Member, index: number) => (
+              <MemberCard
+                key={`${index} ${item.name}`}
+                name={item.name}
+                role={item.designation}
+                bio={item.bio || ""}
+                imageSrc={item.profile_image.url}
+              />
+            ))}
         </div>
       </div>
     </section>

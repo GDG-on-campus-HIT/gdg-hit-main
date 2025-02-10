@@ -1,12 +1,24 @@
-export type EventCategory = 'upcoming' | 'past';
 
 export interface EventType {
-  id: string;
-  title: string;
+  eventBanner: {
+    public_id: string;
+    url: string;
+  };
+  _id: string;
+  name: string;
+  upiID: string;
   description: string;
-  date: string;
-  location: string;
-  category: EventCategory;
-  imageUrl: string;
-  registrationLink: string;
+  category: string;
+  registrationFee: string;
+  details: string;
+  venue: string;
+  eventDate: string;
+  eventTime: string;
+  is_upcoming: boolean;
+  registration_open: boolean;
+  faq: any[]; // Assuming FAQ items may vary in structure
+  gallery: any[]; // Assuming gallery can have different formats
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }

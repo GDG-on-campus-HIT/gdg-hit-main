@@ -1,8 +1,6 @@
 import React from "react";
 import { Package, Lightbulb, CloudLightning, Users } from "lucide-react";
 
-import MaxWidthWrapper from "@/hooks/MaxWidthWrapper";
-
 const ActivitiesComponent = () => {
   const activities = [
     {

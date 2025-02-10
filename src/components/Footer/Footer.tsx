@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Facebook, Twitter, Github } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from '../ModeToggle';
 
 const Footer = () => {
   const [theme, setTheme] = useState('light');
@@ -96,6 +97,7 @@ const Footer = () => {
                 </Link>
               ))}
             </div>
+            <ModeToggle/>
           </div>
         </div>
 

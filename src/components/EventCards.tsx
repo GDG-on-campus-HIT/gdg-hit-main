@@ -1,19 +1,17 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
-import { EventType, EventCategory } from "@/app/(root)/events/types";
+import { EventType } from "@/app/(root)/events/types";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 
 interface EventCardProps {
   event: EventType;
-  category: EventCategory;
   variant?: "default" | "compact";
   className?: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
   event,
-  category,
   variant = "default",
   className = "",
 }) => {
@@ -106,8 +104,8 @@ const EventCard: React.FC<EventCardProps> = ({
       {/* Image Section */}
       <div className={`relative ${imageClasses[variant]} overflow-hidden`}>
         <img
-          src={event.imageUrl}
-          alt={event.title}
+          src={event.eventBanner.url}
+          alt={event.name}
           className="w-full h-full object-cover brightness-100 dark:brightness-90"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40"></div>
@@ -126,7 +124,7 @@ const EventCard: React.FC<EventCardProps> = ({
           ${variant === "compact" ? "mb-2" : ""}
         `}
         >
-          {event.title}
+          {event.name}
         </h3>
 
         <div
@@ -138,20 +136,14 @@ const EventCard: React.FC<EventCardProps> = ({
             <Calendar
               className={`mr-3 w-5 h-5 text-blue-500 ${textSizeClasses[variant]}`}
             />
-            <span className={textSizeClasses[variant]}>
-              {new Date(event.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: variant === "default" ? "long" : "short",
-                day: "numeric",
-              })}
-            </span>
+            <span className={textSizeClasses[variant]}>{event.eventDate}</span>
           </div>
           <div className="flex items-center">
             <MapPin
               className={`mr-3 w-5 h-5 text-green-500 ${textSizeClasses[variant]}`}
             />
             <span className={`${textSizeClasses[variant]} truncate`}>
-              {event.location}
+              {event.venue}
             </span>
           </div>
         </div>
