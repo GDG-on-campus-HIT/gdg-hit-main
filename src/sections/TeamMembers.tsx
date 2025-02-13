@@ -61,9 +61,7 @@ function TeamMembers() {
             GDG HIT
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-            A student-led community exploring Google Developer technologies,
-            fostering innovation, and empowering students through hands-on
-            learning.
+          Get to know the passionate leaders driving GDG HIT, fostering innovation, collaboration, and growth within our tech community.
           </p>
         </div>
         <div className="grid grid-cols-4 gap-5 my-20 max-sm:my-5 max-sm:gap-10 max-md:grid-cols-3 max-sm:grid-cols-1 max-sm:p-4">

@@ -13,9 +13,7 @@ function Testimonials() {
             </span>
           </h2>
           <p className="max-w-2xl text-center mx-auto text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-            A student-led community exploring Google Developer technologies,
-            fostering innovation, and empowering students through hands-on
-            learning.
+          Hear from our members about their experiences, growth, and the impact GDG HIT has had on their tech journey.
           </p>
         </div>
       </div>

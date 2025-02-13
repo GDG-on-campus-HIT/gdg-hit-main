@@ -70,9 +70,7 @@ const ActivitiesComponent = () => {
             </span>
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-            A student-led community exploring Google Developer technologies,
-            fostering innovation, and empowering students through hands-on
-            learning.
+          Engaging workshops, coding challenges, mentorship programs, and collaborative projects to enhance skills and innovation.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

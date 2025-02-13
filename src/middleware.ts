@@ -128,7 +128,5 @@ export const config = {
     "/admin/:path*",
     "/events/:id/register",
     "/profile",
-    "/about-us",
-    "/contact-us"
   ],
 };

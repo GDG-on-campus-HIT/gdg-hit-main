@@ -1,6 +1,7 @@
 import PrimaryButton from "@/components/PrimaryButton";
 import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
 import { Spotlight } from "@/components/ui/spotlight";
+import Link from "next/link";
 import React from "react";
 
 export function HeroSection() {
@@ -37,12 +38,17 @@ export function HeroSection() {
           shape the future of technology.
         </p>
         <div className="w-full flex items-start justify-center space-x-5">
-        <PrimaryButton>Join Now</PrimaryButton>
+          <Link href="/recruitment/form" >
+          <PrimaryButton>Join Now</PrimaryButton>
+          </Link>
 
+
+          <Link href="/about-us" >
           <button className="px-8 py-2 rounded-full relative gradient-card text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
             <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
             <span className="relative z-20 font-medium">Learn more</span>
           </button>
+          </Link>
         </div>
         <InfiniteMovingCardImg
           items={testimonials}
@@ -86,5 +92,4 @@ const testimonials = [
   {
     image: "/img/group-img2.jpeg",
   },
-
 ];

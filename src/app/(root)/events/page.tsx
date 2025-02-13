@@ -24,9 +24,7 @@ export default function EventsPage() {
             Through Our Events
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed  mx-auto text-center">
-            A student-led community exploring Google Developer technologies,
-            fostering innovation, and empowering students through hands-on
-            learning.
+          Explore workshops, hackathons, speaker sessions, and tech meetups designed to enhance learning, collaboration, and innovation.
           </p>
         </div>
 

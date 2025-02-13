@@ -51,9 +51,7 @@ const About = () => {
             </span>
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-            A student-led community exploring Google Developer technologies,
-            fostering innovation, and empowering students through hands-on
-            learning.
+          Learn how GDG HIT fosters a vibrant tech community, empowering students through innovation, collaboration, and real-world learning opportunities.
           </p>
         </div>
 

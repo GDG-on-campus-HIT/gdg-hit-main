@@ -10,7 +10,7 @@ type Props = {
 
 export default function MemberCard({ name, imageSrc, role, bio }: Props) {
   return (
-    <div className="w-full ">
+    <div className=" min-w-[300px] w-[300px]">
       <div className="w-full relative aspect-square overflow-hidden items-center flex justify-center ">
         <img
           src={imageSrc}

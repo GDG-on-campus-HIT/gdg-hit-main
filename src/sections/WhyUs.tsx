@@ -55,9 +55,7 @@ const WhyChooseSection = () => {
             Why <span className="from-blue-400  to-blue-600 bg-gradient-to-b bg-clip-text text-transparent"> GDG HIT</span> Stands<br/>Above the Rest
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-            A student-led community exploring Google Developer technologies,
-            fostering innovation, and empowering students through hands-on
-            learning.
+          Discover what makes GDG HIT the ideal tech community, offering hands-on learning, industry exposure, and a network of like-minded innovators.
           </p>
         </div>
 
