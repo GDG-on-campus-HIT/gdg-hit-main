@@ -5,6 +5,7 @@ import { Providers } from "./Provider";
 import { ThemeProvider } from "@/hooks/theme-provider";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "@/components/Loader/Loader";
+import { ToastContainer } from "react-toastify";
 
 const poppins = Poppins({
   weight: ["400", "600"],
@@ -29,6 +30,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Custom>{children}</Custom>
+            <ToastContainer />
           </ThemeProvider>
         </Providers>
       </body>

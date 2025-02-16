@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { EventType } from "@/app/(root)/events/types";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface EventCardProps {
   event: EventType;
@@ -15,7 +16,7 @@ const EventCard: React.FC<EventCardProps> = ({
   variant = "default",
   className = "",
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -93,12 +94,13 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
+    <Link href="d"  ref={cardRef}
+    style={{ transform: "translate3d(0, 0, 0)" }}>
     <div
-      ref={cardRef}
-      style={{ transform: "translate3d(0, 0, 0)" }}
+     
       className={`
         ${variantClasses[variant]} 
-        ${className} border-[1px] border-white/5
+        ${className} border-[1px] border-white/5 cursor-pointer
       `}
     >
       {/* Image Section */}
@@ -211,6 +213,7 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
     </div>
+    </Link>
   );
 };
 

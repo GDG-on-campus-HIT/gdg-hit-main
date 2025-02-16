@@ -73,6 +73,7 @@ function TeamMembers() {
                 role={item.designation}
                 bio={item.bio || ""}
                 imageSrc={item.profile_image.url}
+                linkedin={item.linkedin_url}
               />
             ))}
         </div>

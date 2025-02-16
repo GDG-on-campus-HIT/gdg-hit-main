@@ -15,6 +15,8 @@ import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ScrollProgress } from "./magicui/scroll-progress";
+import UserAuth from "@/hooks/userAuth";
+import ProfileDropDown from "./ProfileDropDown";
 // import ProfileDropDown from "./ProfileDropDown";
 // import UserAuth from "@/hooks/userAuth";
 
@@ -45,7 +47,7 @@ const NavBar = () => {
   const pathname = usePathname();
   const { theme } = useTheme();
 
-  //  const isAuth = UserAuth()
+  const isAuth = UserAuth()
   return (
     <nav className="w-full top-0 z-50 backdrop-blur-lg  fixed">
       <ScrollProgress className="top-[65px]" />
@@ -96,12 +98,17 @@ const NavBar = () => {
             :
             <ProfileDropDown />
             } */}
+            {
+              !isAuth ? 
             <Link href="/login">
               <button className="px-8 py-2 rounded-full relative gradient-card text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
                 <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                 <span className="relative z-20 font-medium">Login</span>
               </button>
             </Link>
+            :
+            <ProfileDropDown />
+            }
               <SheetTrigger className="lg:hidden  text-gray-700  border-none dark:hover:text-white dark:text-gray-400 p-2 rounded-md">
                 <BiMenu size={25} className="" />
               </SheetTrigger>

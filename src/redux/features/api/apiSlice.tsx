@@ -120,10 +120,42 @@ export const apiSlice = createApi({
       },
     }),
 
+
+    recruitmentFormSubmission: builder.mutation({
+      query: (data:any) => ({
+        url: "recruitmentFormSubmission",
+        method: "POST",
+        body: data,
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+        } catch (error: any) {
+          console.log(error);
+        }
+      },
+    }),
+
+
+    isAlreadyRegistered: builder.query({
+      query: () => ({
+        url: "isAlreadyRegistered",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+        } catch (error: any) {
+          console.log(error);
+        }
+      },
+    }),
    
 
     
   }),
 });
 
-export const { useLoadUserQuery, useLoadTestimonialQuery, useContactUsMutation } = apiSlice;
+export const { useLoadUserQuery, useLoadTestimonialQuery, useContactUsMutation , useRecruitmentFormSubmissionMutation, useIsAlreadyRegisteredQuery} = apiSlice;

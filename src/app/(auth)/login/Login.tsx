@@ -126,8 +126,8 @@ const LoginComponent = () => {
           </div>
 
           {/* Login Form - Adjusted spacing for mobile */}
-          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-            {/* Email Input */}
+          {/* <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+           
             <div
               className={`
                 relative transition-all duration-300
@@ -159,7 +159,7 @@ const LoginComponent = () => {
               </div>
             </div>
 
-            {/* Password Input */}
+          
             <div
               className={`
                 relative transition-all duration-300
@@ -193,7 +193,7 @@ const LoginComponent = () => {
               </div>
             </div>
 
-            {/* Login Button - Adjusted padding and text size */}
+            
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-green-400/80 to-blue-500/80 text-white rounded-xl py-2.5 md:py-3 px-4 text-sm md:text-base font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98] md:hover:scale-[1.02] backdrop-blur-sm"
@@ -203,10 +203,10 @@ const LoginComponent = () => {
                 Sign In
               </span>
             </button>
-          </form>
+          </form> */}
 
           {/* Divider - Adjusted margins */}
-          <div className="relative my-6 md:my-8">
+          {/* <div className="relative my-6 md:my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-800"></div>
             </div>
@@ -215,7 +215,7 @@ const LoginComponent = () => {
                 or continue with
               </span>
             </div>
-          </div>
+          </div> */}
 
           {/* Google Login - Adjusted padding and text size */}
           <button
@@ -250,7 +250,7 @@ const LoginComponent = () => {
           </button>
 
           {/* Footer Links - Adjusted text size and spacing */}
-          <div className="mt-6 md:mt-8 text-center text-xs md:text-sm">
+          {/* <div className="mt-6 md:mt-8 text-center text-xs md:text-sm">
             <a
               href="#"
               className="text-gray-500 hover:text-gray-400 transition-colors"
@@ -264,7 +264,7 @@ const LoginComponent = () => {
             >
               Sign up for an account
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

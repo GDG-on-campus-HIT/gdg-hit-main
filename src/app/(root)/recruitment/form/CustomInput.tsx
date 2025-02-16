@@ -11,9 +11,10 @@ type Props = {
   error?: string; 
   touched?: boolean; 
   placeholder:string;
+  disabled?:boolean
 };
 
-function CustomInput({ handleChange, value, error, touched,type,id,label,placeholder }: Props) {
+function CustomInput({ handleChange, value, error, touched,type,id,label,placeholder,disabled }: Props) {
   return (
     <div className="my-3">
       <Label
@@ -27,6 +28,7 @@ function CustomInput({ handleChange, value, error, touched,type,id,label,placeho
         onChange={handleChange}
         value={value}
         id={id}
+        disabled={disabled}
         placeholder={placeholder}
         className={`${
           error && touched ? "border-red-500 dark:border-red-600" : ""

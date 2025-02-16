@@ -6,7 +6,9 @@ export const step1Schema = Yup.object().shape({
   email: Yup.string()
     .email("Please enter a valid email")
     .required("Please enter your email"),
-  phoneNumber: Yup.number().required("Please enter your phone number"),
+    phoneNumber: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
+    .required("Please enter your phone number"),
   rollNumber: Yup.string().required("Please enter your roll number"),
   branch: Yup.string().required("Please select your branch"),
   branchYear: Yup.string().required("Please select your year"),
@@ -31,6 +33,15 @@ export const getStep3Schema = (selectedPositions: string[]) => {
       projects: Yup.string().nullable(),
       learning: Yup.string().nullable(),
       featureSuggestion: Yup.string().nullable(),
+    }),
+    machineLearning: Yup.object().shape({
+      technologies: Yup.string().nullable(),
+      projects: Yup.string().nullable(),
+      learning: Yup.string().nullable(),
+    }),
+    techMember: Yup.object().shape({
+      technologies: Yup.string().nullable(),
+      learning: Yup.string().nullable(),
     }),
 
     publicRelations: Yup.object().shape({
@@ -78,5 +89,5 @@ export const getStep3Schema = (selectedPositions: string[]) => {
 export const step4Schema = Yup.object().shape({
   linkedIn: Yup.string().url("Please enter a valid LinkedIn URL").nullable(),
   portfolio: Yup.string().url("Please enter a valid portfolio URL").nullable(),
-  previousClubs: Yup.string().required("fgfgfg"),
+  previousClubs: Yup.string().required("This field is required!"),
 });

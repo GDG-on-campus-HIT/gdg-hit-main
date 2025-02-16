@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { Button } from "@/components/ui/button";
 import CustomInput from "./CustomInput";
@@ -9,16 +9,72 @@ import { getStep3Schema, step1Schema, step4Schema } from "./schema";
 import CustomTextArea from "./CustomTextArea";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { branch, position, year } from "./data";
+import {
+  useIsAlreadyRegisteredQuery,
+  useRecruitmentFormSubmissionMutation,
+} from "@/redux/features/api/apiSlice";
+import { Bounce, toast } from "react-toastify";
+import { useTheme } from "next-themes";
+import { useSelector } from "react-redux";
+import Loader from "@/components/Loader/Loader";
+import { ImSpinner2 } from "react-icons/im";
 
 const Page = () => {
+  const {
+    data: dataRecruitmentRegisterCheck,
+    isLoading: isdataRecruitmentLoading,
+    refetch: refetchRecruitmentRegisterCheck 
+  } = useIsAlreadyRegisteredQuery({});
+
+  const { theme } = useTheme();
   const [step, setStep] = useState(1);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+  const { user } = useSelector((state: any) => state.auth);
+  const [
+    recruitmentFormSubmission,
+    { data, isSuccess, error, isLoading: isSubmissionLoading },
+  ] = useRecruitmentFormSubmissionMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data?.message || "submitted successfully!";
+      toast.success(message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: theme,
+        transition: Bounce,
+      });
+      refetchRecruitmentRegisterCheck();
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        console.log(errorData.data.message);
+        toast.error(errorData.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          transition: Bounce,
+          theme: theme,
+        });
+      }
+    }
+  }, [isSuccess, error]);
 
   const formik = useFormik({
     initialValues: {
       // Step 1
       fullName: "",
-      email: "",
+      email: (user?.email as string) || "",
       phoneNumber: "",
       rollNumber: "",
       branch: "",
@@ -37,6 +93,15 @@ const Page = () => {
         projects: "",
         learning: "",
         featureSuggestion: "",
+      },
+      machineLearning: {
+        technologies: "",
+        projects: "",
+        learning: "",
+      },
+      techMember: {
+        technologies: "",
+        learning: "",
       },
       publicRelations: {
         mockPost: "",
@@ -77,6 +142,34 @@ const Page = () => {
         : step4Schema,
     onSubmit: async (values) => {
       console.log("Submitted Data:", values);
+      const data = {
+        generalInfo: {
+          fullName: values.fullName,
+          email: values.email,
+          phoneNumber: values.phoneNumber,
+          rollNumber: values.rollNumber,
+          branch: values.branch,
+          branchYear: values.branchYear,
+          positions: values.positions,
+        },
+        roleSpecific: {
+          webDeveloper: values.webDeveloper,
+          appDeveloper: values.appDeveloper,
+          machineLearning: values.machineLearning,
+          techMember: values.techMember,
+          publicRelations: values.publicRelations,
+          videoEditor: values.videoEditor,
+          contentWriter: values.contentWriter,
+          graphicsDesigner: values.graphicsDesigner,
+          photographer: values.photographer,
+        },
+        finalInfo: {
+          linkedIn: values.linkedIn,
+          portfolio: values.portfolio,
+          previousClubs: values.previousClubs,
+        },
+      };
+      await recruitmentFormSubmission(data);
     },
   });
 
@@ -112,6 +205,31 @@ const Page = () => {
       setStep(step - 1);
     }
   };
+
+  if (isdataRecruitmentLoading) {
+    return <Loader />;
+  }
+
+  if (dataRecruitmentRegisterCheck?.isRegistered) {
+    return (
+      <div className="min-h-screen w-full relative">
+        <div className="container mx-auto px-4 py-20">
+          <div className="max-w-4xl mx-auto shadow-lg rounded-lg  gradient-card">
+            <div className="p-6 md:p-8">
+              <h2 className="text-2xl font-semibold mb-4">
+                🎉 Application Submitted!
+              </h2>
+              <p>Your application has been submitted successfully. ✅</p>
+              <p>
+                We will review your responses and get back to you soon. Stay
+                tuned for updates! 🚀
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full relative">
@@ -167,6 +285,7 @@ const Page = () => {
                       value={values.email}
                       error={errors.email}
                       touched={touched.email}
+                      disabled={true}
                     />
                   </div>
 
@@ -331,6 +450,73 @@ const Page = () => {
                         value={values.appDeveloper.featureSuggestion}
                         error={errors.appDeveloper?.featureSuggestion}
                         touched={touched.appDeveloper?.featureSuggestion}
+                        rows={2}
+                      />
+                    </>
+                  )}
+
+                  {selectedPositions.includes("machineLearning") && (
+                    <>
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
+                        Machine Learning
+                      </h2>
+                      <CustomTextArea
+                        label="What ML frameworks and libraries do you use most often?"
+                        id="machineLearning.technologies"
+                        placeholder="e.g., TensorFlow, PyTorch, Scikit-Learn, Keras, etc."
+                        handleChange={handleChange}
+                        value={values.machineLearning.technologies}
+                        error={errors.machineLearning?.technologies}
+                        touched={touched.machineLearning?.technologies}
+                        rows={2}
+                      />
+
+                      <CustomTextArea
+                        label="Have you worked on any personal ML projects?"
+                        id="machineLearning.projects"
+                        placeholder="Please share links if available"
+                        handleChange={handleChange}
+                        value={values.machineLearning.projects}
+                        error={errors.machineLearning?.projects}
+                        touched={touched.machineLearning?.projects}
+                        rows={2}
+                      />
+                      <CustomTextArea
+                        label="What’s an ML concept or tool you are currently learning?"
+                        id="machineLearning.learning"
+                        placeholder="Share what you are currently learing about"
+                        handleChange={handleChange}
+                        value={values.machineLearning.learning}
+                        error={errors.machineLearning?.learning}
+                        touched={touched.machineLearning?.learning}
+                        rows={2}
+                      />
+                    </>
+                  )}
+
+                  {selectedPositions.includes("techMember") && (
+                    <>
+                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
+                        Tech Member
+                      </h2>
+                      <CustomTextArea
+                        label="What technologies and programming languages are you most comfortable with?"
+                        id="techMember.technologies"
+                        placeholder="e.g., Java, Python, C++, etc."
+                        handleChange={handleChange}
+                        value={values.techMember.technologies}
+                        error={errors.techMember?.technologies}
+                        touched={touched.techMember?.technologies}
+                        rows={2}
+                      />
+                      <CustomTextArea
+                        label="What’s a new technology or concept you are currently learning?"
+                        id="techMember.learning"
+                        placeholder="Share what you are currently learing about"
+                        handleChange={handleChange}
+                        value={values.techMember.learning}
+                        error={errors.techMember?.learning}
+                        touched={touched.techMember?.learning}
                         rows={2}
                       />
                     </>
@@ -523,7 +709,7 @@ const Page = () => {
                     label="LinkedIn URL"
                     id="linkedIn"
                     type="text"
-                    placeholder=""
+                    placeholder="Share your linkedin profile link"
                     handleChange={handleChange}
                     value={values.linkedIn}
                     error={errors.linkedIn}
@@ -534,7 +720,7 @@ const Page = () => {
                     label="Portfolio URL"
                     id="portfolio"
                     type="text"
-                    placeholder=""
+                    placeholder="Share your portfolio lin, if available"
                     handleChange={handleChange}
                     value={values.portfolio}
                     error={errors.portfolio}
@@ -545,7 +731,7 @@ const Page = () => {
                     label="Previous Clubs"
                     id="previousClubs"
                     type="text"
-                    placeholder=""
+                    placeholder="Enter the name of your current or previous tech club."
                     handleChange={handleChange}
                     value={values.previousClubs}
                     error={errors.previousClubs}
@@ -576,9 +762,13 @@ const Page = () => {
                 ) : (
                   <Button
                     type="submit"
+                    disabled={isSubmissionLoading}
                     className="font-semibold text-base dark:text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 transition-colors duration-300 ease-in-out mt-2"
                   >
-                    Submit
+                    {isSubmissionLoading && (
+                      <ImSpinner2 className="mr-2 h-4 w-4 animate-spin text-primary-foreground" />
+                    )}
+                    {isSubmissionLoading ? "Submitting..." : "Submit"}
                   </Button>
                 )}
               </div>

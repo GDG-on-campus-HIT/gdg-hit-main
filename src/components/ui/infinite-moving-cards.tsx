@@ -12,10 +12,9 @@ export const InfiniteMovingCards = ({
   className,
 }: {
   items: {
-    quote: string;
+    message: string;
     name: string;
-    title: string;
-    subtitle:string;
+    department:string;
   }[];
   direction?: "left" | "right";
   speed?: "fast" | "normal" | "slow";
@@ -103,10 +102,10 @@ export const InfiniteMovingCards = ({
                 <figcaption className="text-sm font-medium dark:text-white">
                   {item.name}
                 </figcaption>
-                <p className="text-xs font-medium dark:text-white/40">{item.subtitle}</p>
+                <p className="text-xs font-medium dark:text-white/40">{item.department}</p>
               </div>
             </div>
-            <blockquote className="mt-2 text-sm">{item.quote}</blockquote>
+            <blockquote className="mt-2 text-sm">{item.message}</blockquote>
           </li>
         ))}
       </ul>

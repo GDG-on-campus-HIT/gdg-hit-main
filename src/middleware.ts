@@ -68,8 +68,9 @@ export async function middleware(request: NextRequest) {
               sameSite: "none",
               secure: true,
 
-              // only for production
-              // domain: "gdghit.site",
+              ...(process.env.NODE_ENV === "production" && {
+                domain: "gdghit.site",
+              }),
             });
 
             nextResponse.cookies.set("refresh_token", data.refreshToken, {
@@ -81,8 +82,9 @@ export async function middleware(request: NextRequest) {
               sameSite: "none",
               secure: true,
 
-              // only for production
-              // domain: "gdghit.site",
+              ...(process.env.NODE_ENV === "production" && {
+                domain: "gdghit.site",
+              }),
             });
 
             if (authPaths.includes(path)) {
@@ -111,8 +113,8 @@ export async function middleware(request: NextRequest) {
   } else if (!isAuthenticated && !authPaths.includes(path)) {
     const signinUrl = new URL("/login", request.url);
     signinUrl.searchParams.set("redirectTo", path); // Store the previous path
-    
-  console.log("Redirecting to login with:", signinUrl.toString()); // Debugging
+
+    console.log("Redirecting to login with:", signinUrl.toString()); // Debugging
     return NextResponse.redirect(signinUrl);
   }
 
@@ -128,5 +130,6 @@ export const config = {
     "/admin/:path*",
     "/events/:id/register",
     "/profile",
+    "/recruitment/form",
   ],
 };

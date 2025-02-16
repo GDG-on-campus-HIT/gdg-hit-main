@@ -57,6 +57,7 @@ const MembersPage: React.FC = () => {
           role={member.designation}
           bio={member.bio}
           imageSrc={member.profile_image.url}
+          linkedin={member.linkedin_url}
         />
       ))}
     </div>
