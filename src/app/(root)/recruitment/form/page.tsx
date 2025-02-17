@@ -106,7 +106,6 @@ const Page = () => {
       publicRelations: {
         mockPost: "",
         experience: "",
-        preferredPlatforms: "",
       },
       videoEditor: {
         tools: "",
@@ -540,7 +539,7 @@ const Page = () => {
 
                       <CustomTextArea
                         label="Do you have experience in handling social media, outreach, or event management?"
-                        id="publicRelations.experience "
+                        id="publicRelations.experience"
                         placeholder=""
                         handleChange={handleChange}
                         value={values.publicRelations.experience}
@@ -569,7 +568,7 @@ const Page = () => {
 
                       <CustomTextArea
                         label="Provide a link to a video you've edited"
-                        id="videoEditor.videoLink "
+                        id="videoEditor.videoLink"
                         placeholder=""
                         handleChange={handleChange}
                         value={values.videoEditor.videoLink}
@@ -580,12 +579,12 @@ const Page = () => {
 
                       <CustomTextArea
                         label="Are you familiar with color grading, motion graphics, or animations?"
-                        id="videoEditor.experience "
+                        id="videoEditor.motionGraphics"
                         placeholder=""
                         handleChange={handleChange}
-                        value={values.videoEditor.videoLink}
-                        error={errors.videoEditor?.videoLink}
-                        touched={touched.videoEditor?.videoLink}
+                        value={values.videoEditor.motionGraphics}
+                        error={errors.videoEditor?.motionGraphics}
+                        touched={touched.videoEditor?.motionGraphics}
                         rows={2}
                       />
                     </>

@@ -45,14 +45,13 @@ export const getStep3Schema = (selectedPositions: string[]) => {
     }),
 
     publicRelations: Yup.object().shape({
-      mockPost: Yup.string().max(150, "Post should not exceed 150 words"),
+      mockPost: Yup.string().nullable(),
       experience : Yup.string().nullable(),
-      preferredPlatforms: Yup.string().nullable(),
     }),
     videoEditor: Yup.object().shape({
       tools: Yup.string().nullable(),
-      videoLink: Yup.string().url("Please enter a valid video URL"),
-      motionGraphics: Yup.boolean(),
+      videoLink: Yup.string().nullable(),
+      motionGraphics: Yup.string().nullable(),
     }),
     contentWriter: Yup.object().shape({
       hasWrittenBefore: Yup.string().nullable(),
