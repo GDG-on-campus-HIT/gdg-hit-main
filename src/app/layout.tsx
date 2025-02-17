@@ -6,8 +6,6 @@ import { ThemeProvider } from "@/hooks/theme-provider";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "@/components/Loader/Loader";
 import { ToastContainer } from "react-toastify";
-import { useTheme } from "next-themes";
-import { useEffect } from "react";
 
 const poppins = Poppins({
   weight: ["400", "600"],
@@ -21,20 +19,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { setTheme } = useTheme();
-  useEffect(() => {
-    setTheme("dark");
-  }, [])
+
   
   return (
-    <html lang="en" className="scroll-smooth dark" >
+    <html lang="en" className="scroll-smooth" >
       <body className={poppins.className}>
         <Providers>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+            defaultTheme="dark"
           >
             <Custom>{children}</Custom>
             <ToastContainer />
