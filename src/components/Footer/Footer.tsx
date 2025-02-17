@@ -1,18 +1,10 @@
-"use client";
-import { useState, useEffect } from 'react';
+
 import { Facebook, Twitter, Github } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from '../ModeToggle';
 
 const Footer = () => {
-  const [theme, setTheme] = useState('light');
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-  }, []);
-
+  
   const socialIcons = [
     { Icon: Facebook, href: "https://facebook.com" },
     { Icon: Twitter, href: "https://twitter.com" },

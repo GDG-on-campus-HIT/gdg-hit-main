@@ -23,7 +23,7 @@ export default function RootLayout({
 
   
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable}   min-h-screen `}>
         <Providers>
         <ThemeProvider

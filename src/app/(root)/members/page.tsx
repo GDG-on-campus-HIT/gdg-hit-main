@@ -42,11 +42,7 @@ const MembersPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"core" | "media" | "pr" | "tech">(
     "core"
   );
-  const [isClient, setIsClient] = useState(false); // Track client-side rendering
-
-  useEffect(() => {
-    setIsClient(true); // Set to true after component mounts on the client
-  }, []);
+ 
 
   const renderMemberCards = (members: Member[]) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -88,9 +84,6 @@ const MembersPage: React.FC = () => {
     </div>
   );
 
-  if (!isClient) {
-    return null; // Return nothing during SSR to avoid hydration mismatch
-  }
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading members</div>;
