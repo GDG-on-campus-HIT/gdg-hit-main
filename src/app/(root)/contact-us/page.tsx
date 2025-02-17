@@ -30,11 +30,11 @@ const ContactPage = () => {
           </div>
 
           <div className="space-x-4 text-gray-500 dark:text-gray-400">
-            <span>contact@yoursaas.ai</span>
+            <span>gdgoncamputhit@gmail.com</span>
             <span>•</span>
-            <span>+1 (800) 123 XX21</span>
-            <span>•</span>
-            <span>support@yoursaas.ai</span>
+            <span>+91 9508971070</span>
+            {/* <span>•</span>
+            <span>support@i</span> */}
           </div>
 
           {/* Map section - hidden on mobile, visible from md breakpoint */}
