@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${baseUrl}/images/recruitment-og-image.jpg`, // Path to your recruitment-specific Open Graph image
+        url: `${baseUrl}/img/recruitment-og-image.jpg`, // Path to your recruitment-specific Open Graph image
         width: 1200,
         height: 630,
         alt: "Join GDG On Campus HIT - Recruitment",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Join GDG On Campus HIT - Recruitment",
     description:
       "Become a part of the GDG On Campus HIT community! Explore opportunities to contribute, learn, and grow with us. Apply now to join our team of tech enthusiasts.",
-    images: [`${baseUrl}/images/recruitment-og-image.jpg`], // Path to the image for Twitter
+    images: [`${baseUrl}/img/recruitment-og-image.jpg`], // Path to the image for Twitter
   },
   // Additional meta tags
   robots: "index, follow",
