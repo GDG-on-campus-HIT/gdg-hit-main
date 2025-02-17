@@ -37,9 +37,10 @@ export function HeroSection() {
           enthusiasts. Experience the power of Google Developer technologies and
           shape the future of technology.
         </p>
+        <p className="text-lg text-blue-500 text-center my-4">We are recruiting!</p>
         <div className="w-full flex items-start justify-center space-x-5">
           <Link href="/recruitment/form" >
-          <PrimaryButton>Join Now</PrimaryButton>
+          <PrimaryButton>Apply Now</PrimaryButton>
           </Link>
 
 
@@ -66,30 +67,18 @@ const testimonials = [
     image: "/img/group-img1.jpeg",
   },
   {
-    image: "/img/group-img2.jpeg",
+    image: "/img/sliders/1.jpg",
   },
   {
-    image: "/img/group-img1.jpeg",
+    image: "/img/sliders/2.jpg",
   },
   {
-    image: "/img/group-img2.jpeg",
+    image: "/img/sliders/3.jpg",
   },
   {
-    image: "/img/group-img1.jpeg",
+    image: "/img/sliders/4.jpg",
   },
   {
-    image: "/img/group-img2.jpeg",
-  },
-  {
-    image: "/img/group-img1.jpeg",
-  },
-  {
-    image: "/img/group-img2.jpeg",
-  },
-  {
-    image: "/img/group-img1.jpeg",
-  },
-  {
-    image: "/img/group-img2.jpeg",
+    image: "/img/sliders/5.jpg",
   },
 ];

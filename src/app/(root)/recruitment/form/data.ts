@@ -10,6 +10,21 @@ export const position = [
   { label: "Photographer", value: "photographer" },
 ];
 
-export const year = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
+export const year = ["1st Year", "2nd Year"];
 
-export const branch = ["Computer Science", "Mechanical", "Electrical"];
+export const branch = [
+  "CSE",
+  "CSE-DS",
+  "CSE-CS",
+  "CSE-AIML",
+  "ECE",
+  "EE",
+  "CHE",
+  "AEIE",
+  "ME",
+  "IT",
+  "BT",
+  "AE",
+  "FT",
+  "Other",
+];

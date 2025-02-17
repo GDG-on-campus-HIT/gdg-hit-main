@@ -1,6 +1,8 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Calendar, Users, Mail } from 'lucide-react';
+import Link from 'next/link';
+import PrimaryButton from '@/components/PrimaryButton';
 
 
 const RecruitmentPage = () => {
@@ -32,22 +34,20 @@ const RecruitmentPage = () => {
           transition-all duration-500 hover:shadow-2xl">
           <div className=" mb-8">
           <h2 className="text-4xl max-lg:text-3xl max-md:text-2xl text-center white-gradient-text mb-3 leading-[1.25]">
-            Words from Our {" "}
-            <span className="from-blue-400  to-blue-600 bg-gradient-to-b bg-clip-text text-transparent">
-              Community
-            </span>
+          Join GDG On Campus HIT
+            
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-          Join us in building the future of technology at HIT. 
-            We&apos;re looking for passionate developers, designers, and tech enthusiasts.
+          Be a part of a vibrant community of tech enthusiasts, innovators, and future leaders. Together, we explore, learn, and build the future of technology.
           </p>
         </div>
+        <Link href="/recruitment/form" >
+          <PrimaryButton>Apply Now</PrimaryButton>
+          </Link>
           
 
-          {/* Info cards */}
-          <div className={`grid grid-cols-1 gap-4 md:grid-cols-3 transition-all duration-500
-            ${showCards ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-10'}`}>
-          </div>
+       
+          
         </div>
 
         
