@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import React from "react";
+
 import { useEventQuery } from "@/redux/features/api/event/eventApi";
 import { useSelector } from "react-redux";
 import EventCard from "@/components/EventCards";

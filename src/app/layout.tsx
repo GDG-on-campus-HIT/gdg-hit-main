@@ -1,16 +1,17 @@
-"use client";
+"use client"
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./Provider";
 import { ThemeProvider } from "@/hooks/theme-provider";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "@/components/Loader/Loader";
+import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 const poppins = Poppins({
-  weight: ["400", "600"],
   subsets: ["latin"],
-  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-Poppins",
 });
 
 
@@ -22,12 +23,14 @@ export default function RootLayout({
 
   
   return (
-    <html lang="en" className="scroll-smooth" >
-      <body className={poppins.className}>
+    <html lang="en">
+      <body className={`${poppins.variable}   min-h-screen `}>
         <Providers>
-          <ThemeProvider
+        <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
             <Custom>{children}</Custom>
             <ToastContainer />
