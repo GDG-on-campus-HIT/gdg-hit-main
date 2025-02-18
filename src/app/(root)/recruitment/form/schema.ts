@@ -23,50 +23,50 @@ export const step1Schema = Yup.object().shape({
 export const getStep3Schema = (selectedPositions: string[]) => {
   const roleSchemas: Record<string, Yup.ObjectSchema<any>> = {
     webDeveloper: Yup.object().shape({
-      technologies: Yup.string().nullable(),
-      projects: Yup.string().nullable(),
-      learning: Yup.string().nullable(),
-      featureSuggestion: Yup.string().nullable(),
+      technologies: Yup.string().required("This field is required!"),
+      projects: Yup.string().required("This field is required!"),
+      learning: Yup.string().required("This field is required!"),
+      featureSuggestion: Yup.string().required("This field is required!"),
     }),
     appDeveloper: Yup.object().shape({
-      technologies: Yup.string().nullable(),
-      projects: Yup.string().nullable(),
-      learning: Yup.string().nullable(),
-      featureSuggestion: Yup.string().nullable(),
+      technologies: Yup.string().required("This field is required!"),
+      projects: Yup.string().required("This field is required!"),
+      learning: Yup.string().required("This field is required!"),
+      featureSuggestion: Yup.string().required("This field is required!"),
     }),
     machineLearning: Yup.object().shape({
-      technologies: Yup.string().nullable(),
-      projects: Yup.string().nullable(),
-      learning: Yup.string().nullable(),
+      technologies: Yup.string().required("This field is required!"),
+      projects: Yup.string().required("This field is required!"),
+      learning: Yup.string().required("This field is required!"),
     }),
     techMember: Yup.object().shape({
-      technologies: Yup.string().nullable(),
-      learning: Yup.string().nullable(),
+      technologies: Yup.string().required("This field is required!"),
+      learning: Yup.string().required("This field is required!"),
     }),
 
     publicRelations: Yup.object().shape({
-      mockPost: Yup.string().nullable(),
-      experience : Yup.string().nullable(),
+      mockPost: Yup.string().required("This field is required!"),
+      experience : Yup.string().required("This field is required!"),
     }),
     videoEditor: Yup.object().shape({
-      tools: Yup.string().nullable(),
-      videoLink: Yup.string().nullable(),
-      motionGraphics: Yup.string().nullable(),
+      tools: Yup.string().required("This field is required!"),
+      videoLink: Yup.string().required("This field is required!"),
+      motionGraphics: Yup.string().required("This field is required!"),
     }),
     contentWriter: Yup.object().shape({
-      hasWrittenBefore: Yup.string().nullable(),
+      hasWrittenBefore: Yup.string().required("This field is required!"),
     }),
     graphicsDesigner: Yup.object().shape({
-      designTools:Yup.string().nullable(),
-      portfolioLink: Yup.string().nullable(),
-      socialMediaDesign: Yup.string().nullable(),
-      eventPosterConcept: Yup.string().nullable(),
+      designTools:Yup.string().required("This field is required!"),
+      portfolioLink: Yup.string().required("This field is required!"),
+      socialMediaDesign: Yup.string().required("This field is required!"),
+      eventPosterConcept: Yup.string().required("This field is required!"),
     }),
     photographer: Yup.object().shape({
-      photographyType: Yup.string().nullable(),
-      eventExperience: Yup.string().nullable(),
-      photographyPortfolio: Yup.string().nullable(),
-      cameraModel: Yup.string().nullable(),
+      photographyType: Yup.string().required("This field is required!"),
+      eventExperience: Yup.string().required("This field is required!"),
+      photographyPortfolio: Yup.string().required("This field is required!"),
+      cameraModel: Yup.string().required("This field is required!"),
     }),
   };
 
