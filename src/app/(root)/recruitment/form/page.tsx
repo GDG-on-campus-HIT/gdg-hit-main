@@ -119,7 +119,6 @@ const Page = () => {
         designTools: "",
         portfolioLink: "",
         socialMediaDesign: "",
-        eventPosterConcept: "",
       },
       photographer: {
         photographyType: "",

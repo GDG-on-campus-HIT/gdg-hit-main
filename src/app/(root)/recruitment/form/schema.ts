@@ -60,7 +60,6 @@ export const getStep3Schema = (selectedPositions: string[]) => {
       designTools:Yup.string().required("This field is required!"),
       portfolioLink: Yup.string().required("This field is required!"),
       socialMediaDesign: Yup.string().required("This field is required!"),
-      eventPosterConcept: Yup.string().required("This field is required!"),
     }),
     photographer: Yup.object().shape({
       photographyType: Yup.string().required("This field is required!"),

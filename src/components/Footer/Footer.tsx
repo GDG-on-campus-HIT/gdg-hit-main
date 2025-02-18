@@ -89,7 +89,7 @@ const Footer = () => {
                 </Link>
               ))}
             </div>
-            <ModeToggle/>
+            {/* <ModeToggle/> */}
           </div>
         </div>
 
