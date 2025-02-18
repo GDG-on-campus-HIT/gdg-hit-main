@@ -71,7 +71,8 @@ const config =  {
   		animation: {
   			spotlight: 'spotlight 2s ease .75s 1 forwards',
   			scroll: 'scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite',
-  			'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear'
+  			'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
+  			'shiny-text': 'shiny-text 8s infinite'
   		},
   		keyframes: {
   			spotlight: {
@@ -92,6 +93,14 @@ const config =  {
   			'border-beam': {
   				'100%': {
   					'offset-distance': '100%'
+  				}
+  			},
+  			'shiny-text': {
+  				'0%, 90%, 100%': {
+  					'background-position': 'calc(-100% - var(--shiny-width)) 0'
+  				},
+  				'30%, 60%': {
+  					'background-position': 'calc(100% + var(--shiny-width)) 0'
   				}
   			}
   		}
