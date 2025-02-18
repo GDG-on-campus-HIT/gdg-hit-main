@@ -301,10 +301,10 @@ const Page = () => {
                     />
 
                     <CustomInput
-                      label="Roll Number"
+                      label="Class Roll Number"
                       id="rollNumber"
                       type="text"
-                      placeholder="Enter your class roll no."
+                      placeholder="eg.- 24/CSE/XXX, 23/ECE/XXX"
                       handleChange={handleChange}
                       value={values.rollNumber}
                       error={errors.rollNumber}

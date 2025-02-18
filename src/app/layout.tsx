@@ -1,5 +1,7 @@
-"use client"
+"use client";
+
 import { Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./Provider";
 import { ThemeProvider } from "@/hooks/theme-provider";
@@ -14,21 +16,34 @@ const poppins = Poppins({
   variable: "--font-Poppins",
 });
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.variable} ${poppins.className}   min-h-screen `}>
+      <head>
+        {/* Google Analytics Script */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-DVZGQCR75G"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-DVZGQCR75G');
+          `}
+        </Script>
+      </head>
+      <body className={`${poppins.variable} ${poppins.className} min-h-screen`}>
         <Providers>
-        <ThemeProvider
+          <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
@@ -41,8 +56,7 @@ export default function RootLayout({
   );
 }
 
-
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery({});
-  return <>{isLoading ? <Loader/> : <>{children} </>}</>;
+  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
 };

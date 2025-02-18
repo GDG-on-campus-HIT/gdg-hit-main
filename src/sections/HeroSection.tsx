@@ -1,8 +1,22 @@
 import PrimaryButton from "@/components/PrimaryButton";
 import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
 import { Spotlight } from "@/components/ui/spotlight";
+import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import Link from "next/link";
 import React from "react";
+
+const words = [
+  {
+    text: "We",
+  },
+  {
+    text: "Are",
+  },
+  {
+    text: "Recruiting!",
+    className: "text-blue-500 dark:text-blue-500",
+  },
+];
 
 export function HeroSection() {
   return (
@@ -41,7 +55,10 @@ export function HeroSection() {
           enthusiasts. Experience the power of Google Developer technologies and
           shape the future of technology.
         </p>
-        <p className="text-lg text-blue-500 text-center my-4">We are recruiting!</p>
+        {/* <p className="text-lg text-blue-500 text-center my-4">We are recruiting!</p> */}
+        <div className="flex items-center justify-center w-full">
+        <TypewriterEffectSmooth words={words} />
+        </div>
         <div className="w-full flex items-start justify-center space-x-5">
           <Link href="/recruitment/form" >
           <PrimaryButton>Apply Now</PrimaryButton>

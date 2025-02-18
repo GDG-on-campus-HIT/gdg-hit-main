@@ -5,10 +5,19 @@ import React from "react";
 import { useEventQuery } from "@/redux/features/api/event/eventApi";
 import { useSelector } from "react-redux";
 import EventCard from "@/components/EventCards";
+import Loader from "@/components/Loader/Loader";
 
 export default function EventsPage() {
   const { isLoading, isError, data } = useEventQuery({});
   const { event } = useSelector((state: any) => state.event);
+
+  if (isLoading) return <Loader />;
+  if (isError)
+    return (
+      <div className="w-full h-full flex items-center justify-center min-h-screen ">
+        Error loading events
+      </div>
+    );
 
   return (
     <div className="relative min-h-screen">

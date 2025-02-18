@@ -9,8 +9,8 @@ const Events: React.FC = () => {
   const { event } = useSelector((state: any) => state.event);
   return (
     <section className=" py-6 flex w-full">
-      <div className="max-container">
-        <div className=" mb-8">
+      <div className="max-container w-full">
+        <div className=" mb-8 w-full">
           <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25]">
             Shaping the{" "}
             <span className="from-red-400  to-red-600 bg-gradient-to-b bg-clip-text text-transparent">
