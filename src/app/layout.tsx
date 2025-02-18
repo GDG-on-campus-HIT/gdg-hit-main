@@ -9,6 +9,7 @@ import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "@/components/Loader/Loader";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { ThemeDialog } from "@/components/ThemeModeDialog";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -48,6 +49,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Custom>{children}</Custom>
+            <ThemeDialog/>
             <ToastContainer />
           </ThemeProvider>
         </Providers>
