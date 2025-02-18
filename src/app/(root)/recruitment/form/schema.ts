@@ -85,7 +85,7 @@ export const getStep3Schema = (selectedPositions: string[]) => {
 
 // Step 4: Final Information
 export const step4Schema = Yup.object().shape({
-  linkedIn: Yup.string().url("Please enter a valid LinkedIn URL").nullable(),
-  portfolio: Yup.string().url("Please enter a valid portfolio URL").nullable(),
+  linkedIn: Yup.string().nullable(),
+  portfolio: Yup.string().nullable(),
   previousClubs: Yup.string().required("This field is required!"),
 });
