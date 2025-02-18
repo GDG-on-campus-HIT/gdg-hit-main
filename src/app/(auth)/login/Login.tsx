@@ -114,10 +114,10 @@ const LoginComponent = () => {
         <div className="absolute -bottom-20 -left-20 w-48 md:w-64 h-48 md:h-64 bg-blue-500/10 rounded-full blur-3xl" />
 
         {/* Main Container - Added mobile padding adjustments */}
-        <div className="relative backdrop-blur-xl bg-gray-950/50 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8">
+        <div className="relative backdrop-blur-xl dark:bg-gray-950/50 bg-gray-200 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8">
           {/* Header - Responsive text sizes */}
           <div className="text-center mb-6 md:mb-10">
-            <h2 className="text-3xl md:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 mb-2 md:mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-600 to-neutral-800  dark:from-neutral-50 dark:to-neutral-400 bg-opacity-50 mb-2 md:mb-4">
               GDG HIT
             </h2>
             <p className="text-gray-400 text-xs md:text-sm">

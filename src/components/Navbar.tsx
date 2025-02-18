@@ -101,7 +101,7 @@ const NavBar = () => {
             {
               !isAuth ? 
             <Link href="/login">
-              <button className="px-8 py-2 rounded-full relative gradient-card text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
+              <button className="px-8 py-2 rounded-full relative gradient-card dark:text-white text-neutral-800 text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
                 <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                 <span className="relative z-20 font-medium">Login</span>
               </button>

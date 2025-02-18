@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/Loader/Loader";
 import MemberCard from "@/components/MemberCard";
 import { useMemberQuery } from "@/redux/features/api/member/memberApi";
 import React, { useEffect, useState } from "react";
@@ -42,7 +43,6 @@ const MembersPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"core" | "media" | "pr" | "tech">(
     "core"
   );
- 
 
   const renderMemberCards = (members: Member[]) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -84,9 +84,13 @@ const MembersPage: React.FC = () => {
     </div>
   );
 
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading members</div>;
+  if (isLoading) return <Loader />;
+  if (isError)
+    return (
+      <div className="w-full h-full flex items-center justify-center min-h-screen ">
+        Error loading members
+      </div>
+    );
 
   return (
     <div className="relative min-h-screen transition-colors duration-300">
@@ -100,7 +104,8 @@ const MembersPage: React.FC = () => {
             Behind GDG HIT
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed text-center mx-auto">
-          Get to know the passionate leaders driving GDG HIT, fostering innovation, collaboration, and growth within our tech community.
+            Get to know the passionate leaders driving GDG HIT, fostering
+            innovation, collaboration, and growth within our tech community.
           </p>
         </div>
 
