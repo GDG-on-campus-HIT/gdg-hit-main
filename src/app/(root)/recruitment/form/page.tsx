@@ -707,7 +707,7 @@ const Page = () => {
                     label="LinkedIn URL"
                     id="linkedIn"
                     type="text"
-                    placeholder="Share your linkedin profile link"
+                    placeholder="Enter Herre, Write NA if not"
                     handleChange={handleChange}
                     value={values.linkedIn}
                     error={errors.linkedIn}
@@ -718,7 +718,7 @@ const Page = () => {
                     label="Portfolio URL"
                     id="portfolio"
                     type="text"
-                    placeholder="Share your portfolio lin, if available"
+                    placeholder="SEnter Herre, Write NA if not"
                     handleChange={handleChange}
                     value={values.portfolio}
                     error={errors.portfolio}
@@ -729,7 +729,7 @@ const Page = () => {
                     label="Previous Clubs"
                     id="previousClubs"
                     type="text"
-                    placeholder="Enter the name of your current or previous tech club."
+                    placeholder="Enter Herre, Write NA if not"
                     handleChange={handleChange}
                     value={values.previousClubs}
                     error={errors.previousClubs}

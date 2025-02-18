@@ -1,21 +1,21 @@
 
-import { Facebook, Twitter, Github } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from '../ModeToggle';
+import { InstagramLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 
 const Footer = () => {
   
   const socialIcons = [
-    { Icon: Facebook, href: "https://facebook.com" },
-    { Icon: Twitter, href: "https://twitter.com" },
+    { Icon: InstagramLogoIcon, href: "https://www.instagram.com/gdg_hit/" },
+    { Icon: LinkedInLogoIcon, href: "https://www.linkedin.com/company/gdgoncampushit/posts/?feedView=all" },
   
-    { Icon: Github, href: "https://github.com" }
+    
   ];
 
   const quickLinks = [
-    { label: "About Us", href: "/about" },
-    { label: "Activities", href: "/activities" },
-    { label: "Our Team", href: "/team" },
+    { label: "About Us", href: "/about-us" },
+   
+    { label: "Our Team", href: "/members" },
     { label: "Events", href: "/events" }
   ];
 
@@ -85,7 +85,7 @@ const Footer = () => {
                     transition-colors
                   "
                 >
-                  <Icon size={20} />
+                  <Icon width={20} height={20} />
                 </Link>
               ))}
             </div>
