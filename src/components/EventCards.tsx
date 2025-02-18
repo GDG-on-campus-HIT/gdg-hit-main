@@ -54,7 +54,9 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
+
     <Link href="https://gdg.community.dev/gdg-on-campus-haldia-institute-of-technology-haldia-india/">
+
       <motion.div
         initial="rest"
         whileHover="hover"
