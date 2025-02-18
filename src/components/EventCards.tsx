@@ -54,7 +54,7 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
-    <Link href="d">
+    <Link href="#">
       <motion.div
         initial="rest"
         whileHover="hover"
