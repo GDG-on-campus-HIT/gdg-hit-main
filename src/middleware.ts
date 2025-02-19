@@ -28,8 +28,11 @@ export async function middleware(request: NextRequest) {
         if (refreshToken) {
           try {
             const response = await fetch(
-              // "https://api.gdghit.site/api/v1/refresh-token",
-              "http://localhost:8080/api/v1/refresh-token",
+              `${
+                process.env.NEXT_PUBLIC_ENV === "production"
+                  ? "https://api.gdghit.site/api/v1/refresh-token"
+                  : "http://localhost:8080/api/v1/refresh-token"
+              }`,
               {
                 method: "GET",
                 headers: {
@@ -68,7 +71,7 @@ export async function middleware(request: NextRequest) {
               sameSite: "none",
               secure: true,
 
-              ...(process.env.NODE_ENV === "production" && {
+              ...(process.env.NEXT_PUBLIC_ENV === "production" && {
                 domain: "gdghit.site",
               }),
             });
@@ -82,7 +85,7 @@ export async function middleware(request: NextRequest) {
               sameSite: "none",
               secure: true,
 
-              ...(process.env.NODE_ENV === "production" && {
+              ...(process.env.NEXT_PUBLIC_ENV === "production" && {
                 domain: "gdghit.site",
               }),
             });

@@ -21,7 +21,7 @@ type Props = {
 function CustomSelector({ value, error, touched, id, label, setFieldValue, list }: Props) {
   return (
     <div className="my-3">
-      <Label htmlFor={id} className="ms-1 font-normal dark:text-gray-400 text-gray-600">
+      <Label htmlFor={id} className="ms-1 font-normal dark:text-gray-400 text-gray-600 linec">
         {label}
       </Label>
       <Select onValueChange={(e) => setFieldValue(id, e, true)} value={value}>
