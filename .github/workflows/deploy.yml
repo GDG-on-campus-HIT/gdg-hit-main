@@ -23,13 +23,18 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
-      # Build Docker image
-      - name: Build Docker Image
+      # Debug .env creation
+      - name: Debug .env Creation
         run: |
           echo "NEXT_PUBLIC_SERVER_URI=\"${{ secrets.NEXT_PUBLIC_SERVER_URI }}\"" > .env
           echo "ACCESS_TOKEN=\"${{ secrets.ACCESS_TOKEN }}\"" >> .env
           echo "NEXT_PUBLIC_BASE_URL=\"${{ secrets.NEXT_PUBLIC_BASE_URL }}\"" >> .env
           echo "NEXT_PUBLIC_ENV=\"${{ secrets.NEXT_PUBLIC_ENV }}\"" >> .env
+          cat .env || echo "Failed to create .env"
+
+      # Build Docker image
+      - name: Build Docker Image
+        run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client .
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
