@@ -30,7 +30,7 @@ jobs:
           echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> .env
           echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
           echo "NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}" >> .env
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-next-app .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client .
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}  # Add your GCP project ID as a secret
 
@@ -38,13 +38,13 @@ jobs:
       - name: Push Docker Image
         run: |
           gcloud auth configure-docker
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-next-app
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client
 
       # Deploy to Cloud Run
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy my-next-app \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-next-app \
-            --region us-central1 \  # Adjust region
+          gcloud run deploy gdg-client \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client \
+            --region asia-south1 \  # Adjust region
             --platform managed \
             --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }},NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
