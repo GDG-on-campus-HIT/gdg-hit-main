@@ -1,0 +1,50 @@
+name: Build and Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your default branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Authenticate with Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}  # Add your GCP service account key as a secret
+
+      # Set up Google Cloud SDK
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      # Build Docker image
+      - name: Build Docker Image
+        run: |
+          echo "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }}" > .env
+          echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> .env
+          echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
+          echo "NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}" >> .env
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-next-app .
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}  # Add your GCP project ID as a secret
+
+      # Push to Google Container Registry
+      - name: Push Docker Image
+        run: |
+          gcloud auth configure-docker
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-next-app
+
+      # Deploy to Cloud Run
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy my-next-app \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-next-app \
+            --region us-central1 \  # Adjust region
+            --platform managed \
+            --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }},NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
