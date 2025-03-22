@@ -3,53 +3,46 @@ name: Build and Deploy to Cloud Run
 on:
   push:
     branches:
-      - main  # Adjust to your default branch
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout code
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Authenticate with Google Cloud
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      # Set up Google Cloud SDK
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
-      # Debug .env creation
       - name: Debug .env Creation
         run: |
           echo "NEXT_PUBLIC_SERVER_URI=\"${{ secrets.NEXT_PUBLIC_SERVER_URI }}\"" > .env
-          echo "ACCESS_TOKEN=\"${{ secrets.ACCESS_TOKEN }}\"" >> .env
+          echo "ACCESS_TOKEN=\"$(echo ${{ secrets.ACCESS_TOKEN_BASE64 }} | base64 -d)\"" >> .env
           echo "NEXT_PUBLIC_BASE_URL=\"${{ secrets.NEXT_PUBLIC_BASE_URL }}\"" >> .env
           echo "NEXT_PUBLIC_ENV=\"${{ secrets.NEXT_PUBLIC_ENV }}\"" >> .env
           cat .env || echo "Failed to create .env"
 
-      # Build Docker image
       - name: Build Docker Image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client .
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
-      # Push to Google Container Registry
       - name: Push Docker Image
         run: |
           gcloud auth configure-docker
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client
 
-      # Deploy to Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy gdg-client \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client \
             --region asia-south1 \
             --platform managed \
-            --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }},NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
+            --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=$(echo ${{ secrets.ACCESS_TOKEN_BASE64 }} | base64 -d),NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
