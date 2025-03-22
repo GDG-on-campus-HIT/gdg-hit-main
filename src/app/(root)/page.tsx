@@ -12,6 +12,11 @@ const LandingPage = () => {
   return (
     <div className="relative overflow-hidden ">
       <HeroSection />
+      <div>
+      <p>Server URI: {process.env.NEXT_PUBLIC_SERVER_URI}</p>
+      <p>Base URL: {process.env.NEXT_PUBLIC_BASE_URL}</p>
+      <p>Env: {process.env.NEXT_PUBLIC_ENV}</p>
+    </div>
       <About />
       <WhyChooseSection />
       <ActivitiesComponent />

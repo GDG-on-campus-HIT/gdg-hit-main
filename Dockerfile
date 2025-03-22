@@ -22,8 +22,6 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
-# Optional: Comment out or remove for Cloud Run; use Cloud Run UI instead
-# ENV NEXT_PUBLIC_SERVER_URI "https://your-server-uri.com"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -35,8 +33,5 @@ COPY --from=builder /app/package.json ./package.json
 
 USER nextjs
 
-# Use 8080 for Cloud Run compatibility
 EXPOSE 8080
-
-# Let Cloud Run set PORT at runtime (default 8080)
 CMD ["npm", "start"]
