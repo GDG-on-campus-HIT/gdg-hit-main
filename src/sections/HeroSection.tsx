@@ -56,13 +56,13 @@ export function HeroSection() {
           shape the future of technology.
         </p>
         {/* <p className="text-lg text-blue-500 text-center my-4">We are recruiting!</p> */}
-        <div className="flex items-center justify-center w-full">
+        {/* <div className="flex items-center justify-center w-full">
         <TypewriterEffectSmooth words={words} />
-        </div>
+        </div> */}
         <div className="w-full flex items-start justify-center space-x-5">
-          <Link href="/recruitment/form" >
+          {/* <Link href="/recruitment/form" >
           <PrimaryButton>Apply Now</PrimaryButton>
-          </Link>
+          </Link> */}
 
 
           <Link href="/about-us" >

@@ -23,7 +23,7 @@ jobs:
       - name: Debug .env Creation
         run: |
           echo "NEXT_PUBLIC_SERVER_URI=\"${{ secrets.NEXT_PUBLIC_SERVER_URI }}\"" > .env
-          echo "ACCESS_TOKEN=\"$(echo ${{ secrets.ACCESS_TOKEN_BASE64 }} | base64 -d)\"" >> .env
+          echo "ACCESS_TOKEN=\"${{ secrets.ACCESS_TOKEN }}\"" >> .env
           echo "NEXT_PUBLIC_BASE_URL=\"${{ secrets.NEXT_PUBLIC_BASE_URL }}\"" >> .env
           echo "NEXT_PUBLIC_ENV=\"${{ secrets.NEXT_PUBLIC_ENV }}\"" >> .env
           cat .env || echo "Failed to create .env"
@@ -45,4 +45,4 @@ jobs:
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client \
             --region asia-south1 \
             --platform managed \
-            --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=$(echo ${{ secrets.ACCESS_TOKEN_BASE64 }} | base64 -d),NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
+            --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN}},NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
