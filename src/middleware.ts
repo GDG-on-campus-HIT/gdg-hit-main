@@ -4,6 +4,8 @@ import { jwtVerify } from "jose";
 
 const authPaths = ["/login", "/signup", "/verification"];
 const adminPathPrefix = "/admin";
+// Add closed paths for recruitment
+const closedRecruitmentPaths = ["/recruitment", "/recruitment/form"];
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
@@ -13,6 +15,14 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
+  // Restrict access to /recruitment and /recruitment/form for everyone
+  if (closedRecruitmentPaths.includes(path)) {
+    return NextResponse.redirect(new URL("/", request.url));
+    // Optional: Redirect to a custom "closed" page instead
+    // return NextResponse.redirect(new URL("/recruitment-closed", request.url));
+  }
+
+  // Original authentication logic remains unchanged below
   try {
     if (accessToken) {
       try {
@@ -134,5 +144,6 @@ export const config = {
     "/events/:id/register",
     "/profile",
     "/recruitment/form",
+    "/recruitment", // Add /recruitment to matcher to ensure middleware applies
   ],
 };
