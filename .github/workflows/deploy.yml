@@ -17,7 +17,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}  # Add your GCP service account key as a secret
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       # Set up Google Cloud SDK
       - name: Set up Cloud SDK
@@ -26,13 +26,13 @@ jobs:
       # Build Docker image
       - name: Build Docker Image
         run: |
-          echo "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }}" > .env
-          echo "ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}" >> .env
-          echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> .env
-          echo "NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}" >> .env
+          echo "NEXT_PUBLIC_SERVER_URI=\"${{ secrets.NEXT_PUBLIC_SERVER_URI }}\"" > .env
+          echo "ACCESS_TOKEN=\"${{ secrets.ACCESS_TOKEN }}\"" >> .env
+          echo "NEXT_PUBLIC_BASE_URL=\"${{ secrets.NEXT_PUBLIC_BASE_URL }}\"" >> .env
+          echo "NEXT_PUBLIC_ENV=\"${{ secrets.NEXT_PUBLIC_ENV }}\"" >> .env
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client .
         env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}  # Add your GCP project ID as a secret
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
       # Push to Google Container Registry
       - name: Push Docker Image
@@ -45,6 +45,6 @@ jobs:
         run: |
           gcloud run deploy gdg-client \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/gdg-client \
-            --region asia-south1 \  # Adjust region
+            --region asia-south1 \
             --platform managed \
             --set-env-vars "NEXT_PUBLIC_SERVER_URI=${{ secrets.NEXT_PUBLIC_SERVER_URI }},ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }},NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }},NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}"
