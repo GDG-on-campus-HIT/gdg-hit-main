@@ -87,7 +87,7 @@ const LoginComponent = () => {
   
     document.cookie = `redirectTo=${redirectTo}; path=/; domain=.gdghit.site; samesite=none; secure`;
   
-    const authWindow = window.open("http://localhost:8080/auth/google",
+    const authWindow = window.open("https://api.gdghit.site/auth/google",
      "_blank", "width=500,height=600");
   
     window.addEventListener("message", (event) => {
