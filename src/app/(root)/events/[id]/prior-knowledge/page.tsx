@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCheckUserQuizStatusQuery, useGenerateQuizMutation, useGetPriorKnowledgeQuery } from '@/redux/features/api/event/eventApi';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 // TypeScript interfaces for type safety
 interface Skill {
@@ -18,9 +19,10 @@ interface PriorKnowledgeData {
 }
 
 function PriorKnowledge({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const { user } = useSelector((state: any) => state.auth);
   const params = React.use(paramsPromise); // Unwrap params Promise
   const { data: quizStatus, isLoading: isQuizStatusLoading, error: quizStatusError } = useCheckUserQuizStatusQuery(
-    { eventId: params.id, userId: "67b1fbb2166b40b4293eeff0" },
+    { eventId: params.id, userId: user._id },
   );
   const { data: priorKnowledgeData, isLoading, error } = useGetPriorKnowledgeQuery(params.id);
   const [proficiencies, setProficiencies] = useState<{ [skill: string]: string }>({});
@@ -58,7 +60,7 @@ function PriorKnowledge({ params: paramsPromise }: { params: Promise<{ id: strin
 
     try {
       const data = {
-        participantId: "681b8f60cda12e09f0a7d171",
+        eventId: params.id,
         proficiencies,
       };
       const quizData = await generateQuiz(data).unwrap();

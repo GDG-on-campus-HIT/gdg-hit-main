@@ -138,7 +138,7 @@ export const eventApi = apiSlice.injectEndpoints({
 
       eventRegister: builder.mutation({
         query: (data:any) => ({
-          url: "event-registrations",
+          url: "register-event",
           method: "POST",
           body: data,
           credentials: "include" as const,
@@ -247,7 +247,7 @@ export const eventApi = apiSlice.injectEndpoints({
 
       checkIfEventRegistered: builder.query({
         query: (event:any) => ({
-          url: `event-register-check/${event}`,
+          url: `event-id-register/${event}`,
           method: "GET",
         }),
         async onQueryStarted(arg, { queryFulfilled }) {
@@ -288,9 +288,9 @@ export const eventApi = apiSlice.injectEndpoints({
       }),
 
       
-      generateQuiz: builder.mutation<{ quizId: string; questions: QuizQuestion[] }, { participantId: string; proficiencies: ProficiencyInput }>({
-        query: ({ participantId, proficiencies }) => ({
-          url: `/quiz/${participantId}`,
+      generateQuiz: builder.mutation<{ quizId: string; questions: QuizQuestion[] }, { eventId: string; proficiencies: ProficiencyInput }>({
+        query: ({ eventId, proficiencies }) => ({
+          url: `/quiz/${eventId}`,
           method: 'POST',
           credentials: 'include' as const,
           body: proficiencies, // Send proficiencies directly

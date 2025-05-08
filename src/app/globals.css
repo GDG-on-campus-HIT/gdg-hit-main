@@ -93,4 +93,22 @@ body {
   .white-gradient-text{
     @apply  dark:from-gray-50 dark:to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent from-gray-400 to-gray-900
   }
+
+  .insert p{
+    @apply text-lg my-2 text-gray-700 dark:text-gray-300 
+  }
+  .insert ul{
+    @apply list-disc space-y-2 pl-6 text-gray-700 dark:text-gray-300
+  }
+
+  .insert a{
+    @apply text-blue-600 dark:text-blue-400 hover:underline
+  }
+  .insert h2{
+    @apply text-xl my-2 font-semibold text-gray-800 dark:text-gray-200
+  }
+  .insert .card{
+    @apply bg-gray-200 dark:bg-[#1A1F25] text-gray-800 dark:text-gray-200 p-4 rounded-lg my-4
+  }
+
 }

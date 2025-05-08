@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGetUserQuizQuery, useSubmitQuizMutation } from '@/redux/features/api/event/eventApi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { eventApi } from '@/redux/features/api/event/eventApi';
 
 function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
@@ -11,10 +11,11 @@ function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const { user } = useSelector((state: any) => state.auth);
   // Fetch quiz data (hardcoded userId for consistency)
   const { data: quizData, isLoading, error } = useGetUserQuizQuery({
     eventId: params.id, // Use params.id as eventId
-    userId: '67b1fbb2166b40b4293eeff0',
+    userId: user._id, // Use user._id as userId
   }, { skip: !params.id });
 
   const [submitQuiz, { isLoading: isSubmitting, error: submitError }] = useSubmitQuizMutation();
@@ -157,6 +158,7 @@ function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }
                 )}
               </div>
             </div>
+            
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => router.push(`/events/${quizData.eventId}`)}
@@ -164,6 +166,9 @@ function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }
               >
                 Back to Event
               </button>
+            </div>
+            <div className="pt-5">
+              <p className='text-[12px] text-white/50'>Disclaimer: Responses are AI-generated and currently in testing. Some information may be inaccurate or not fully valid.</p>
             </div>
           </div>
         </div>
