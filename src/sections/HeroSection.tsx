@@ -55,14 +55,14 @@ export function HeroSection() {
           enthusiasts. Experience the power of Google Developer technologies and
           shape the future of technology.
         </p>
-        {/* <p className="text-lg text-blue-500 text-center my-4">We are recruiting!</p> */}
+        <p className="text-lg text-blue-500 text-center my-4"><span className="text-white/60">Upcoming event : {" "}</span> React Buzz </p>
         {/* <div className="flex items-center justify-center w-full">
         <TypewriterEffectSmooth words={words} />
         </div> */}
         <div className="w-full flex items-start justify-center space-x-5">
-          {/* <Link href="/recruitment/form" >
-          <PrimaryButton>Apply Now</PrimaryButton>
-          </Link> */}
+          <Link href="/events/681b8e7c40cb6305cb794f5a/register" >
+          <PrimaryButton>Register Now</PrimaryButton>
+          </Link>
 
 
           <Link href="/about-us" >

@@ -55,7 +55,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
 
-    <Link href="https://gdg.community.dev/gdg-on-campus-haldia-institute-of-technology-haldia-india/">
+    <Link href={`/events/${event._id}`}>
 
       <motion.div
         initial="rest"

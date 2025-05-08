@@ -107,7 +107,7 @@ function PriorKnowledge({ params: paramsPromise }: { params: Promise<{ id: strin
             Check
           </h2>
           <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed mx-auto">
-            Select your proficiency levels to start the quiz and prepare for the event.
+            Select your proficiency levels to start the test and prepare for the event.
           </p>
         </div>
 
@@ -116,17 +116,17 @@ function PriorKnowledge({ params: paramsPromise }: { params: Promise<{ id: strin
         {priorKnowledgeData && (
           <form
             onSubmit={handleSubmit}
-            className="max-w-xl mx-auto bg-white dark:bg-gray-800/50 p-6 rounded-lg shadow-lg"
+            className="max-w-xl mx-auto gradient-card p-6 rounded-lg shadow-lg"
           >
             {priorKnowledgeData.skills.map((item: Skill) => (
               <div key={item._id} className="mb-4">
-                <label className="block text-gray-800/50 dark:text-gray-300 mb-2 font-medium">
+                <label className="block text-gray-800/20 dark:text-gray-300 mb-2 font-medium">
                   {item.skill} Proficiency
                 </label>
                 <select
                   value={proficiencies[item.skill] || item.proficiency[0]}
                   onChange={(e) => handleProficiencyChange(item.skill, e.target.value)}
-                  className="w-full p-2 border rounded-md bg-white dark:bg-gray-800/50 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-red-500"
+                  className="w-full p-2 border rounded-md bg-white dark:bg-gray-800/20 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-red-500"
                 >
                   {item.proficiency.map((proficiency: string) => (
                     <option key={proficiency} value={proficiency}>

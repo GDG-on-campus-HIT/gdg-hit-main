@@ -116,8 +116,8 @@ function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }
           {/* Header */}
           <div className="mb-8 text-center">
             <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl font-bold mb-3 leading-[1.25]">
-              Quiz{' '}
-              <span className="from-red-400 to-red-600 bg-gradient-to-b bg-clip-text text-transparent">
+            Prior Knowledge{' '}
+              <span className="from-green-400 to-green-600 bg-gradient-to-b bg-clip-text text-transparent">
                 Results
               </span>
             </h2>
@@ -127,7 +127,7 @@ function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }
           </div>
 
           {/* Results Card */}
-          <div className="bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-lg dark:shadow-gray-900/30 mb-6">
+          <div className="gradient-card backdrop-blur-sm rounded-xl p-6 shadow-lg dark:shadow-gray-900/30 mb-6">
             <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Your Results</h3>
             <div className="space-y-4">
               <div>
@@ -216,7 +216,7 @@ function QuizPage({ params: paramsPromise }: { params: Promise<{ id: string }> }
         </div>
 
         {/* Question Card */}
-        <div className="bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-lg dark:shadow-gray-900/30 mb-6">
+        <div className="gradient-card backdrop-blur-sm rounded-xl p-6 shadow-lg dark:shadow-gray-900/30 mb-6">
           <div className="mb-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
               {questions[currentQuestion]?.question}

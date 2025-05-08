@@ -145,7 +145,6 @@ export const config = {
     "/profile",
     "/recruitment/form",
     "/recruitment", // Add /recruitment to matcher to ensure middleware applies
-    "/events/:path",
     "/events/:id/prior-knowledge",
     "/events/:id/prior-knowledge/test",
     "/events/:id/register",
