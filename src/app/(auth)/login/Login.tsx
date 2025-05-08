@@ -85,7 +85,7 @@ const LoginComponent = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const redirectTo = searchParams.get("redirectTo") || "/";
   
-    document.cookie = `redirect_url=${redirectTo}; path=/; samesite=lax`;
+    document.cookie = `redirectTo=${redirectTo}; path=/; domain=.gdghit.site; samesite=none; secure`;
   
     const authWindow = window.open("https://api.gdghit.site/auth/google",
      "_blank", "width=500,height=600");
