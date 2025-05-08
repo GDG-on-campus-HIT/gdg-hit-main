@@ -163,7 +163,7 @@ const EventRegistrationForm = ({
   // If already registered
   if (dataEventRegisterCheck?.success) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 py-20 space-y-4">
         <Card className="gradient-card shadow-lg max-w-md w-full">
           <CardContent className="text-center text-white pt-8">
             <p className="text-lg font-semibold">Registration Completed! 🎉</p>
@@ -172,9 +172,26 @@ const EventRegistrationForm = ({
               Thank you for registering! A confirmation email will be sent to
               you shortly.
             </p>
-            <div className="my-8 py-10">
-              <h2 className="font-semibold text-xl">Knowledge Quiz</h2>
-              <p className="text-gray-400 mb-4">
+
+            <div className="py-8">
+              <h2 className="font-semibold text-xl">Join Our Community</h2>
+              <p className="text-gray-400 mb-4 text-sm">
+                Stay connected with fellow participants and get event updates.
+              </p>
+              <Link href={`https://chat.whatsapp.com/FNpP3TgzwTiKQW8jUdLtRE`}>
+                <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950  text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
+                  <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-green-500 to-transparent" />
+                  <span className="relative z-20 font-medium">Join Now</span>
+                </button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="gradient-card shadow-lg max-w-md w-full">
+          <CardContent className="text-center text-white pt-8">
+            <div className="my-8 ">
+              <h2 className="font-semibold text-xl">AI-Powered Readiness Quiz</h2>
+              <p className="text-gray-400 mb-4 text-sm">
                 Test your React.js knowledge and get personalized
                 recommendations to prepare for the workshop.
               </p>
