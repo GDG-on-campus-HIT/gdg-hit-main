@@ -2,6 +2,57 @@ import { apiSlice } from "../../api/apiSlice";
 import { eventList, registrationList } from "./eventSlice";
 
 
+interface ProficiencyInput {
+  [skill: string]: string;
+}
+
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+}
+
+interface QuizResult {
+  score: number;
+  totalQuestions: number;
+  feedback: string;
+  prerequisites: string[];
+}
+
+interface QuizStatusResponse {
+  eventId: string;
+  userId: string;
+  quizGenerated: boolean;
+  quizId?: string;
+  quizAnswered?: boolean;
+  result?: QuizResult;
+  message: string;
+}
+
+interface QuizDataResponse {
+  eventId: string;
+  userId: string;
+  quizGenerated: boolean;
+  quizId?: string;
+  questions?: QuizQuestion[];
+  priorKnowledge?: { skill: string; proficiency: string[] }[];
+  quizAnswered?: boolean;
+  result?: QuizResult;
+  message: string;
+}
+
+interface SubmitQuizRequest {
+  quizId: string;
+  answers: string[];
+}
+
+interface SubmitQuizResponse {
+  score: number;
+  totalQuestions: number;
+  feedback: string;
+  prerequisites: string[];
+}
+
 
 export const eventApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -208,6 +259,81 @@ export const eventApi = apiSlice.injectEndpoints({
           }
         },
       }),
+
+
+
+      // new apis
+      getPriorKnowledge: builder.query({
+        query: (id:string) => ({
+          url: `events/${id}/prior-knowledge`,
+          method: "GET",
+          credentials: "include" as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+          try {
+            const result = await queryFulfilled;
+          
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
+      checkUserQuizStatus: builder.query({
+        query: ({ eventId, userId }) => ({
+          url: `events/${eventId}/users/${userId}/quiz-status`,
+          method: 'GET',
+          credentials: 'include' as const,
+        }),
+      }),
+
+      
+      generateQuiz: builder.mutation<{ quizId: string; questions: QuizQuestion[] }, { participantId: string; proficiencies: ProficiencyInput }>({
+        query: ({ participantId, proficiencies }) => ({
+          url: `/quiz/${participantId}`,
+          method: 'POST',
+          credentials: 'include' as const,
+          body: proficiencies, // Send proficiencies directly
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            await queryFulfilled;
+          } catch (error: any) {
+            console.error('Error generating quiz:', error);
+          }
+        },
+      }),
+
+
+      getUserQuiz: builder.query<QuizDataResponse, { eventId: string; userId: string }>({
+        query: ({ eventId, userId }) => ({
+          url: `events/${eventId}/users/${userId}/quiz`,
+          method: 'GET',
+          credentials: 'include' as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            await queryFulfilled;
+          } catch (error: any) {
+            console.error('Error retrieving quiz data:', error);
+          }
+        },
+      }),
+      submitQuiz: builder.mutation<SubmitQuizResponse, SubmitQuizRequest>({
+        query: ({ quizId, answers }) => ({
+          url: `/quiz/${quizId}/submit`,
+          method: 'POST',
+          body: { answers },
+        credentials: 'include' as const,
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            await queryFulfilled;
+          } catch (error: any) {
+            console.error('Error submitting quiz:', error);
+          }
+        },
+      }),
   }),
 });
 
@@ -224,5 +350,12 @@ export const {
   useRegistrationAllEventQuery,
   useRegistrationByEventIdQuery,
   useRegistrationUpdateMutation,
-  useCheckIfEventRegisteredQuery
+  useCheckIfEventRegisteredQuery,
+
+
+  useGetPriorKnowledgeQuery,
+  useGenerateQuizMutation,
+  useCheckUserQuizStatusQuery,
+  useGetUserQuizQuery,
+  useSubmitQuizMutation,
 } = eventApi;

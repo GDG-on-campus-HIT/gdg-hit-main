@@ -67,6 +67,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
 export const apiSlice = createApi({
   reducerPath: "api",
+  tagTypes: ['Quiz'],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     loadUser: builder.query({
