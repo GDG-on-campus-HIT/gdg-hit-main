@@ -14,6 +14,24 @@ interface FormData {
   expectations: string;
 }
 
+const contacts = [
+  {
+    name: "Deepak Kumar",
+    role: "3rd year",
+    phone: "8092968262",
+  },
+  {
+    name: "Chinmay Verma",
+    role: "3rd year",
+    phone: "9693024340",
+  },
+  {
+    name: "Dipankar saha",
+    role: "3rd year",
+    phone: "6009185311",
+  },
+];
+
 export default function EventRegistration({
   params: paramsPromise,
 }: {
@@ -29,19 +47,19 @@ export default function EventRegistration({
   console.log(eventData);
 
   return (
-    <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-20 ">
       {/* Hero Section */}
       <section className="py-16  max-container">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 mb-10 md:mb-0">
+            <div className="md:w-1/2 mb-10 md:mb-0 max-md:order-2 max-md:mt-10">
               <div className="inline-block bg-blue-600 text-sm px-3 py-1 rounded-full mb-4">
                 UPCOMING EVENT
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <h1 className="text-3xl md:text-5xl  font-bold mb-4">
                 {eventData.name}
               </h1>
-              <p className="text-lg text-gray-300 mb-8">
+              <p className="text-lg max-sm:text-base text-gray-300 mb-8">
                 {eventData.description}
               </p>
               <div className="flex flex-wrap gap-4 mb-8">
@@ -158,7 +176,7 @@ export default function EventRegistration({
         </div>
       </section>
 
-      <section className="py-16  0 max-container">
+      <section className="py-16   max-container">
         <div
           dangerouslySetInnerHTML={{ __html: eventData.details }}
           className="insert"
@@ -251,17 +269,19 @@ export default function EventRegistration({
 
       {/* Contact Information */}
       <section className="py-16 max-container">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-10">Contact Information</h2>
+        <div className="">
+          <h2 className="text-3xl font-bold  mb-10">Contact Information</h2>
           <div className="gradient-card rounded-xl p-8 shadow-lg">
             <p className="text-lg mb-6">
               For any queries or help, please feel free to contact:
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* {eventData.contacts.map((contact, index) => (
+              {contacts.map((contact, index) => (
                 <div key={index} className="bg-white/5 rounded-lg p-4">
                   <div className="font-medium text-lg mb-1">{contact.name}</div>
-                  <div className="text-gray-300 mb-1">{contact.role}</div>
+                  <div className="text-gray-300 mb-1 text-sm">
+                    {contact.role}
+                  </div>
                   <div className="flex items-center text-blue-400">
                     <svg
                       className="w-4 h-4 mr-2"
@@ -279,9 +299,9 @@ export default function EventRegistration({
                     {contact.phone}
                   </div>
                 </div>
-              ))} */}
+              ))}
             </div>
-            <div className="mt-8 flex flex-wrap gap-4">
+            {/* <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#"
                 className="flex items-center bg-white/5 hover:bg-gray-600 transition px-4 py-2 rounded-lg"
@@ -347,7 +367,7 @@ export default function EventRegistration({
                 </svg>
                 LinkedIn
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

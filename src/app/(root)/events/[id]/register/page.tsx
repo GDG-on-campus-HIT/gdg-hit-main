@@ -111,7 +111,8 @@ const EventRegistrationForm = ({
     if (error) {
       // Type guard for FetchBaseQueryError
       const errorMessage = isFetchBaseQueryError(error)
-        ? (error.data as { message?: string })?.message || "Registration failed. Please try again."
+        ? (error.data as { message?: string })?.message ||
+          "Registration failed. Please try again."
         : "Registration failed. Please try again.";
       toast.error(errorMessage, {
         position: "top-right",
@@ -165,17 +166,17 @@ const EventRegistrationForm = ({
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
         <Card className="gradient-card shadow-lg max-w-md w-full">
           <CardContent className="text-center text-white pt-8">
-            <p className="text-lg font-semibold">Registration Complete! 🎉</p>
-            <p className="mt-2">You&apos;re already registered for the event.</p>
+            <p className="text-lg font-semibold">Registration Completed! 🎉</p>
+            {/* <p className="mt-2">You&apos;re already registered for the event.</p> */}
             <p className="mt-4 text-sm text-gray-400">
-              Thank you for registering! A confirmation has been sent to your
-              email.
+              Thank you for registering! A confirmation email will be sent to
+              you shortly.
             </p>
             <div className="my-8 py-10">
               <h2 className="font-semibold text-xl">Knowledge Quiz</h2>
               <p className="text-gray-400 mb-4">
-                Test your React.js knowledge and get personalized recommendations
-                to prepare for the workshop.
+                Test your React.js knowledge and get personalized
+                recommendations to prepare for the workshop.
               </p>
               <Link href={`/events/${EVENT_ID}/prior-knowledge`}>
                 <PrimaryButton>Test Your Skills</PrimaryButton>
@@ -188,8 +189,8 @@ const EventRegistrationForm = ({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <Card className="bg-black border-gray-700 shadow-lg max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center py-20 mx-6">
+      <Card className="gradient-card shadow-lg max-w-md w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-white">
             Event Registration
@@ -209,7 +210,7 @@ const EventRegistrationForm = ({
                   value={values.name}
                   onChange={handleChange}
                   placeholder="Enter your full name"
-                  className={`border-gray-600 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 ${
+                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
                     errors.name && touched.name ? "border-red-500" : ""
                   }`}
                 />
@@ -229,7 +230,7 @@ const EventRegistrationForm = ({
                   }
                 >
                   <SelectTrigger
-                    className={`border-gray-600 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 ${
+                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
                       errors.department && touched.department
                         ? "border-red-500"
                         : ""
@@ -237,7 +238,7 @@ const EventRegistrationForm = ({
                   >
                     <SelectValue placeholder="Select your department" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-900 border-gray-700 text-white">
+                  <SelectContent className="gradient-card border-gray-700 text-white">
                     {departmentList.map((dept) => (
                       <SelectItem key={dept} value={dept}>
                         {dept}
@@ -246,7 +247,9 @@ const EventRegistrationForm = ({
                   </SelectContent>
                 </Select>
                 {errors.department && touched.department && (
-                  <p className="text-red-500 text-xs mt-1">{errors.department}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.department}
+                  </p>
                 )}
               </div>
 
@@ -260,14 +263,16 @@ const EventRegistrationForm = ({
                   value={values.classRollNo}
                   onChange={handleChange}
                   placeholder="Enter your roll number"
-                  className={`border-gray-600 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 ${
+                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
                     errors.classRollNo && touched.classRollNo
                       ? "border-red-500"
                       : ""
                   }`}
                 />
                 {errors.classRollNo && touched.classRollNo && (
-                  <p className="text-red-500 text-xs mt-1">{errors.classRollNo}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.classRollNo}
+                  </p>
                 )}
               </div>
 
@@ -281,14 +286,16 @@ const EventRegistrationForm = ({
                   value={values.phoneNumber}
                   onChange={handleChange}
                   placeholder="Enter your WhatsApp number"
-                  className={`border-gray-600 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 ${
+                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
                     errors.phoneNumber && touched.phoneNumber
                       ? "border-red-500"
                       : ""
                   }`}
                 />
                 {errors.phoneNumber && touched.phoneNumber && (
-                  <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.phoneNumber}
+                  </p>
                 )}
               </div>
 
@@ -302,7 +309,7 @@ const EventRegistrationForm = ({
                   value={values.email}
                   onChange={handleChange}
                   placeholder="Enter your email address"
-                  className={`border-gray-600 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 ${
+                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
                     errors.email && touched.email ? "border-red-500" : ""
                   }`}
                   disabled
