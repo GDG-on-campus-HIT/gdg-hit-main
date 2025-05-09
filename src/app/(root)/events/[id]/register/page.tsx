@@ -208,6 +208,9 @@ const EventRegistrationForm = ({
   return (
     <div className="min-h-screen flex items-center justify-center py-20 mx-6">
       <Card className="gradient-card shadow-lg max-w-md w-full">
+      <div className="rounded-lg overflow-hidden m-2">
+        <img src="/img/banner_reacrtjs_final.png" alt="" className="w-full" />
+      </div>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-white">
             Event Registration
