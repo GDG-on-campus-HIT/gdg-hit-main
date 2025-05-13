@@ -190,7 +190,9 @@ const EventRegistrationForm = ({
         <Card className="gradient-card shadow-lg max-w-md w-full">
           <CardContent className="text-center text-white pt-8">
             <div className="my-8 ">
-              <h2 className="font-semibold text-xl">AI-Powered Readiness Quiz</h2>
+              <h2 className="font-semibold text-xl">
+                AI-Powered Readiness Quiz
+              </h2>
               <p className="text-gray-400 mb-4 text-sm">
                 Test your React.js knowledge and get personalized
                 recommendations to prepare for the workshop.
@@ -205,12 +207,54 @@ const EventRegistrationForm = ({
     );
   }
 
+  if (false) {
+    return (
+      <div className="flex items-center justify-center min-h-screen py-20 mx-6">
+      <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <Rocket className="h-16 w-16 text-red-500 animate-bounce" />
+        <h1 className="text-2xl font-bold text-white">Registration Closed</h1>
+        <p className="text-gray-400 max-w-md">
+          The registration is now <span className="text-red-400 font-medium">closed</span> as all the seats have been filled.
+          <br />
+          <br />
+          For any queries or concerns, please contact us using the phone number provided in the event post.
+        </p>
+      </div>
+    </div>
+    )
+  }
+  if (true) {
+    return (
+      <div className="flex items-center justify-center min-h-screen py-20 mx-6">
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <Rocket className="h-16 w-16 text-blue-500 animate-bounce" />
+          <h1 className="text-2xl font-bold text-white">
+            Registration Temporarily Closed
+          </h1>
+          <p className="text-gray-400 max-w-md">
+            Thank you for the overwhelming response! Due to the high number of
+            registrations and limited seats, the registration is currently{" "}
+            <span className="text-red-400 font-medium">temporarily closed</span>
+            .
+            <br />
+            <br />
+            <span className="text-blue-400 font-medium">
+              Registration will reopen today from 5:00 PM to 7:00 PM only.
+            </span>
+            <br />
+            Be ready to secure your spot!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center py-20 mx-6">
       <Card className="gradient-card shadow-lg max-w-md w-full">
-      <div className="rounded-lg overflow-hidden m-2">
-        <img src="/img/banner_reacrtjs_final.png" alt="" className="w-full" />
-      </div>
+        <div className="rounded-lg overflow-hidden m-2">
+          <img src="/img/banner_reacrtjs_final.png" alt="" className="w-full" />
+        </div>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-white">
             Event Registration
