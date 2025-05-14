@@ -208,7 +208,7 @@ const EventRegistrationForm = ({
   }
 
   //Registration close condition (true or false)
-  if (true) {
+  if (false) {
     return (
       <div className="flex items-center justify-center min-h-screen py-20 mx-6">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
