@@ -30,7 +30,7 @@ const ContactPage = () => {
           </div>
 
           <div className="space-x-4 text-gray-500 dark:text-gray-400">
-            <span>gdgoncamputhit@gmail.com</span>
+            <span>gdgoncampushit@gmail.com</span>
             <span>•</span>
             <span>+91 9508971070</span>
             {/* <span>•</span>
