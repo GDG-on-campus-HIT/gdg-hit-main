@@ -1,14 +1,14 @@
 
 import Link from "next/link";
 import { ModeToggle } from '../ModeToggle';
-import { InstagramLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
+import { InstagramLogoIcon, LinkedInLogoIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
 const Footer = () => {
   
   const socialIcons = [
     { Icon: InstagramLogoIcon, href: "https://www.instagram.com/gdg_hit/" },
     { Icon: LinkedInLogoIcon, href: "https://www.linkedin.com/company/gdgoncampushit/posts/?feedView=all" },
-  
+    { Icon: GitHubLogoIcon, href: "https://github.com/GDG-on-campus-HIT/gdg-hit-main"}
     
   ];
 
