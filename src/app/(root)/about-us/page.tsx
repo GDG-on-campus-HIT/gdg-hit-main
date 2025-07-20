@@ -1,5 +1,4 @@
 import React from 'react';
-import { Users, Code, Rocket, Target, Globe, Sparkles } from 'lucide-react';
 import HeroSection from './HeroSection';
 import MissionSection from './MissionSection';
 
