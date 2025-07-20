@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { PrimaryButton } from '@/components/PrimaryButton'
+import PrimaryButton from "@/components/PrimaryButton";
 
 export function ScrollToNewsletter() {
   const handleClick = (e: React.MouseEvent) => {

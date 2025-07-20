@@ -1,4 +1,4 @@
-import {PrimaryButton} from "@/components/PrimaryButton";
+import PrimaryButton from "@/components/PrimaryButton";
 import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
 import { Spotlight } from "@/components/ui/spotlight";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
