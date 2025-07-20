@@ -1,9 +1,10 @@
-import PrimaryButton from "@/components/PrimaryButton";
+import {PrimaryButton} from "@/components/PrimaryButton";
 import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
 import { Spotlight } from "@/components/ui/spotlight";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import Link from "next/link";
 import React from "react";
+import { ScrollToNewsletter } from '@/components/ScrollToNewsletter'
 
 const words = [
   {
@@ -55,21 +56,19 @@ export function HeroSection() {
           enthusiasts. Experience the power of Google Developer technologies and
           shape the future of technology.
         </p>
-        <p className="text-lg text-blue-500 text-center my-4"><span className="text-white/60">Upcoming event : {" "}</span> React Buzz </p>
+        <p className="text-lg text-blue-500 text-center my-4">
+          <span className="text-white/60">Stay notified about upcoming events!</span>
+        </p>
         {/* <div className="flex items-center justify-center w-full">
         <TypewriterEffectSmooth words={words} />
         </div> */}
         <div className="w-full flex items-start justify-center space-x-5">
-          <Link href="/events/681b8e7c40cb6305cb794f5a/register" >
-          <PrimaryButton>Register Now</PrimaryButton>
-          </Link>
-
-
-          <Link href="/about-us" >
-          <button className="px-8 py-2 rounded-full relative gradient-card text-gray-700 dark:text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
-            <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-            <span className="relative z-20 font-medium">Learn more</span>
-          </button>
+          <ScrollToNewsletter />
+          <Link href="/about-us">
+            <button className="px-8 py-2 rounded-full relative gradient-card text-gray-700 dark:text-white text-sm hover:shadow-2xl transition duration-200 border dark:border-white/10">
+              <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+              <span className="relative z-20 font-medium">Learn more</span>
+            </button>
           </Link>
         </div>
         <InfiniteMovingCardImg

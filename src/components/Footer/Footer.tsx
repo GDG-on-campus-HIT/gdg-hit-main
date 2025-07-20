@@ -3,7 +3,7 @@ import Link from "next/link";
 import { InstagramLogoIcon, LinkedInLogoIcon, GitHubLogoIcon, EnvelopeClosedIcon } from "@radix-ui/react-icons";
 
 const Footer = () => {
-  
+  const currentYear = new Date().getFullYear();
   const socialIcons = [
     { Icon: InstagramLogoIcon, href: "https://www.instagram.com/gdg_hit/" },
     { Icon: LinkedInLogoIcon, href: "https://www.linkedin.com/company/gdgoncampushit/posts/?feedView=all" },
@@ -92,8 +92,8 @@ const Footer = () => {
                   className="
                     text-neutral-600 
                     dark:text-neutral-400 
-                    hover:text-neutral-900 
-                    dark:hover:text-neutral-100 
+                    hover:text-blue-600 
+                    dark:hover:text-blue-400 
                     transition-colors
                   "
                 >
@@ -108,7 +108,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="text-center mt-12 pt-6 border-t border-neutral-300 dark:border-neutral-700">
           <p className="text-sm text-neutral-600 dark:text-neutral-500">
-            © 2025 GDG On Campus HIT. All rights reserved.
+            © {currentYear} GDG On Campus HIT. All rights reserved.
           </p>
           <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-500">
             Made with ❤️ by GDG HIT Team
