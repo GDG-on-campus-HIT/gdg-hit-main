@@ -89,7 +89,6 @@ const LoginComponent = () => {
   
     const authWindow = window.open("https://api.gdghit.site/auth/google",
      "_blank", "width=500,height=600");
-  
     window.addEventListener("message", (event) => {
       if (event.data?.success) {
         authWindow?.close();
