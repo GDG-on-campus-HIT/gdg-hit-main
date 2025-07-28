@@ -1,10 +1,13 @@
+'use client';
+
 import PrimaryButton from "@/components/PrimaryButton";
+import RegisterNowButton from "@/components/RegisterNowButton";
 import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
 import { Spotlight } from "@/components/ui/spotlight";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import Link from "next/link";
 import React from "react";
-import { ScrollToNewsletter } from '@/components/ScrollToNewsletter'
+//import { ScrollToNewsletter } from '@/components/ScrollToNewsletter'
 
 const words = [
   {
@@ -20,6 +23,12 @@ const words = [
 ];
 
 export function HeroSection() {
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <div className="min-h-[40rem] h-screen w-full rounded-md flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden">
       <Spotlight
@@ -57,19 +66,24 @@ export function HeroSection() {
           shape the future of technology.
         </p>
         <p className="text-lg text-blue-500 text-center my-4">
-          <span className="text-white/60">Stay notified about upcoming events!</span>
+          <span className="text-white/60">Upcoming event : </span>XYZ
         </p>
         {/* <div className="flex items-center justify-center w-full">
         <TypewriterEffectSmooth words={words} />
         </div> */}
         <div className="w-full flex items-start justify-center space-x-5">
-          <ScrollToNewsletter />
-          <Link href="/about-us">
-            <button className="px-8 py-2 rounded-full relative gradient-card text-gray-700 dark:text-white text-sm hover:shadow-2xl transition duration-200 border dark:border-white/10">
-              <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-              <span className="relative z-20 font-medium">Learn more</span>
-            </button>
-          </Link>
+          {isMounted && (
+            <>
+              <RegisterNowButton />
+              {/* <ScrollToNewsletter /> */}
+              <Link href="/about-us">
+                <button className="px-8 py-2 rounded-full relative gradient-card text-gray-700 dark:text-white text-sm hover:shadow-2xl transition duration-200 border dark:border-white/10">
+                  <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                  <span className="relative z-20 font-medium">Learn more</span>
+                </button>
+              </Link>
+            </>
+          )}
         </div>
         <InfiniteMovingCardImg
           items={testimonials}
