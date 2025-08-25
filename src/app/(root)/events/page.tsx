@@ -20,7 +20,7 @@ export default function EventsPage() {
     );
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen pt-20">
       {/* Main Content */}
       <section className="max-container my-20">
         <div className=" mb-8">

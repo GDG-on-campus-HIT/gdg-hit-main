@@ -93,7 +93,7 @@ const MembersPage: React.FC = () => {
     );
 
   return (
-    <div className="relative min-h-screen transition-colors duration-300">
+    <div className="relative min-h-screen transition-colors duration-300 pt-20">
       <div className="max-container py-24">
         <div className="mb-8">
           <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25] text-center">

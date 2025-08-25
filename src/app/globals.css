@@ -82,6 +82,17 @@ body {
     @apply bg-background text-foreground;
   }
 
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .gradient-card {
     @apply bg-gradient-to-bl dark:from-[#0E0E10] dark:to-[#17171a97] rounded-xl from-neutral-100 to-neutral-200
   }

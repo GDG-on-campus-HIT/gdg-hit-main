@@ -138,6 +138,22 @@ export const apiSlice = createApi({
       },
     }),
 
+    studentRegistration: builder.mutation({
+      query: (data:any) => ({
+        url: "student-registration",
+        method: "POST",
+        body: data,
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+        } catch (error: any) {
+          console.log(error);
+        }
+      },
+    }),
+
 
     isAlreadyRegistered: builder.query({
       query: () => ({
@@ -159,4 +175,4 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useLoadUserQuery, useLoadTestimonialQuery, useContactUsMutation , useRecruitmentFormSubmissionMutation, useIsAlreadyRegisteredQuery} = apiSlice;
+export const { useLoadUserQuery, useLoadTestimonialQuery, useContactUsMutation , useRecruitmentFormSubmissionMutation, useStudentRegistrationMutation, useIsAlreadyRegisteredQuery} = apiSlice;
