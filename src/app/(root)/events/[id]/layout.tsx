@@ -21,11 +21,19 @@ export async function generateMetadata({
   }
 
   const event = data.event;
-  const title = event.name || "Event - GDG on campus HIT";
-  const description =
-    event.description ||
-    "Join our upcoming event hosted by the GDG on campus HIT. Stay tuned for exciting updates and insights!";
-  const eventImage = event.eventBanner.url || "/images/ds-img.svg";
+  
+  // Additional safety checks for event properties
+  if (!event.name || !event.description) {
+    return {
+      title: "Event - GDG on campus HIT",
+      description: "Join our upcoming event hosted by the GDG on campus HIT. Stay tuned for exciting updates and insights!",
+      robots: "index, follow",
+    };
+  }
+  
+  const title = event.name;
+  const description = event.description;
+  const eventImage = event.eventBanner?.url || "/images/ds-img.svg";
 
   return {
     title: `${title} - GDG on campus HIT`,

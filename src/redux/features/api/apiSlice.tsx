@@ -40,7 +40,7 @@ const baseQueryWithReauth: BaseQueryFn<
   if (result?.error?.status === 401) {
     // Token expired, try to refresh it
     const refreshResult = await baseQuery(
-      "/refresh-token",
+      { url: "/refresh-token" },
       api,
       extraOptions
     );

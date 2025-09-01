@@ -43,7 +43,26 @@ export default function EventRegistration({
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading event data</div>;
-  const eventData = data.event;
+  
+  const eventData = data?.event;
+  
+  // Safety check: if no event data, show error
+  if (!eventData) {
+    return (
+      <div className="min-h-screen py-20 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-500 mb-4">Event Not Found</h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            The event you're looking for could not be found.
+          </p>
+          <Link href="/events" className="text-blue-500 hover:underline mt-4 inline-block">
+            Back to Events
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  
   console.log(eventData);
 
   return (
@@ -57,10 +76,10 @@ export default function EventRegistration({
                 UPCOMING EVENT
               </div>
               <h1 className="text-3xl md:text-5xl  font-bold mb-4">
-                {eventData.name}
+                {eventData?.name || "Event Title"}
               </h1>
               <p className="text-lg max-sm:text-base text-gray-300 mb-8">
-                {eventData.description}
+                {eventData?.description || "Event description not available"}
               </p>
               <div className="flex flex-wrap gap-4 mb-8">
                 <div className="flex items-center gradient-card px-4 py-2 rounded-lg">
@@ -140,7 +159,7 @@ export default function EventRegistration({
               </div>
               <div className="flex">
                 <Link
-                  href={`/events/${eventData._id}/register`}
+                  href={`/events/${eventData?._id || params.id}/register`}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl flex items-center"
                 >
                   Register Now
@@ -164,7 +183,7 @@ export default function EventRegistration({
             <div className="md:w-1/2 md:pl-10">
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img
-                  src={eventData?.eventBanner.url}
+                  src={eventData?.eventBanner?.url || "/img/events/image.png"}
                   alt="Event Poster"
                   width={600}
                   height={600}
@@ -178,7 +197,7 @@ export default function EventRegistration({
 
       <section className="py-16   max-container">
         <div
-          dangerouslySetInnerHTML={{ __html: eventData.details }}
+          dangerouslySetInnerHTML={{ __html: eventData?.details || "Event details not available" }}
           className="insert"
         ></div>
       </section>

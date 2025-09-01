@@ -7,6 +7,13 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { Bounce, toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { useStudentRegistrationMutation } from "@/redux/features/api/apiSlice";
+import { useParams } from "next/navigation";
+
+
+const {id}=useParams();
+
+console.log(id);
+
 
 // ✅ Validation schema
 const validationSchema = Yup.object({

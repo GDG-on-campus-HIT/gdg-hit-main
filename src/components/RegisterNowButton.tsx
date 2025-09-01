@@ -8,7 +8,7 @@ export function RegisterNowButton() {
     // window.open('https://forms.gle/FORM_ID', '_blank', 'noopener,noreferrer')
     
     // Now redirects to student registration form instead
-    window.location.href = '/student-form'
+    window.location.href = '/events/'
   }
 
   return (

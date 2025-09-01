@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 import {
   useEventRegisterMutation,
   useCheckIfEventRegisteredQuery,
-} from "@/redux/features/api/event/eventApi"; // Adjust import path
+} from "@/redux/features/api/event/eventApi";
 import { ImSpinner2 } from "react-icons/im";
 import { Bounce, toast } from "react-toastify";
 import { useTheme } from "next-themes";
@@ -32,26 +32,34 @@ import Link from "next/link";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-// Validation schema
+// Updated validation schema to match backend requirements
 const schema = Yup.object().shape({
   name: Yup.string().required("Please enter your name"),
   classRollNo: Yup.string().required("Enter your class roll number"),
   department: Yup.string().required("Select your department"),
-  phoneNumber: Yup.string()
-    .required("Enter your WhatsApp number")
-    .matches(/^\d{10}$/, "WhatsApp number must be 10 digits"),
+  batch: Yup.string().required("Select your batch"),
+  session: Yup.string().required("Select your session"),
+  year: Yup.string().required("Select your year"),
   email: Yup.string()
     .required("Email is required")
     .email("Invalid email format"),
+  whatsappNo: Yup.string()
+    .required("Enter your WhatsApp number")
+    .matches(/^\d{10}$/, "WhatsApp number must be 10 digits"),
+  paymentUTRNo: Yup.string(), // Optional field
 });
 
-// Form values type
+// Updated form values interface to match backend
 interface FormValues {
   name: string;
   classRollNo: string;
   department: string;
-  phoneNumber: string;
+  batch: string;
+  session: string;
+  year: string;
   email: string;
+  whatsappNo: string;
+  paymentUTRNo: string;
 }
 
 const EventRegistrationForm = ({
@@ -65,23 +73,27 @@ const EventRegistrationForm = ({
   const { theme } = useTheme();
   const { user } = useSelector((state: any) => state.auth);
 
-  // Department list
+  // Updated department list to match backend exactly
   const departmentList = [
-    "CSE",
-    "CSE-DS",
-    "CSE-CS",
-    "CSE-AIML",
-    "ECE",
-    "EE",
-    "CHE",
-    "AEIE",
-    "ME",
-    "IT",
-    "BT",
-    "AE",
-    "FT",
-    "Other",
+    "Chemical Engineering",
+    "Civil Engineering", 
+    "Mechanical Engineering",
+    "Electrical Engineering",
+    "Electronics & Communication Engineering",
+    "Applied Electronics & Instrumentation Engineering",
+    "Computer Science & Engineering",
+    "Information Technology",
+    "Computer Science & Engineering - Artificial Intelligence and Machine Learning",
+    "Computer Science & Engineering - Data Science",
+    "Computer Science & Engineering - Cyber Security",
+    "Biotechnology",
+    "Food Technology"
   ];
+
+  // Updated batch and year options to match backend enum values
+  const batchOptions = ["1st", "2nd", "3rd", "4th"];
+  const yearOptions = ["1st", "2nd", "3rd", "4th"];
+  const sessionOptions = ["2024-25", "2023-24", "2022-23", "2021-22"];
 
   // Check if user is already registered
   const { data: dataEventRegisterCheck, refetch: refetchEventRegisterCheck } =
@@ -109,7 +121,6 @@ const EventRegistrationForm = ({
       setIsSubmitted(true);
     }
     if (error) {
-      // Type guard for FetchBaseQueryError
       const errorMessage = isFetchBaseQueryError(error)
         ? (error.data as { message?: string })?.message ||
           "Registration failed. Please try again."
@@ -133,25 +144,33 @@ const EventRegistrationForm = ({
     return error != null && "status" in error;
   };
 
-  // Formik setup
+  // Updated Formik setup to match backend requirements
   const formik = useFormik<FormValues>({
     initialValues: {
       name: user?.name || "",
       classRollNo: user?.classRollNo || "",
       department: user?.department || "",
-      phoneNumber: user?.whatsappNo || "",
+      batch: user?.batch || "",
+      session: user?.session || "",
+      year: user?.year || "",
       email: user?.email || "",
+      whatsappNo: user?.whatsappNo || "",
+      paymentUTRNo: "",
     },
     validationSchema: schema,
-    onSubmit: async ({ name, classRollNo, department, phoneNumber, email }) => {
+    onSubmit: async (values) => {
+      // Updated data structure to match backend exactly
       const data = {
-        name,
+        name: values.name,
         eventId: EVENT_ID,
-        user: user?.id || "mock-user-id",
-        classRollNo,
-        department,
-        phoneNumber,
-        email,
+        classRollNo: values.classRollNo,
+        department: values.department,
+        batch: values.batch,
+        session: values.session,
+        year: values.year,
+        email: values.email,
+        whatsappNo: values.whatsappNo,
+        paymentUTRNo: values.paymentUTRNo || undefined, // Send undefined if empty
       };
       await eventRegister(data);
     },
@@ -167,7 +186,6 @@ const EventRegistrationForm = ({
         <Card className="gradient-card shadow-lg max-w-md w-full">
           <CardContent className="text-center text-white pt-8">
             <p className="text-lg font-semibold">Registration Completed! 🎉</p>
-            {/* <p className="mt-2">You&apos;re already registered for the event.</p> */}
             <p className="mt-4 text-sm text-gray-400">
               Thank you for registering! A confirmation email will be sent to
               you shortly.
@@ -189,7 +207,7 @@ const EventRegistrationForm = ({
         </Card>
         <Card className="gradient-card shadow-lg max-w-md w-full">
           <CardContent className="text-center text-white pt-8">
-            <div className="my-8 ">
+            <div className="my-8">
               <h2 className="font-semibold text-xl">
                 AI-Powered Readiness Quiz
               </h2>
@@ -207,24 +225,23 @@ const EventRegistrationForm = ({
     );
   }
 
-  //Registration close condition (true or false)
-  if (true) {
+  // Registration close condition (change to false to open registration)
+  if (false) {
     return (
       <div className="flex items-center justify-center min-h-screen py-20 mx-6">
-      <div className="flex flex-col items-center justify-center space-y-4 text-center">
-        <Rocket className="h-16 w-16 text-red-500 animate-bounce" />
-        <h1 className="text-2xl font-bold text-white">Registration Closed</h1>
-        <p className="text-gray-400 max-w-md">
-          The registration is now <span className="text-red-400 font-medium">closed</span> as all the seats have been filled.
-          <br />
-          <br />
-          For any queries or concerns, please contact us using the phone number provided in the event post.
-        </p>
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <Rocket className="h-16 w-16 text-red-500 animate-bounce" />
+          <h1 className="text-2xl font-bold text-white">Registration Closed</h1>
+          <p className="text-gray-400 max-w-md">
+            The registration is now <span className="text-red-400 font-medium">closed</span> as all the seats have been filled.
+            <br />
+            <br />
+            For any queries or concerns, please contact us using the phone number provided in the event post.
+          </p>
+        </div>
       </div>
-    </div>
-    )
+    );
   }
-
 
   if (false) {
     return (
@@ -254,7 +271,7 @@ const EventRegistrationForm = ({
 
   return (
     <div className="min-h-screen flex items-center justify-center py-20 mx-6">
-      <Card className="gradient-card shadow-lg max-w-md w-full">
+      <Card className="gradient-card shadow-lg max-w-2xl w-full">
         <div className="rounded-lg overflow-hidden m-2">
           <img src="/img/banner_reacrtjs_final.png" alt="" className="w-full" />
         </div>
@@ -267,6 +284,7 @@ const EventRegistrationForm = ({
         <CardContent className="space-y-5">
           {!isSubmitted ? (
             <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5">
+              {/* Full Name */}
               <div className="space-y-1.5">
                 <Label htmlFor="name" className="text-gray-300">
                   Full Name*
@@ -286,6 +304,7 @@ const EventRegistrationForm = ({
                 )}
               </div>
 
+              {/* Department */}
               <div className="space-y-1.5">
                 <Label htmlFor="department" className="text-gray-300">
                   Department*
@@ -320,6 +339,7 @@ const EventRegistrationForm = ({
                 )}
               </div>
 
+              {/* Class Roll Number */}
               <div className="space-y-1.5">
                 <Label htmlFor="classRollNo" className="text-gray-300">
                   Class Roll Number*
@@ -343,47 +363,174 @@ const EventRegistrationForm = ({
                 )}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="phoneNumber" className="text-gray-300">
-                  WhatsApp Number*
-                </Label>
-                <Input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={values.phoneNumber}
-                  onChange={handleChange}
-                  placeholder="Enter your WhatsApp number"
-                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                    errors.phoneNumber && touched.phoneNumber
-                      ? "border-red-500"
-                      : ""
-                  }`}
-                />
-                {errors.phoneNumber && touched.phoneNumber && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.phoneNumber}
-                  </p>
-                )}
+              {/* Batch, Session, Year - Grid Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Batch */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="batch" className="text-gray-300">
+                    Batch*
+                  </Label>
+                  <Select
+                    value={values.batch}
+                    onValueChange={(value) =>
+                      setFieldValue("batch", value, true)
+                    }
+                  >
+                    <SelectTrigger
+                      className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
+                        errors.batch && touched.batch
+                          ? "border-red-500"
+                          : ""
+                      }`}
+                    >
+                      <SelectValue placeholder="Select batch" />
+                    </SelectTrigger>
+                    <SelectContent className="gradient-card border-gray-700 text-white">
+                      {batchOptions.map((batch) => (
+                        <SelectItem key={batch} value={batch}>
+                          {batch}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.batch && touched.batch && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.batch}
+                    </p>
+                  )}
+                </div>
+
+                {/* Session */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="session" className="text-gray-300">
+                    Session*
+                  </Label>
+                  <Select
+                    value={values.session}
+                    onValueChange={(value) =>
+                      setFieldValue("session", value, true)
+                    }
+                  >
+                    <SelectTrigger
+                      className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
+                        errors.session && touched.session
+                          ? "border-red-500"
+                          : ""
+                      }`}
+                    >
+                      <SelectValue placeholder="Select session" />
+                    </SelectTrigger>
+                    <SelectContent className="gradient-card border-gray-700 text-white">
+                      {sessionOptions.map((session) => (
+                        <SelectItem key={session} value={session}>
+                          {session}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.session && touched.session && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.session}
+                    </p>
+                  )}
+                </div>
+
+                {/* Year */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="year" className="text-gray-300">
+                    Year*
+                  </Label>
+                  <Select
+                    value={values.year}
+                    onValueChange={(value) =>
+                      setFieldValue("year", value, true)
+                    }
+                  >
+                    <SelectTrigger
+                      className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
+                        errors.year && touched.year
+                          ? "border-red-500"
+                          : ""
+                      }`}
+                    >
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent className="gradient-card border-gray-700 text-white">
+                      {yearOptions.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.year && touched.year && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.year}
+                    </p>
+                  )}
+                </div>
               </div>
 
+              {/* WhatsApp Number and Email - Grid Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* WhatsApp Number */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="whatsappNo" className="text-gray-300">
+                    WhatsApp Number*
+                  </Label>
+                  <Input
+                    id="whatsappNo"
+                    name="whatsappNo"
+                    value={values.whatsappNo}
+                    onChange={handleChange}
+                    placeholder="Enter your WhatsApp number"
+                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
+                      errors.whatsappNo && touched.whatsappNo
+                        ? "border-red-500"
+                        : ""
+                    }`}
+                  />
+                  {errors.whatsappNo && touched.whatsappNo && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.whatsappNo}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email Address */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-gray-300">
+                    Email Address*
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email address"
+                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
+                      errors.email && touched.email ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.email && touched.email && (
+                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Payment UTR Number (Optional) */}
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-gray-300">
-                  Email Address*
+                <Label htmlFor="paymentUTRNo" className="text-gray-300">
+                  Payment UTR Number (Optional)
                 </Label>
                 <Input
-                  id="email"
-                  name="email"
-                  value={values.email}
+                  id="paymentUTRNo"
+                  name="paymentUTRNo"
+                  value={values.paymentUTRNo}
                   onChange={handleChange}
-                  placeholder="Enter your email address"
-                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                    errors.email && touched.email ? "border-red-500" : ""
-                  }`}
-                  disabled
+                  placeholder="Enter UTR number if payment is required"
+                  className="border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.email && touched.email && (
-                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-                )}
               </div>
 
               <Button
