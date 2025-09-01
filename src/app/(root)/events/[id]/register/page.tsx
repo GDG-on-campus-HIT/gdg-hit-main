@@ -21,7 +21,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
 import {
-  useEventRegisterMutation,
+  useEventRegister  Mutation,
   useCheckIfEventRegisteredQuery,
 } from "@/redux/features/api/event/eventApi"; // Adjust import path
 import { ImSpinner2 } from "react-icons/im";
