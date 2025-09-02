@@ -66,7 +66,7 @@ export function HeroSection() {
           shape the future of technology.
         </p>
         <p className="text-lg text-blue-500 text-center my-4">
-          <span className="text-white/60">Upcoming event : </span>XYZ
+          <span className="text-white/60">Upcoming event : </span>GitXplore
         </p>
         {/* <div className="flex items-center justify-center w-full">
         <TypewriterEffectSmooth words={words} />

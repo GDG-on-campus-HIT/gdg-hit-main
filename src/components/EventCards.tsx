@@ -5,17 +5,21 @@ import { EventType } from "@/app/(root)/events/types";
 import { Calendar, MapPin } from "lucide-react";
 import Link from "next/link";
 
-interface EventCardProps {
+interface Props {
   event: EventType;
   variant?: "default" | "compact";
   className?: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({
+const EventCard: React.FC<Props> = ({
   event,
   variant = "default",
   className = "",
 }) => {
+  // Safety check for required event properties
+  if (!event || !event._id || !event.name) {
+    return null; // Don't render if essential data is missing
+  }
   const hoverAnimation = {
     rest: { y: 0, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" },
     hover: {
@@ -67,7 +71,7 @@ const EventCard: React.FC<EventCardProps> = ({
         {/* Image Section */}
         <div className={`relative ${imageClasses[variant]} overflow-hidden`}>
           <img
-            src={event.eventBanner.url}
+            src={event.eventBanner?.url || "/img/events/image.png"}
             alt={event.name}
             className="w-full h-full object-cover brightness-100 dark:brightness-90"
           />

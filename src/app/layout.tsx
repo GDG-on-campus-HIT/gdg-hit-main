@@ -59,6 +59,12 @@ export default function RootLayout({
 }
 
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isLoading } = useLoadUserQuery({});
-  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
+  const { isLoading, isError } = useLoadUserQuery({});
+  
+  // If there's an error (like 400), just render children without blocking
+  if (isLoading && !isError) {
+    return <Loader />;
+  }
+  
+  return <>{children}</>;
 };

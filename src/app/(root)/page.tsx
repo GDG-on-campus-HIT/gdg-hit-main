@@ -10,7 +10,7 @@ import NewsletterSection from "@/sections/NewsletterSection";
 
 const LandingPage = () => {
   return (
-    <div className="relative overflow-hidden ">
+    <div className="relative overflow-hidden pt-20">
       <HeroSection />
       <About />
       <WhyChooseSection />

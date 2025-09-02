@@ -3,13 +3,11 @@
 import React from "react";
 
 import { useEventQuery } from "@/redux/features/api/event/eventApi";
-import { useSelector } from "react-redux";
 import EventCard from "@/components/EventCards";
 import Loader from "@/components/Loader/Loader";
 
 export default function EventsPage() {
   const { isLoading, isError, data } = useEventQuery({});
-  const { event } = useSelector((state: any) => state.event);
 
   if (isLoading) return <Loader />;
   if (isError)
@@ -20,7 +18,7 @@ export default function EventsPage() {
     );
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen pt-20">
       {/* Main Content */}
       <section className="max-container my-20">
         <div className=" mb-8">
@@ -38,15 +36,20 @@ export default function EventsPage() {
         </div>
 
         <div className="grid grid-cols-4 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
-          {event &&
-            event.map((event: any) => (
+          {data?.events && data.events.length > 0 ? (
+            data.events.map((event: any) => (
               <EventCard
                 key={event._id}
                 event={event}
                 variant="compact"
                 className="w-full"
               />
-            ))}
+            ))
+          ) : (
+            <div className="col-span-full text-center py-10 text-gray-500">
+              No events found
+            </div>
+          )}
         </div>
       </section>
     </div>
