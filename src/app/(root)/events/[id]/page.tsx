@@ -53,7 +53,7 @@ export default function EventRegistration({
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-500 mb-4">Event Not Found</h1>
           <p className="text-gray-600 dark:text-gray-400">
-            The event you're looking for could not be found.
+            The event you&apos;re looking for could not be found.
           </p>
           <Link href="/events" className="text-blue-500 hover:underline mt-4 inline-block">
             Back to Events

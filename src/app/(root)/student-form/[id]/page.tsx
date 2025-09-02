@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
@@ -9,83 +9,91 @@ import { useTheme } from "next-themes";
 import { useStudentRegistrationMutation } from "@/redux/features/api/apiSlice";
 import { useParams } from "next/navigation";
 
-
-const {id}=useParams();
-
-console.log(id);
-
-
-// ✅ Validation schema
-const validationSchema = Yup.object({
-  name: Yup.string()
-    .min(2, "Name must be at least 2 characters")
-    .required("Name is required"),
-  department: Yup.string().required("Department is required"),
-  rollNo: Yup.string()
-    .matches(
-      /^\d{2}\/[A-Z]+\/\d{3}$/,
-      "Format: YY/BRANCH/XXX (e.g., 24/CSE/001)"
-    )
-    .required("Roll number is required"),
-  batch: Yup.string().required("Batch is required"),
-  year: Yup.string().required("Year is required"),
-  contactNo: Yup.string()
-    .matches(/^[0-9]{10}$/, "Contact number must be 10 digits")
-    .required("Contact number is required"),
-  whatsappNo: Yup.string()
-    .matches(/^[0-9]{10}$/, "WhatsApp number must be 10 digits")
-    .required("WhatsApp number is required"),
-  emailAddress: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-});
-
 const StudentFormPage = () => {
   const { theme } = useTheme();
+  const params = useParams();
+  const id = params?.id;
+  
   const [studentRegistration, { isLoading }] =
     useStudentRegistrationMutation();
 
+  // ✅ Memoized validation schema for performance
+  const validationSchema = useMemo(() => Yup.object({
+    name: Yup.string()
+      .min(2, "Name must be at least 2 characters")
+      .required("Name is required"),
+    department: Yup.string().required("Department is required"),
+    rollNo: Yup.string()
+      .matches(
+        /^\d{2}\/[A-Z]+\/\d{3}$/,
+        "Format: YY/BRANCH/XXX (e.g., 24/CSE/001)"
+      )
+      .required("Roll number is required"),
+    batch: Yup.string().required("Batch is required"),
+    year: Yup.string().required("Year is required"),
+    contactNo: Yup.string()
+      .matches(/^[0-9]{10}$/, "Contact number must be 10 digits")
+      .required("Contact number is required"),
+    whatsappNo: Yup.string()
+      .matches(/^[0-9]{10}$/, "WhatsApp number must be 10 digits")
+      .required("WhatsApp number is required"),
+    emailAddress: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+  }), []);
+
+  // Memoized initial values
+  const initialValues = useMemo(() => ({
+    name: "",
+    department: "",
+    rollNo: "",
+    batch: "",
+    year: "",
+    contactNo: "",
+    whatsappNo: "",
+    emailAddress: "",
+  }), []);
+
+  // Memoized form submission handler
+  const handleFormSubmit = useCallback(async (values: typeof initialValues) => {
+    try {
+      await studentRegistration({
+        ...values,
+        type: "student_registration",
+        ...(id && { formId: id }),
+      }).unwrap();
+
+      toast.success("Form submitted successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: theme || "light",
+        transition: Bounce,
+      });
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("Failed to submit form. Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: theme || "light",
+        transition: Bounce,
+      });
+    }
+  }, [studentRegistration, theme, id]);
+
   const formik = useFormik({
-    initialValues: {
-      name: "",
-      department: "",
-      rollNo: "",
-      batch: "",
-      year: "",
-      contactNo: "",
-      whatsappNo: "",
-      emailAddress: "",
-    },
+    initialValues,
     validationSchema,
-    onSubmit: async (values) => {
-      try {
-        await studentRegistration({
-          ...values,
-          type: "student_registration",
-        });
-
-        toast.success("Form submitted successfully!", {
-          position: "top-right",
-          autoClose: 5000,
-          theme: theme,
-          transition: Bounce,
-        });
-
-        formik.resetForm();
-      } catch (error) {
-        toast.error("Failed to submit form. Please try again.", {
-          position: "top-right",
-          autoClose: 5000,
-          theme: theme,
-          transition: Bounce,
-        });
-      }
+    onSubmit: (values, { resetForm }) => {
+      handleFormSubmit(values).then(() => {
+        resetForm();
+      });
     },
   });
 
   const { errors, touched, values, handleChange, handleSubmit } = formik;
 
-  const departmentOptions = [
+  // Memoized options for better performance
+  const departmentOptions = useMemo(() => [
     "Computer Science Engineering (CSE)",
     "Computer Science Engineering with Artificial Intelligence & Machine Learning (CSE-AI&ML)",
     "Computer Science Engineering with Data Science (CSE-DS)",
@@ -97,10 +105,20 @@ const StudentFormPage = () => {
     "Information Technology (IT)",
     "Biotechnology (BT)",
     "Chemical Engineering (CHE)",
-  ];
+  ], []);
 
-  const batchOptions = ["Batch 1", "Batch 2", "Batch 3"];
-  const yearOptions = ["2nd Year", "3rd Year"];
+  const batchOptions = useMemo(() => ["Batch 1", "Batch 2", "Batch 3"], []);
+  const yearOptions = useMemo(() => ["2nd Year", "3rd Year"], []);
+
+  // Memoized input class generator
+  const getInputClasses = useCallback((fieldName: keyof typeof errors) => {
+    const hasError = errors[fieldName] && touched[fieldName];
+    return `w-full px-4 py-3 rounded-lg border transition-colors ${
+      hasError
+        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+        : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
+    } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`;
+  }, [errors, touched]);
 
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center p-4 pt-20">
@@ -139,12 +157,9 @@ const StudentFormPage = () => {
                   name="name"
                   value={values.name}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.name && touched.name
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("name")}
                   placeholder="Enter your full name"
+                  autoComplete="name"
                 />
                 {errors.name && touched.name && (
                   <p className="mt-1 text-sm text-red-600">{errors.name}</p>
@@ -163,11 +178,8 @@ const StudentFormPage = () => {
                   name="department"
                   value={values.department}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.department && touched.department
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("department")}
+                  autoComplete="organization"
                 >
                   <option value="">Select Department</option>
                   {departmentOptions.map((dept) => (
@@ -199,12 +211,9 @@ const StudentFormPage = () => {
                   name="rollNo"
                   value={values.rollNo}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.rollNo && touched.rollNo
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("rollNo")}
                   placeholder="e.g., 24/CSE/001"
+                  autoComplete="off"
                 />
                 {errors.rollNo && touched.rollNo && (
                   <p className="mt-1 text-sm text-red-600">{errors.rollNo}</p>
@@ -223,11 +232,8 @@ const StudentFormPage = () => {
                   name="batch"
                   value={values.batch}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.batch && touched.batch
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("batch")}
+                  autoComplete="off"
                 >
                   <option value="">Select Batch</option>
                   {batchOptions.map((batch) => (
@@ -253,11 +259,8 @@ const StudentFormPage = () => {
                   name="year"
                   value={values.year}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.year && touched.year
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("year")}
+                  autoComplete="off"
                 >
                   <option value="">Select Year</option>
                   {yearOptions.map((year) => (
@@ -287,12 +290,10 @@ const StudentFormPage = () => {
                   name="contactNo"
                   value={values.contactNo}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.contactNo && touched.contactNo
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("contactNo")}
                   placeholder="10 digit number"
+                  autoComplete="tel"
+                  maxLength={10}
                 />
                 {errors.contactNo && touched.contactNo && (
                   <p className="mt-1 text-sm text-red-600">
@@ -314,12 +315,10 @@ const StudentFormPage = () => {
                   name="whatsappNo"
                   value={values.whatsappNo}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                    errors.whatsappNo && touched.whatsappNo
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                  className={getInputClasses("whatsappNo")}
                   placeholder="10 digit number"
+                  autoComplete="tel"
+                  maxLength={10}
                 />
                 {errors.whatsappNo && touched.whatsappNo && (
                   <p className="mt-1 text-sm text-red-600">
@@ -343,12 +342,9 @@ const StudentFormPage = () => {
                 name="emailAddress"
                 value={values.emailAddress}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                  errors.emailAddress && touched.emailAddress
-                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                    : "border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500"
-                } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+                className={getInputClasses("emailAddress")}
                 placeholder="Enter your email address"
+                autoComplete="email"
               />
               {errors.emailAddress && touched.emailAddress && (
                 <p className="mt-1 text-sm text-red-600">
