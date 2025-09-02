@@ -32,13 +32,12 @@ import Link from "next/link";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-// Updated validation schema to match backend requirements
+// Updated validation schema without session
 const schema = Yup.object().shape({
   name: Yup.string().required("Please enter your name"),
   classRollNo: Yup.string().required("Enter your class roll number"),
   department: Yup.string().required("Select your department"),
   batch: Yup.string().required("Select your batch"),
-  session: Yup.string().required("Select your session"),
   year: Yup.string().required("Select your year"),
   email: Yup.string()
     .required("Email is required")
@@ -49,13 +48,12 @@ const schema = Yup.object().shape({
   paymentUTRNo: Yup.string(), // Optional field
 });
 
-// Updated form values interface to match backend
+// Updated form values interface without session
 interface FormValues {
   name: string;
   classRollNo: string;
   department: string;
   batch: string;
-  session: string;
   year: string;
   email: string;
   whatsappNo: string;
@@ -90,10 +88,9 @@ const EventRegistrationForm = ({
     "Food Technology"
   ];
 
-  // Updated batch and year options to match backend enum values
+  // Updated batch and year options
   const batchOptions = ["1st", "2nd", "3rd", "4th"];
   const yearOptions = ["1st", "2nd", "3rd", "4th"];
-  const sessionOptions = ["2024-25", "2023-24", "2022-23", "2021-22"];
 
   // Check if user is already registered
   const { data: dataEventRegisterCheck, refetch: refetchEventRegisterCheck } =
@@ -144,14 +141,13 @@ const EventRegistrationForm = ({
     return error != null && "status" in error;
   };
 
-  // Updated Formik setup to match backend requirements
+  // Updated Formik setup without session
   const formik = useFormik<FormValues>({
     initialValues: {
       name: user?.name || "",
       classRollNo: user?.classRollNo || "",
       department: user?.department || "",
       batch: user?.batch || "",
-      session: user?.session || "",
       year: user?.year || "",
       email: user?.email || "",
       whatsappNo: user?.whatsappNo || "",
@@ -159,14 +155,13 @@ const EventRegistrationForm = ({
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      // Updated data structure to match backend exactly
+      // Updated data structure without session
       const data = {
         name: values.name,
         eventId: EVENT_ID,
         classRollNo: values.classRollNo,
         department: values.department,
         batch: values.batch,
-        session: values.session,
         year: values.year,
         email: values.email,
         whatsappNo: values.whatsappNo,
@@ -363,8 +358,8 @@ const EventRegistrationForm = ({
                 )}
               </div>
 
-              {/* Batch, Session, Year - Grid Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Batch and Year - Grid Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Batch */}
                 <div className="space-y-1.5">
                   <Label htmlFor="batch" className="text-gray-300">
@@ -396,41 +391,6 @@ const EventRegistrationForm = ({
                   {errors.batch && touched.batch && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors.batch}
-                    </p>
-                  )}
-                </div>
-
-                {/* Session */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="session" className="text-gray-300">
-                    Session*
-                  </Label>
-                  <Select
-                    value={values.session}
-                    onValueChange={(value) =>
-                      setFieldValue("session", value, true)
-                    }
-                  >
-                    <SelectTrigger
-                      className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                        errors.session && touched.session
-                          ? "border-red-500"
-                          : ""
-                      }`}
-                    >
-                      <SelectValue placeholder="Select session" />
-                    </SelectTrigger>
-                    <SelectContent className="gradient-card border-gray-700 text-white">
-                      {sessionOptions.map((session) => (
-                        <SelectItem key={session} value={session}>
-                          {session}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.session && touched.session && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.session}
                     </p>
                   )}
                 </div>
