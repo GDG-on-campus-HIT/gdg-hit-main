@@ -33,13 +33,13 @@ import Link from "next/link";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-// Updated validation schema with session
+// Updated validation schema (session not required from user)
 const schema = Yup.object().shape({
   name: Yup.string().required("Please enter your name"),
   classRollNo: Yup.string().required("Enter your class roll number"),
   department: Yup.string().required("Select your department"),
   batch: Yup.string().required("Select your batch"),
-  session: Yup.string().required("Select your session"),
+  session: Yup.string(), // Not required from user - auto-filled
   year: Yup.string().required("Select your year"),
   email: Yup.string()
     .required("Email is required")
@@ -172,14 +172,14 @@ const EventRegistrationForm = ({
     return error != null && "status" in error;
   };
 
-  // Updated Formik setup with session
+  // Updated Formik setup with auto-filled session
   const formik = useFormik<FormValues>({
     initialValues: {
       name: user?.name || "",
       classRollNo: user?.classRollNo || "",
       department: user?.department || "",
       batch: user?.batch || "",
-      session: user?.session || "2025-2026", // Default to current academic year
+      session: "2025-2026", // Always set to current academic year
       year: user?.year || "",
       email: user?.email || "",
       whatsappNo: user?.whatsappNo || "",
@@ -409,8 +409,8 @@ const EventRegistrationForm = ({
                 )}
               </div>
 
-              {/* Session */}
-              <div className="space-y-1.5">
+              {/* Session - Hidden from users, auto-filled with current academic year */}
+              {/* <div className="space-y-1.5">
                 <Label htmlFor="session" className="text-gray-300">
                   Session*
                 </Label>
@@ -438,7 +438,7 @@ const EventRegistrationForm = ({
                 {errors.session && touched.session && (
                   <p className="text-red-500 text-xs mt-1">{errors.session}</p>
                 )}
-              </div>
+              </div> */}
 
               {/* Batch and Year - Grid Layout */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
