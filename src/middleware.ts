@@ -15,6 +15,7 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
+
   // Restrict access to /recruitment and /recruitment/form for everyone
   if (closedRecruitmentPaths.includes(path)) {
     return NextResponse.redirect(new URL("/", request.url));
