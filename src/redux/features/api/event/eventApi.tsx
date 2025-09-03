@@ -334,6 +334,36 @@ export const eventApi = apiSlice.injectEndpoints({
           }
         },
       }),
+
+      getEventContacts: builder.query({
+        query: (eventId: string) => ({
+          url: `events/${eventId}/contact`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            const result = await queryFulfilled;
+            return result.data;
+          } catch (error: any) {
+            console.log('Error fetching event contacts:', error);
+          }
+        },
+      }),
+
+      getEventPoster: builder.query({
+        query: (eventId: string) => ({
+          url: `events/${eventId}/poster`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            const result = await queryFulfilled;
+            return result.data;
+          } catch (error: any) {
+            console.log('Error fetching event poster:', error);
+          }
+        },
+      }),
   }),
 });
 
@@ -358,4 +388,6 @@ export const {
   useCheckUserQuizStatusQuery,
   useGetUserQuizQuery,
   useSubmitQuizMutation,
+  useGetEventContactsQuery,
+  useGetEventPosterQuery,
 } = eventApi;

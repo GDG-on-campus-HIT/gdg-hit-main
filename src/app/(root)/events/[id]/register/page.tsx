@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import {
   useEventRegisterMutation,
   useCheckIfEventRegisteredQuery,
+  useGetEventPosterQuery,
 } from "@/redux/features/api/event/eventApi";
 import { ImSpinner2 } from "react-icons/im";
 import { Bounce, toast } from "react-toastify";
@@ -95,6 +96,9 @@ const EventRegistrationForm = ({
   // Check if user is already registered
   const { data: dataEventRegisterCheck, refetch: refetchEventRegisterCheck } =
     useCheckIfEventRegisteredQuery(EVENT_ID);
+
+  // Fetch event poster
+  const { data: posterData, isLoading: isPosterLoading } = useGetEventPosterQuery(EVENT_ID);
 
   // Event registration mutation
   const [eventRegister, { data, isSuccess, error, isLoading: isUserLoading }] =
@@ -268,7 +272,22 @@ const EventRegistrationForm = ({
     <div className="min-h-screen flex items-center justify-center py-20 mx-6">
       <Card className="gradient-card shadow-lg max-w-2xl w-full">
         <div className="rounded-lg overflow-hidden m-2">
-          <img src="/img/banner_reacrtjs_final.png" alt="" className="w-full" />
+          {isPosterLoading ? (
+            <div className="w-full h-48 bg-gray-700 animate-pulse rounded-lg flex items-center justify-center">
+              <span className="text-gray-400">Loading poster...</span>
+            </div>
+          ) : (
+            <img 
+              src={posterData?.poster?.url || "/img/banner_reacrtjs_final.png"} 
+              alt="Event Poster" 
+              className="w-full" 
+              onError={(e) => {
+                // Fallback to default image if poster fails to load
+                const target = e.target as HTMLImageElement;
+                target.src = "/img/banner_reacrtjs_final.png";
+              }}
+            />
+          )}
         </div>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-white">
@@ -471,6 +490,7 @@ const EventRegistrationForm = ({
                     className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
                       errors.email && touched.email ? "border-red-500" : ""
                     }`}
+                    disabled={Boolean(user?.email)} // Disable if email is from user data
                   />
                   {errors.email && touched.email && (
                     <p className="text-red-500 text-xs mt-1">{errors.email}</p>

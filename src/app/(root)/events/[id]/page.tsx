@@ -3,7 +3,7 @@
 import React from "react";
 
 import Link from "next/link";
-import { useEventByIDQuery } from "@/redux/features/api/event/eventApi";
+import { useEventByIDQuery, useGetEventContactsQuery } from "@/redux/features/api/event/eventApi";
 
 interface FormData {
   name: string;
@@ -14,23 +14,12 @@ interface FormData {
   expectations: string;
 }
 
-const contacts = [
-  {
-    name: "Deepak Kumar",
-    role: "3rd year",
-    phone: "8092968262",
-  },
-  {
-    name: "Chinmay Verma",
-    role: "3rd year",
-    phone: "9693024340",
-  },
-  {
-    name: "Dipankar saha",
-    role: "3rd year",
-    phone: "6009185311",
-  },
-];
+interface ContactInfo {
+  _id: string;
+  name: string;
+  mobile: string;
+  year: string;
+}
 
 export default function EventRegistration({
   params: paramsPromise,
@@ -40,11 +29,18 @@ export default function EventRegistration({
   const params = React.use(paramsPromise);
 
   const { isLoading, data, isError } = useEventByIDQuery(params.id);
+  const { 
+    data: contactData, 
+    isLoading: contactLoading, 
+    isError: contactError 
+  } = useGetEventContactsQuery(params.id);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || contactLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading event data</div>;
+  if (contactError) return <div>Error loading contact information</div>;
   
   const eventData = data?.event;
+  const contacts = contactData?.contactInfo || [];
   
   // Safety check: if no event data, show error
   if (!eventData) {
@@ -294,32 +290,38 @@ export default function EventRegistration({
             <p className="text-lg mb-6">
               For any queries or help, please feel free to contact:
             </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {contacts.map((contact, index) => (
-                <div key={index} className="bg-white/5 rounded-lg p-4">
-                  <div className="font-medium text-lg mb-1">{contact.name}</div>
-                  <div className="text-gray-300 mb-1 text-sm">
-                    {contact.role}
+            {contacts.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {contacts.map((contact: ContactInfo, index: number) => (
+                  <div key={contact._id || index} className="bg-white/5 rounded-lg p-4">
+                    <div className="font-medium text-lg mb-1">{contact.name}</div>
+                    <div className="text-gray-300 mb-1 text-sm">
+                      {contact.year}
+                    </div>
+                    <div className="flex items-center text-blue-400">
+                      <svg
+                        className="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        ></path>
+                      </svg>
+                      {contact.mobile}
+                    </div>
                   </div>
-                  <div className="flex items-center text-blue-400">
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                      ></path>
-                    </svg>
-                    {contact.phone}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-400">Contact information will be available soon.</p>
+              </div>
+            )}
             {/* <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#"
@@ -393,3 +395,4 @@ export default function EventRegistration({
     </div>
   );
 }
+  
