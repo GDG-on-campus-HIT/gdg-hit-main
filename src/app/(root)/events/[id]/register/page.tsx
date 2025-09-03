@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -33,30 +32,42 @@ import Link from "next/link";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-// Updated validation schema (session not required from user)
+// ✅ Schema
 const schema = Yup.object().shape({
   name: Yup.string().required("Please enter your name"),
   classRollNo: Yup.string().required("Enter your class roll number"),
   department: Yup.string().required("Select your department"),
   batch: Yup.string().required("Select your batch"),
-  session: Yup.string(), // Not required from user - auto-filled
   year: Yup.string().required("Select your year"),
-  email: Yup.string()
-    .required("Email is required")
-    .email("Invalid email format"),
+  email: Yup.string().required("Email is required").email("Invalid email format"),
   whatsappNo: Yup.string()
     .required("Enter your WhatsApp number")
     .matches(/^\d{10}$/, "WhatsApp number must be 10 digits"),
-  paymentUTRNo: Yup.string(), // Optional field
+  paymentUTRNo: Yup.string(),
 });
 
-// Updated form values interface with session
+// ✅ Department mapping (short → full)
+const departmentMapping: { [key: string]: string } = {
+  ChE: "Chemical Engineering",
+  CE: "Civil Engineering",
+  ME: "Mechanical Engineering",
+  EE: "Electrical Engineering",
+  ECE: "Electronics & Communication Engineering",
+  AEIE: "Applied Electronics & Instrumentation Engineering",
+  CSE: "Computer Science & Engineering",
+  IT: "Information Technology",
+  "CSE-AIML": "Computer Science & Engineering - Artificial Intelligence and Machine Learning",
+  "CSE-DS": "Computer Science & Engineering - Data Science",
+  "CSE-CS": "Computer Science & Engineering - Cyber Security",
+  BT: "Biotechnology",
+  FT: "Food Technology",
+};
+
 interface FormValues {
   name: string;
   classRollNo: string;
   department: string;
   batch: string;
-  session: string;
   year: string;
   email: string;
   whatsappNo: string;
@@ -74,74 +85,24 @@ const EventRegistrationForm = ({
   const { theme } = useTheme();
   const { user } = useSelector((state: any) => state.auth);
 
-  // Updated department list with shorthand notations
-  const departmentList = [
-    "CHE", // Chemical Engineering
-    "CE", // Civil Engineering
-    "ME", // Mechanical Engineering
-    "EE", // Electrical Engineering
-    "ECE", // Electronics & Communication Engineering
-    "AEIE", // Applied Electronics & Instrumentation Engineering
-    "CSE", // Computer Science & Engineering
-    "IT", // Information Technology
-    "CSE-AIML", // Computer Science & Engineering - Artificial Intelligence and Machine Learning
-    "CSE-DS", // Computer Science & Engineering - Data Science
-    "CSE-CS", // Computer Science & Engineering - Cyber Security
-    "BT", // Biotechnology
-    "FT", // Food Technology
-  ];
-
-  // Department display mapping for better user experience
-  const departmentDisplayMap: { [key: string]: string } = {
-    CHE: "CHE - Chemical Engineering",
-    CE: "CE - Civil Engineering",
-    ME: "ME - Mechanical Engineering",
-    EE: "EE - Electrical Engineering",
-    ECE: "ECE - Electronics & Communication Engineering",
-    AEIE: "AEIE - Applied Electronics & Instrumentation Engineering",
-    CSE: "CSE - Computer Science & Engineering",
-    IT: "IT - Information Technology",
-    "CSE-AIML": "CSE-AIML - AI & Machine Learning",
-    "CSE-DS": "CSE-DS - Data Science",
-    "CSE-CS": "CSE-CS - Cyber Security",
-    BT: "BT - Biotechnology",
-    FT: "FT - Food Technology",
-  };
-
-  // Updated batch, session, and year options
   const batchOptions = ["1st", "2nd", "3rd", "4th"];
-  const sessionOptions = [
-    "2022-26",
-    "2023-27",
-    "2024-28",
-    "2025-29",
-    "2025-2026",
-  ];
   const yearOptions = ["1st", "2nd", "3rd", "4th"];
 
-  // Check if user is already registered
+  // ✅ Queries
   const { data: dataEventRegisterCheck, refetch: refetchEventRegisterCheck } =
     useCheckIfEventRegisteredQuery(EVENT_ID);
-
-  // Fetch event poster
   const { data: posterData, isLoading: isPosterLoading } =
     useGetEventPosterQuery(EVENT_ID);
 
-  // Event registration mutation
-  const [eventRegister, { data, isSuccess, error, isLoading: isUserLoading }] =
+  const [eventRegister, { isSuccess, error, isLoading: isUserLoading }] =
     useEventRegisterMutation();
 
-  // Handle success and error toasts
+  // ✅ Toast handling
   useEffect(() => {
     if (isSuccess) {
       toast.success("Registration Successful! 🎉", {
         position: "top-right",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: theme,
         transition: Bounce,
       });
@@ -156,58 +117,51 @@ const EventRegistrationForm = ({
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: theme,
         transition: Bounce,
       });
     }
   }, [isSuccess, error, theme, refetchEventRegisterCheck]);
 
-  // Type guard for FetchBaseQueryError
-  const isFetchBaseQueryError = (error: any): error is FetchBaseQueryError => {
-    return error != null && "status" in error;
-  };
+  const isFetchBaseQueryError = (error: any): error is FetchBaseQueryError =>
+    error != null && "status" in error;
 
-  // Updated Formik setup with auto-filled session
+  // ✅ Formik setup
   const formik = useFormik<FormValues>({
     initialValues: {
       name: user?.name || "",
       classRollNo: user?.classRollNo || "",
       department: user?.department || "",
       batch: user?.batch || "",
-      session: "2025-2026", // Always set to current academic year
       year: user?.year || "",
       email: user?.email || "",
       whatsappNo: user?.whatsappNo || "",
       paymentUTRNo: "",
     },
     validationSchema: schema,
-    onSubmit: async (values) => {
-      // Updated data structure with session
-      const data = {
-        name: values.name,
-        eventId: EVENT_ID,
-        classRollNo: values.classRollNo,
-        department: values.department,
-        batch: values.batch,
-        session: values.session,
-        year: values.year,
-        email: values.email,
-        whatsappNo: values.whatsappNo,
-        paymentUTRNo: values.paymentUTRNo || undefined, // Send undefined if empty
-      };
-      await eventRegister(data);
-    },
+ onSubmit: async (values) => {
+  const data = {
+    name: values.name,
+    eventId: EVENT_ID,
+    classRollNo: values.classRollNo,
+    department: departmentMapping[values.department], 
+    batch: values.batch,
+    year: values.year,
+    email: values.email,
+    whatsappNo: Number(values.whatsappNo), 
+    paymentUTRNo: "",
+  };
+
+  await eventRegister(data);
+  
+},
+
   });
 
   const { errors, touched, values, handleChange, handleSubmit, setFieldValue } =
     formik;
 
-  // If already registered
+  // ✅ Already registered
   if (dataEventRegisterCheck?.success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 py-20 space-y-4">
@@ -218,84 +172,19 @@ const EventRegistrationForm = ({
               Thank you for registering! A confirmation email will be sent to
               you shortly.
             </p>
-
             <div className="py-8">
               <h2 className="font-semibold text-xl">Join Our Community</h2>
               <p className="text-gray-400 mb-4 text-sm">
                 Stay connected with fellow participants and get event updates.
               </p>
               <Link href={`https://chat.whatsapp.com/FNpP3TgzwTiKQW8jUdLtRE`}>
-                <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950  text-white text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
-                  <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-green-500 to-transparent" />
+                <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
                   <span className="relative z-20 font-medium">Join Now</span>
                 </button>
               </Link>
             </div>
           </CardContent>
         </Card>
-        <Card className="gradient-card shadow-lg max-w-md w-full">
-          <CardContent className="text-center text-white pt-8">
-            <div className="my-8">
-              <h2 className="font-semibold text-xl">
-                AI-Powered Readiness Quiz
-              </h2>
-              <p className="text-gray-400 mb-4 text-sm">
-                Test your React.js knowledge and get personalized
-                recommendations to prepare for the workshop.
-              </p>
-              <Link href={`/events/${EVENT_ID}/prior-knowledge`}>
-                <PrimaryButton>Test Your Skills</PrimaryButton>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Registration close condition (change to false to open registration)
-  if (false) {
-    return (
-      <div className="flex items-center justify-center min-h-screen py-20 mx-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <Rocket className="h-16 w-16 text-red-500 animate-bounce" />
-          <h1 className="text-2xl font-bold text-white">Registration Closed</h1>
-          <p className="text-gray-400 max-w-md">
-            The registration is now{" "}
-            <span className="text-red-400 font-medium">closed</span> as all the
-            seats have been filled.
-            <br />
-            <br />
-            For any queries or concerns, please contact us using the phone
-            number provided in the event post.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (false) {
-    return (
-      <div className="flex items-center justify-center min-h-screen py-20 mx-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <Rocket className="h-16 w-16 text-blue-500 animate-bounce" />
-          <h1 className="text-2xl font-bold text-white">
-            Registration Temporarily Closed
-          </h1>
-          <p className="text-gray-400 max-w-md">
-            Thank you for the overwhelming response! Due to the high number of
-            registrations and limited seats, the registration is currently{" "}
-            <span className="text-red-400 font-medium">temporarily closed</span>
-            .
-            <br />
-            <br />
-            <span className="text-blue-400 font-medium">
-              Registration will reopen today from 5:00 PM to 7:00 PM only.
-            </span>
-            <br />
-            Be ready to secure your spot!
-          </p>
-        </div>
       </div>
     );
   }
@@ -303,6 +192,7 @@ const EventRegistrationForm = ({
   return (
     <div className="min-h-screen flex items-center justify-center py-20 mx-6">
       <Card className="gradient-card shadow-lg max-w-2xl w-full">
+        {/* Poster */}
         <div className="rounded-lg overflow-hidden m-2">
           {isPosterLoading ? (
             <div className="w-full h-48 bg-gray-700 animate-pulse rounded-lg flex items-center justify-center">
@@ -314,13 +204,12 @@ const EventRegistrationForm = ({
               alt="Event Poster"
               className="w-full"
               onError={(e) => {
-                // Fallback to default image if poster fails to load
-                const target = e.target as HTMLImageElement;
-                target.src = "/img/banner_reacrtjs_final.png";
+                (e.target as HTMLImageElement).src = "/img/banner_reacrtjs_final.png";
               }}
             />
           )}
         </div>
+
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-white">
             Event Registration
@@ -341,9 +230,7 @@ const EventRegistrationForm = ({
                   value={values.name}
                   onChange={handleChange}
                   placeholder="Enter your full name"
-                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                    errors.name && touched.name ? "border-red-500" : ""
-                  }`}
+                  className="border-gray-600 gradient-card text-white"
                 />
                 {errors.name && touched.name && (
                   <p className="text-red-500 text-xs mt-1">{errors.name}</p>
@@ -357,31 +244,21 @@ const EventRegistrationForm = ({
                 </Label>
                 <Select
                   value={values.department}
-                  onValueChange={(value) =>
-                    setFieldValue("department", value, true)
-                  }
+                  onValueChange={(value) => setFieldValue("department", value, true)}
                 >
-                  <SelectTrigger
-                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                      errors.department && touched.department
-                        ? "border-red-500"
-                        : ""
-                    }`}
-                  >
+                  <SelectTrigger className="border-gray-600 gradient-card text-white">
                     <SelectValue placeholder="Select your department" />
                   </SelectTrigger>
                   <SelectContent className="gradient-card border-gray-700 text-white">
-                    {departmentList.map((dept) => (
-                      <SelectItem key={dept} value={dept}>
-                        {departmentDisplayMap[dept]}
+                    {Object.keys(departmentMapping).map((short) => (
+                      <SelectItem key={short} value={short}>
+                        {short} {/* 👈 only short form shown */}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {errors.department && touched.department && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.department}
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{errors.department}</p>
                 )}
               </div>
 
@@ -396,68 +273,22 @@ const EventRegistrationForm = ({
                   value={values.classRollNo}
                   onChange={handleChange}
                   placeholder="Enter your roll number"
-                  className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                    errors.classRollNo && touched.classRollNo
-                      ? "border-red-500"
-                      : ""
-                  }`}
+                  className="border-gray-600 gradient-card text-white"
                 />
                 {errors.classRollNo && touched.classRollNo && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.classRollNo}
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{errors.classRollNo}</p>
                 )}
               </div>
 
-              {/* Session - Hidden from users, auto-filled with current academic year */}
-              {/* <div className="space-y-1.5">
-                <Label htmlFor="session" className="text-gray-300">
-                  Session*
-                </Label>
-                <Select
-                  value={values.session}
-                  onValueChange={(value) =>
-                    setFieldValue("session", value, true)
-                  }
-                >
-                  <SelectTrigger
-                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                      errors.session && touched.session ? "border-red-500" : ""
-                    }`}
-                  >
-                    <SelectValue placeholder="Select your session" />
-                  </SelectTrigger>
-                  <SelectContent className="gradient-card border-gray-700 text-white">
-                    {sessionOptions.map((session) => (
-                      <SelectItem key={session} value={session}>
-                        {session}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.session && touched.session && (
-                  <p className="text-red-500 text-xs mt-1">{errors.session}</p>
-                )}
-              </div> */}
-
-              {/* Batch and Year - Grid Layout */}
+              {/* Batch & Year */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Batch */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="batch" className="text-gray-300">
-                    Batch*
-                  </Label>
+                  <Label className="text-gray-300">Batch*</Label>
                   <Select
                     value={values.batch}
-                    onValueChange={(value) =>
-                      setFieldValue("batch", value, true)
-                    }
+                    onValueChange={(value) => setFieldValue("batch", value, true)}
                   >
-                    <SelectTrigger
-                      className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                        errors.batch && touched.batch ? "border-red-500" : ""
-                      }`}
-                    >
+                    <SelectTrigger className="border-gray-600 gradient-card text-white">
                       <SelectValue placeholder="Select batch" />
                     </SelectTrigger>
                     <SelectContent className="gradient-card border-gray-700 text-white">
@@ -472,23 +303,13 @@ const EventRegistrationForm = ({
                     <p className="text-red-500 text-xs mt-1">{errors.batch}</p>
                   )}
                 </div>
-
-                {/* Year */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="year" className="text-gray-300">
-                    Year*
-                  </Label>
+                  <Label className="text-gray-300">Year*</Label>
                   <Select
                     value={values.year}
-                    onValueChange={(value) =>
-                      setFieldValue("year", value, true)
-                    }
+                    onValueChange={(value) => setFieldValue("year", value, true)}
                   >
-                    <SelectTrigger
-                      className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                        errors.year && touched.year ? "border-red-500" : ""
-                      }`}
-                    >
+                    <SelectTrigger className="border-gray-600 gradient-card text-white">
                       <SelectValue placeholder="Select year" />
                     </SelectTrigger>
                     <SelectContent className="gradient-card border-gray-700 text-white">
@@ -505,24 +326,17 @@ const EventRegistrationForm = ({
                 </div>
               </div>
 
-              {/* WhatsApp Number and Email - Grid Layout */}
+              {/* WhatsApp No & Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* WhatsApp Number */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="whatsappNo" className="text-gray-300">
-                    WhatsApp Number*
-                  </Label>
+                  <Label className="text-gray-300">WhatsApp Number*</Label>
                   <Input
                     id="whatsappNo"
                     name="whatsappNo"
                     value={values.whatsappNo}
                     onChange={handleChange}
                     placeholder="Enter your WhatsApp number"
-                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                      errors.whatsappNo && touched.whatsappNo
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className="border-gray-600 gradient-card text-white"
                   />
                   {errors.whatsappNo && touched.whatsappNo && (
                     <p className="text-red-500 text-xs mt-1">
@@ -530,22 +344,16 @@ const EventRegistrationForm = ({
                     </p>
                   )}
                 </div>
-
-                {/* Email Address */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-gray-300">
-                    Email Address*
-                  </Label>
+                  <Label className="text-gray-300">Email*</Label>
                   <Input
                     id="email"
                     name="email"
                     value={values.email}
                     onChange={handleChange}
                     placeholder="Enter your email address"
-                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                      errors.email && touched.email ? "border-red-500" : ""
-                    }`}
-                    disabled={Boolean(user?.email)} // Disable if email is from user data
+                    disabled={Boolean(user?.email)}
+                    className="border-gray-600 gradient-card text-white"
                   />
                   {errors.email && touched.email && (
                     <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -553,27 +361,10 @@ const EventRegistrationForm = ({
                 </div>
               </div>
 
-              {/* Payment UTR Number (Optional) - Commented out */}
-              {/* <div className="space-y-1.5">
-                <Label htmlFor="paymentUTRNo" className="text-gray-300">
-                  Payment UTR Number (Optional)
-                </Label>
-                <Input
-                  id="paymentUTRNo"
-                  name="paymentUTRNo"
-                  value={values.paymentUTRNo}
-                  onChange={handleChange}
-                  placeholder="Enter UTR number if payment is required"
-                  className="border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500"
-                />
-              </div> */}
-
               <Button
                 type="submit"
                 disabled={isUserLoading}
-                className="w-full py-6 px-8 rounded-full font-medium text-sm text-gray-700 dark:text-white 
-                          transition duration-200 hover:shadow-2xl border dark:border-white/10 
-                          bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900"
+                className="w-full py-6 rounded-full font-medium text-sm bg-gradient-to-r from-blue-600 to-blue-800 text-white"
               >
                 {isUserLoading && (
                   <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
@@ -584,7 +375,6 @@ const EventRegistrationForm = ({
           ) : (
             <div className="text-center text-white">
               <p className="text-lg">Registration Successful!</p>
-              <p>Thank you for registering for the event.</p>
             </div>
           )}
         </CardContent>

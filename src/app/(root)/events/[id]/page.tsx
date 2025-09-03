@@ -59,7 +59,7 @@ export default function EventRegistration({
     );
   }
   
-  console.log(eventData);
+  
 
   return (
     <div className="min-h-screen py-20 ">
