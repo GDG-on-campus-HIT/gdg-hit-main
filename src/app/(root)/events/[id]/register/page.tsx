@@ -33,12 +33,13 @@ import Link from "next/link";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-// Updated validation schema without session
+// Updated validation schema with session
 const schema = Yup.object().shape({
   name: Yup.string().required("Please enter your name"),
   classRollNo: Yup.string().required("Enter your class roll number"),
   department: Yup.string().required("Select your department"),
   batch: Yup.string().required("Select your batch"),
+  session: Yup.string().required("Select your session"),
   year: Yup.string().required("Select your year"),
   email: Yup.string()
     .required("Email is required")
@@ -49,12 +50,13 @@ const schema = Yup.object().shape({
   paymentUTRNo: Yup.string(), // Optional field
 });
 
-// Updated form values interface without session
+// Updated form values interface with session
 interface FormValues {
   name: string;
   classRollNo: string;
   department: string;
   batch: string;
+  session: string;
   year: string;
   email: string;
   whatsappNo: string;
@@ -72,25 +74,49 @@ const EventRegistrationForm = ({
   const { theme } = useTheme();
   const { user } = useSelector((state: any) => state.auth);
 
-  // Updated department list to match backend exactly
+  // Updated department list with shorthand notations
   const departmentList = [
-    "Chemical Engineering",
-    "Civil Engineering", 
-    "Mechanical Engineering",
-    "Electrical Engineering",
-    "Electronics & Communication Engineering",
-    "Applied Electronics & Instrumentation Engineering",
-    "Computer Science & Engineering",
-    "Information Technology",
-    "Computer Science & Engineering - Artificial Intelligence and Machine Learning",
-    "Computer Science & Engineering - Data Science",
-    "Computer Science & Engineering - Cyber Security",
-    "Biotechnology",
-    "Food Technology"
+    "CHE", // Chemical Engineering
+    "CE", // Civil Engineering
+    "ME", // Mechanical Engineering
+    "EE", // Electrical Engineering
+    "ECE", // Electronics & Communication Engineering
+    "AEIE", // Applied Electronics & Instrumentation Engineering
+    "CSE", // Computer Science & Engineering
+    "IT", // Information Technology
+    "CSE-AIML", // Computer Science & Engineering - Artificial Intelligence and Machine Learning
+    "CSE-DS", // Computer Science & Engineering - Data Science
+    "CSE-CS", // Computer Science & Engineering - Cyber Security
+    "BT", // Biotechnology
+    "FT", // Food Technology
   ];
 
-  // Updated batch and year options
+  // Department display mapping for better user experience
+  const departmentDisplayMap: { [key: string]: string } = {
+    CHE: "CHE - Chemical Engineering",
+    CE: "CE - Civil Engineering",
+    ME: "ME - Mechanical Engineering",
+    EE: "EE - Electrical Engineering",
+    ECE: "ECE - Electronics & Communication Engineering",
+    AEIE: "AEIE - Applied Electronics & Instrumentation Engineering",
+    CSE: "CSE - Computer Science & Engineering",
+    IT: "IT - Information Technology",
+    "CSE-AIML": "CSE-AIML - AI & Machine Learning",
+    "CSE-DS": "CSE-DS - Data Science",
+    "CSE-CS": "CSE-CS - Cyber Security",
+    BT: "BT - Biotechnology",
+    FT: "FT - Food Technology",
+  };
+
+  // Updated batch, session, and year options
   const batchOptions = ["1st", "2nd", "3rd", "4th"];
+  const sessionOptions = [
+    "2022-26",
+    "2023-27",
+    "2024-28",
+    "2025-29",
+    "2025-2026",
+  ];
   const yearOptions = ["1st", "2nd", "3rd", "4th"];
 
   // Check if user is already registered
@@ -98,7 +124,8 @@ const EventRegistrationForm = ({
     useCheckIfEventRegisteredQuery(EVENT_ID);
 
   // Fetch event poster
-  const { data: posterData, isLoading: isPosterLoading } = useGetEventPosterQuery(EVENT_ID);
+  const { data: posterData, isLoading: isPosterLoading } =
+    useGetEventPosterQuery(EVENT_ID);
 
   // Event registration mutation
   const [eventRegister, { data, isSuccess, error, isLoading: isUserLoading }] =
@@ -145,13 +172,14 @@ const EventRegistrationForm = ({
     return error != null && "status" in error;
   };
 
-  // Updated Formik setup without session
+  // Updated Formik setup with session
   const formik = useFormik<FormValues>({
     initialValues: {
       name: user?.name || "",
       classRollNo: user?.classRollNo || "",
       department: user?.department || "",
       batch: user?.batch || "",
+      session: user?.session || "2025-2026", // Default to current academic year
       year: user?.year || "",
       email: user?.email || "",
       whatsappNo: user?.whatsappNo || "",
@@ -159,13 +187,14 @@ const EventRegistrationForm = ({
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      // Updated data structure without session
+      // Updated data structure with session
       const data = {
         name: values.name,
         eventId: EVENT_ID,
         classRollNo: values.classRollNo,
         department: values.department,
         batch: values.batch,
+        session: values.session,
         year: values.year,
         email: values.email,
         whatsappNo: values.whatsappNo,
@@ -232,10 +261,13 @@ const EventRegistrationForm = ({
           <Rocket className="h-16 w-16 text-red-500 animate-bounce" />
           <h1 className="text-2xl font-bold text-white">Registration Closed</h1>
           <p className="text-gray-400 max-w-md">
-            The registration is now <span className="text-red-400 font-medium">closed</span> as all the seats have been filled.
+            The registration is now{" "}
+            <span className="text-red-400 font-medium">closed</span> as all the
+            seats have been filled.
             <br />
             <br />
-            For any queries or concerns, please contact us using the phone number provided in the event post.
+            For any queries or concerns, please contact us using the phone
+            number provided in the event post.
           </p>
         </div>
       </div>
@@ -277,10 +309,10 @@ const EventRegistrationForm = ({
               <span className="text-gray-400">Loading poster...</span>
             </div>
           ) : (
-            <img 
-              src={posterData?.poster?.url || "/img/banner_reacrtjs_final.png"} 
-              alt="Event Poster" 
-              className="w-full" 
+            <img
+              src={posterData?.poster?.url || "/img/banner_reacrtjs_final.png"}
+              alt="Event Poster"
+              className="w-full"
               onError={(e) => {
                 // Fallback to default image if poster fails to load
                 const target = e.target as HTMLImageElement;
@@ -341,7 +373,7 @@ const EventRegistrationForm = ({
                   <SelectContent className="gradient-card border-gray-700 text-white">
                     {departmentList.map((dept) => (
                       <SelectItem key={dept} value={dept}>
-                        {dept}
+                        {departmentDisplayMap[dept]}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -377,6 +409,37 @@ const EventRegistrationForm = ({
                 )}
               </div>
 
+              {/* Session */}
+              <div className="space-y-1.5">
+                <Label htmlFor="session" className="text-gray-300">
+                  Session*
+                </Label>
+                <Select
+                  value={values.session}
+                  onValueChange={(value) =>
+                    setFieldValue("session", value, true)
+                  }
+                >
+                  <SelectTrigger
+                    className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
+                      errors.session && touched.session ? "border-red-500" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Select your session" />
+                  </SelectTrigger>
+                  <SelectContent className="gradient-card border-gray-700 text-white">
+                    {sessionOptions.map((session) => (
+                      <SelectItem key={session} value={session}>
+                        {session}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.session && touched.session && (
+                  <p className="text-red-500 text-xs mt-1">{errors.session}</p>
+                )}
+              </div>
+
               {/* Batch and Year - Grid Layout */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Batch */}
@@ -392,9 +455,7 @@ const EventRegistrationForm = ({
                   >
                     <SelectTrigger
                       className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                        errors.batch && touched.batch
-                          ? "border-red-500"
-                          : ""
+                        errors.batch && touched.batch ? "border-red-500" : ""
                       }`}
                     >
                       <SelectValue placeholder="Select batch" />
@@ -408,9 +469,7 @@ const EventRegistrationForm = ({
                     </SelectContent>
                   </Select>
                   {errors.batch && touched.batch && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.batch}
-                    </p>
+                    <p className="text-red-500 text-xs mt-1">{errors.batch}</p>
                   )}
                 </div>
 
@@ -427,9 +486,7 @@ const EventRegistrationForm = ({
                   >
                     <SelectTrigger
                       className={`border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500 ${
-                        errors.year && touched.year
-                          ? "border-red-500"
-                          : ""
+                        errors.year && touched.year ? "border-red-500" : ""
                       }`}
                     >
                       <SelectValue placeholder="Select year" />
@@ -443,9 +500,7 @@ const EventRegistrationForm = ({
                     </SelectContent>
                   </Select>
                   {errors.year && touched.year && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.year}
-                    </p>
+                    <p className="text-red-500 text-xs mt-1">{errors.year}</p>
                   )}
                 </div>
               </div>
@@ -498,8 +553,8 @@ const EventRegistrationForm = ({
                 </div>
               </div>
 
-              {/* Payment UTR Number (Optional) */}
-              <div className="space-y-1.5">
+              {/* Payment UTR Number (Optional) - Commented out */}
+              {/* <div className="space-y-1.5">
                 <Label htmlFor="paymentUTRNo" className="text-gray-300">
                   Payment UTR Number (Optional)
                 </Label>
@@ -511,7 +566,7 @@ const EventRegistrationForm = ({
                   placeholder="Enter UTR number if payment is required"
                   className="border-gray-600 gradient-card text-white focus:ring-2 focus:ring-blue-500"
                 />
-              </div>
+              </div> */}
 
               <Button
                 type="submit"
