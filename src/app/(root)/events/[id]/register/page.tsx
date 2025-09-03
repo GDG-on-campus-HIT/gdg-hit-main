@@ -39,6 +39,7 @@ const schema = Yup.object().shape({
   department: Yup.string().required("Select your department"),
   batch: Yup.string().required("Select your batch"),
   year: Yup.string().required("Select your year"),
+  session: Yup.string().required("Select your session"),
   email: Yup.string().required("Email is required").email("Invalid email format"),
   whatsappNo: Yup.string()
     .required("Enter your WhatsApp number")
@@ -69,6 +70,7 @@ interface FormValues {
   department: string;
   batch: string;
   year: string;
+  session: string;
   email: string;
   whatsappNo: string;
   paymentUTRNo: string;
@@ -87,6 +89,7 @@ const EventRegistrationForm = ({
 
   const batchOptions = ["1st", "2nd", "3rd", "4th"];
   const yearOptions = ["1st", "2nd", "3rd", "4th"];
+  const sessionOptions = ["2024-25", "2025-26", "2026-27"];
 
   // ✅ Queries
   const { data: dataEventRegisterCheck, refetch: refetchEventRegisterCheck } =
@@ -134,6 +137,7 @@ const EventRegistrationForm = ({
       department: user?.department || "",
       batch: user?.batch || "",
       year: user?.year || "",
+      session: "2025-26",
       email: user?.email || "",
       whatsappNo: user?.whatsappNo || "",
       paymentUTRNo: "",
@@ -147,9 +151,9 @@ const EventRegistrationForm = ({
     department: departmentMapping[values.department], 
     batch: values.batch,
     year: values.year,
+    session: values.session,
     email: values.email,
-    whatsappNo: Number(values.whatsappNo), 
-    paymentUTRNo: "",
+    whatsappNo: Number(values.whatsappNo)
   };
 
   await eventRegister(data);
@@ -324,6 +328,31 @@ const EventRegistrationForm = ({
                     <p className="text-red-500 text-xs mt-1">{errors.year}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Session */}
+              <div className="space-y-1.5">
+                <Label htmlFor="session" className="text-gray-300">
+                  Session*
+                </Label>
+                <Select
+                  value={values.session}
+                  onValueChange={(value) => setFieldValue("session", value, true)}
+                >
+                  <SelectTrigger className="border-gray-600 gradient-card text-white">
+                    <SelectValue placeholder="Select your session" />
+                  </SelectTrigger>
+                  <SelectContent className="gradient-card border-gray-700 text-white">
+                    {sessionOptions.map((session) => (
+                      <SelectItem key={session} value={session}>
+                        {session}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.session && touched.session && (
+                  <p className="text-red-500 text-xs mt-1">{errors.session}</p>
+                )}
               </div>
 
               {/* WhatsApp No & Email */}
