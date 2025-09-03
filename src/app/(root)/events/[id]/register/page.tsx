@@ -181,7 +181,7 @@ const EventRegistrationForm = ({
               <p className="text-gray-400 mb-4 text-sm">
                 Stay connected with fellow participants and get event updates.
               </p>
-              <Link href={`https://chat.whatsapp.com/FNpP3TgzwTiKQW8jUdLtRE`}>
+              <Link href={`https://chat.whatsapp.com/JF168yZh00rDjYyHbhimQv?mode=ems_copy_c`}>
                 <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
                   <span className="relative z-20 font-medium">Join Now</span>
                 </button>
