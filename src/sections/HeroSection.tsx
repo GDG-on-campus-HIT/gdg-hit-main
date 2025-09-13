@@ -66,7 +66,7 @@ export function HeroSection() {
           shape the future of technology.
         </p>
         <p className="text-lg text-blue-500 text-center my-4">
-          <span className="text-white/60">Upcoming event : </span>Git Set Go
+          {/* <span className="text-white/60">Upcoming event : </span>Git Set Go */}
         </p>
         {/* <div className="flex items-center justify-center w-full">
         <TypewriterEffectSmooth words={words} />
@@ -74,7 +74,7 @@ export function HeroSection() {
         <div className="w-full flex items-start justify-center space-x-5">
           {isMounted && (
             <>
-              <RegisterNowButton />
+              {/* <RegisterNowButton /> */}
               {/* <ScrollToNewsletter /> */}
               <Link href="/about-us">
                 <button className="px-8 py-2 rounded-full relative gradient-card text-gray-700 dark:text-white text-sm hover:shadow-2xl transition duration-200 border dark:border-white/10">

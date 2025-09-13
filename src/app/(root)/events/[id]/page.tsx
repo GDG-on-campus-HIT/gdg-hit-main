@@ -29,19 +29,20 @@ export default function EventRegistration({
   const params = React.use(paramsPromise);
 
   const { isLoading, data, isError } = useEventByIDQuery(params.id);
-  const { 
-    data: contactData, 
-    isLoading: contactLoading, 
-    isError: contactError 
+  const {
+    data: contactData,
+    isLoading: contactLoading,
+    isError: contactError
   } = useGetEventContactsQuery(params.id);
 
   if (isLoading || contactLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading event data</div>;
   if (contactError) return <div>Error loading contact information</div>;
-  
+
   const eventData = data?.event;
   const contacts = contactData?.contactInfo || [];
-  
+
+
   // Safety check: if no event data, show error
   if (!eventData) {
     return (
@@ -58,8 +59,8 @@ export default function EventRegistration({
       </div>
     );
   }
-  
-  
+
+
 
   return (
     <div className="min-h-screen py-20 ">
@@ -154,26 +155,50 @@ export default function EventRegistration({
                 </div>
               </div>
               <div className="flex">
-                <Link
-                  href={`/events/${eventData?._id || params.id}/register`}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl flex items-center"
-                >
-                  Register Now
-                  <svg
-                    className="w-4 h-4 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+                {eventData?.is_upcoming ? (
+                  <Link
+                    href={`/events/${eventData?._id || params.id}/register`}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl flex items-center"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    ></path>
-                  </svg>
-                </Link>
+                    Register Now
+                    <svg
+                      className="w-4 h-4 ml-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      ></path>
+                    </svg>
+                  </Link>
+                ) : (
+                  <button
+                    disabled
+                    className="bg-gray-400 text-white font-medium py-3 px-6 rounded-lg cursor-not-allowed opacity-70 flex items-center"
+                  >
+                    Registration Ended
+                    {/* <svg
+                      className="w-4 h-4 ml-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      ></path>
+                    </svg> */}
+                  </button>
+                )}
+
               </div>
             </div>
             <div className="md:w-1/2 md:pl-10">
@@ -395,4 +420,3 @@ export default function EventRegistration({
     </div>
   );
 }
-  
