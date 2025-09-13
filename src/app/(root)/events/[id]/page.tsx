@@ -41,7 +41,7 @@ export default function EventRegistration({
 
   const eventData = data?.event;
   const contacts = contactData?.contactInfo || [];
-  console.log("Event Data:", eventData);
+
 
   // Safety check: if no event data, show error
   if (!eventData) {
