@@ -2,14 +2,16 @@
 import React from 'react'
 import PrimaryButton from './PrimaryButton'
 
-export function RegisterNowButton() {
+interface RegisterNowButtonProps {
+  eventId: string;
+}
+
+export function RegisterNowButton({ eventId }: RegisterNowButtonProps) {
   const handleClick = () => {
-    // Commented out the original Google Form event registration
-    // window.open('https://forms.gle/FORM_ID', '_blank', 'noopener,noreferrer')
-    
-    // Now redirects to student registration form instead
-    window.location.href = '/events/'
-  }
+    if (!eventId) return;
+    // Redirect to dynamic event page
+    window.location.href = `/events/${eventId}`;
+  };
 
   return (
     <div onClick={handleClick} style={{ cursor: 'pointer' }} role="button" tabIndex={0}>
@@ -17,7 +19,7 @@ export function RegisterNowButton() {
         Register Now
       </PrimaryButton>
     </div>
-  )
+  );
 }
 
 export default RegisterNowButton;
