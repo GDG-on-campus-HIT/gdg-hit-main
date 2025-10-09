@@ -69,9 +69,12 @@ export default function EventRegistration({
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-10 md:mb-0 max-md:order-2 max-md:mt-10">
-              <div className="inline-block bg-blue-600 text-sm px-3 py-1 rounded-full mb-4">
-                UPCOMING EVENT
-              </div>
+              {eventData?.eventDate && (
+                <div className="inline-block bg-blue-600 text-sm px-3 py-1 rounded-full mb-4">
+                  {eventData.is_upcoming ? "UPCOMING EVENT" : "COMPLETED EVENT"}
+                </div>
+              )}
+
               <h1 className="text-3xl md:text-5xl  font-bold mb-4">
                 {eventData?.name || "Event Title"}
               </h1>
