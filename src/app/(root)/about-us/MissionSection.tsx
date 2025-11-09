@@ -15,7 +15,7 @@ const Card: React.FC<CardProps> = ({
   borderColor,
 }) => {
   return (
-    <div className="relative gradient-card border-[1px] dark:border-white/5 rounded-xl">
+    <div className="relative gradient-card border-[1px] dark:border-white/5 rounded-xl overflow-hidden">
       <GlowingEffect
         spread={40}
         glow={true}
@@ -24,15 +24,15 @@ const Card: React.FC<CardProps> = ({
         inactiveZone={0.01}
       />
       <div
-        className={`group p-8 rounded-xl  transition-all duration-300 animate__animated animate__fadeInUp`}
+        className={`group p-6 sm:p-8 rounded-xl transition-all duration-300 animate__animated animate__fadeInUp`}
       >
         <div
-          className={`h-14 w-14 bg-gradient-to-br from-${borderColor}-500 to-${borderColor}-700 rounded-lg flex items-center justify-center mb-6`}
+          className={`h-12 w-12 sm:h-14 sm:w-14 bg-gradient-to-br from-${borderColor}-500 to-${borderColor}-700 rounded-lg flex items-center justify-center mb-4 sm:mb-6`}
         >
           {icon}
         </div>
-        <h3 className="text-xl font-bold text-gray-200 mb-4">{title}</h3>
-        <p className="text-gray-400">{description}</p>
+        <h3 className="text-lg sm:text-xl font-bold text-gray-200 mb-3 sm:mb-4">{title}</h3>
+        <p className="text-sm sm:text-base text-gray-400 break-words">{description}</p>
       </div>
     </div>
   );
@@ -45,9 +45,9 @@ type ListItemProps = {
 
 const ListItem: React.FC<ListItemProps> = ({ icon, text }) => {
   return (
-    <li className="flex items-center">
-      {icon}
-      {text}
+    <li className="flex items-start sm:items-center break-words">
+      <span className="flex-shrink-0">{icon}</span>
+      <span className="text-sm sm:text-base">{text}</span>
     </li>
   );
 };
@@ -170,23 +170,23 @@ const MissionSection: React.FC = () => {
   ];
 
   return (
-    <section id="mission" className="py-20">
-      <div className="max-container">
+    <section id="mission" className="py-20 overflow-x-hidden">
+      <div className="max-container px-4">
         <div className="mb-8 flex flex-col items-center justify-center">
-          <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl white-gradient-text mb-3 leading-tight text-center px-2">
             Our Mission & Values
           </h2>
-          <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
+          <p className="max-w-2xl text-sm sm:text-base text-gray-700 dark:text-gray-400 leading-relaxed text-center px-4">
             Guided by innovation, driven by community, committed to excellence
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-4 my-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-3">
           {missionCards.map((card, index) => (
             <Card key={index} {...card} />
           ))}
         </div>
-        <div className="mt-4 grid md:grid-cols-2 gap-4">
-          <div className="relative gradient-card border-[1px] dark:border-white/5 rounded-xl">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="relative gradient-card border-[1px] dark:border-white/5 rounded-xl overflow-hidden">
             <GlowingEffect
               spread={40}
               glow={true}
@@ -194,8 +194,8 @@ const MissionSection: React.FC = () => {
               proximity={64}
               inactiveZone={0.01}
             />
-            <div className="p-8 ">
-              <h3 className="text-2xl font-bold text-gray-200 mb-6">
+            <div className="p-6 sm:p-8">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-200 mb-6">
                 Our Purpose
               </h3>
               <ul className="space-y-4 text-gray-400">
@@ -205,7 +205,7 @@ const MissionSection: React.FC = () => {
               </ul>
             </div>
           </div>
-          <div className="relative gradient-card border-[1px] dark:border-white/5 rounded-xl">
+          <div className="relative gradient-card border-[1px] dark:border-white/5 rounded-xl overflow-hidden">
             <GlowingEffect
               spread={40}
               glow={true}
@@ -213,8 +213,8 @@ const MissionSection: React.FC = () => {
               proximity={64}
               inactiveZone={0.01}
             />
-            <div className=" p-8 ro">
-              <h3 className="text-2xl font-bold text-gray-200 mb-6">
+            <div className="p-6 sm:p-8">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-200 mb-6">
                 Our Commitment
               </h3>
               <ul className="space-y-4 text-gray-400">

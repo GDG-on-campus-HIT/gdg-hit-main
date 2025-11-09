@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
       <head>
         {/* Google Analytics Script */}
         <Script
@@ -40,7 +40,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`${poppins.variable} ${poppins.className} min-h-screen`}>
+      <body className={`${poppins.variable} ${poppins.className} min-h-screen overflow-x-hidden`}>
         <Providers>
           <ThemeProvider
             attribute="class"
