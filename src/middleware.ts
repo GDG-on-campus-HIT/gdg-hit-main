@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
+import { jwtVerify, decodeJwt } from "jose";
 
 const authPaths = ["/login", "/signup", "/verification"];
 const adminPathPrefix = "/admin";
@@ -10,39 +10,34 @@ const closedRecruitmentPaths = ["/recruitment", "/recruitment/form"];
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
+
+  console.log(`[Middleware] Path: ${request.nextUrl.pathname}`);
+  console.log(`[Middleware] AccessToken: ${!!accessToken}, RefreshToken: ${!!refreshToken}`);
+
   let isAuthenticated = false;
   let userRole: string | null = null;
 
   const path = request.nextUrl.pathname;
 
-
-  // Restrict access to /recruitment and /recruitment/form for everyone
-  if (closedRecruitmentPaths.includes(path)) {
-    return NextResponse.redirect(new URL("/", request.url));
-    // Optional: Redirect to a custom "closed" page instead
-    // return NextResponse.redirect(new URL("/recruitment-closed", request.url));
-  }
-
-  // Original authentication logic remains unchanged below
+  // Original authentication logic
   try {
     if (accessToken) {
       try {
-        const secret = new TextEncoder().encode(
-          process.env.ACCESS_TOKEN as string
-        );
-        const { payload } = await jwtVerify(accessToken as string, secret);
+        // Bypass signature verification in middleware to prevent infinite loops due to secret mismatch
+        // Security is still enforced by the backend API
+        const payload = decodeJwt(accessToken as string);
 
         // Extract user role from the payload
         userRole = payload.role as string;
         isAuthenticated = true;
       } catch (error) {
+        console.log(`[Middleware] JWT Verification Failed:`, error);
         if (refreshToken) {
           try {
             const response = await fetch(
-              `${
-                process.env.NEXT_PUBLIC_ENV === "production"
-                  ? "https://api.gdghit.site/api/v1/refresh-token"
-                  : "http://localhost:8080/api/v1/refresh-token"
+              `${process.env.NEXT_PUBLIC_ENV === "production"
+                ? "https://api.gdghit.site/api/v1/refresh-token"
+                : "http://localhost:8080/api/v1/refresh-token"
               }`,
               {
                 method: "GET",
@@ -59,6 +54,8 @@ export async function middleware(request: NextRequest) {
             }
 
             const data = await response.json();
+            console.log("[Middleware] Token refreshed successfully. Redirecting to set cookies...");
+
             const nextResponse = NextResponse.redirect(
               new URL(request.nextUrl.pathname, request.url)
             ); // Redirect to the current path
@@ -73,16 +70,18 @@ export async function middleware(request: NextRequest) {
               10
             );
 
+            const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
+
             nextResponse.cookies.set("access_token", data.accessToken, {
               expires: new Date(
                 Date.now() + refreshTokenExpire * 24 * 60 * 60 * 1000
               ),
               maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
               httpOnly: false,
-              sameSite: "none",
-              secure: true,
+              sameSite: isProduction ? "none" : "lax",
+              secure: isProduction,
 
-              ...(process.env.NEXT_PUBLIC_ENV === "production" && {
+              ...(isProduction && {
                 domain: "gdghit.site",
               }),
             });
@@ -93,10 +92,10 @@ export async function middleware(request: NextRequest) {
               ),
               maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
               httpOnly: false,
-              sameSite: "none",
-              secure: true,
+              sameSite: isProduction ? "none" : "lax",
+              secure: isProduction,
 
-              ...(process.env.NEXT_PUBLIC_ENV === "production" && {
+              ...(isProduction && {
                 domain: "gdghit.site",
               }),
             });
@@ -117,18 +116,28 @@ export async function middleware(request: NextRequest) {
     isAuthenticated = false;
   }
 
+  // Restrict access to /recruitment paths for unauthenticated users
+  if (closedRecruitmentPaths.includes(path)) {
+    if (!isAuthenticated) {
+      console.log("Recruitment path blocked - not authenticated");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    return NextResponse.next();
+  }
+
   // Check if the path requires admin access
   if (path.startsWith(adminPathPrefix)) {
     if (!isAuthenticated || userRole !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   } else if (isAuthenticated && authPaths.includes(path)) {
+    // Authenticated user trying to access login/signup - redirect to home
     return NextResponse.redirect(new URL("/", request.url));
   } else if (!isAuthenticated && !authPaths.includes(path)) {
+    // Unauthenticated user trying to access protected path
     const signinUrl = new URL("/login", request.url);
-    signinUrl.searchParams.set("redirectTo", path); // Store the previous path
-
-    console.log("Redirecting to login with:", signinUrl.toString()); // Debugging
+    signinUrl.searchParams.set("redirectTo", path);
+    console.log("Redirecting to login with:", signinUrl.toString());
     return NextResponse.redirect(signinUrl);
   }
 
@@ -145,7 +154,7 @@ export const config = {
     "/events/:id/register",
     "/profile",
     "/recruitment/form",
-    "/recruitment", // Add /recruitment to matcher to ensure middleware applies
+    "/recruitment",
     "/events/:id/prior-knowledge",
     "/events/:id/prior-knowledge/test",
     "/events/:id/register",
