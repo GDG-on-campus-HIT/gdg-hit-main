@@ -23,6 +23,7 @@ import {
   useEventRegisterMutation,
   useCheckIfEventRegisteredQuery,
   useGetEventPosterQuery,
+  useEventByIDQuery,
 } from "@/redux/features/api/event/eventApi";
 import { ImSpinner2 } from "react-icons/im";
 import { Bounce, toast } from "react-toastify";
@@ -96,6 +97,7 @@ const EventRegistrationForm = ({
     useCheckIfEventRegisteredQuery(EVENT_ID);
   const { data: posterData, isLoading: isPosterLoading } =
     useGetEventPosterQuery(EVENT_ID);
+  const { data: eventData } = useEventByIDQuery(EVENT_ID);
 
   const [eventRegister, { isSuccess, error, isLoading: isUserLoading }] =
     useEventRegisterMutation();
@@ -115,7 +117,7 @@ const EventRegistrationForm = ({
     if (error) {
       const errorMessage = isFetchBaseQueryError(error)
         ? (error.data as { message?: string })?.message ||
-          "Registration failed. Please try again."
+        "Registration failed. Please try again."
         : "Registration failed. Please try again.";
       toast.error(errorMessage, {
         position: "top-right",
@@ -143,22 +145,22 @@ const EventRegistrationForm = ({
       paymentUTRNo: "",
     },
     validationSchema: schema,
- onSubmit: async (values) => {
-  const data = {
-    name: values.name,
-    eventId: EVENT_ID,
-    classRollNo: values.classRollNo,
-    department: departmentMapping[values.department], 
-    batch: values.batch,
-    year: values.year,
-    session: values.session,
-    email: values.email,
-    whatsappNo: Number(values.whatsappNo)
-  };
+    onSubmit: async (values) => {
+      const data = {
+        name: values.name,
+        eventId: EVENT_ID,
+        classRollNo: values.classRollNo,
+        department: departmentMapping[values.department],
+        batch: values.batch,
+        year: values.year,
+        session: values.session,
+        email: values.email,
+        whatsappNo: Number(values.whatsappNo)
+      };
 
-  await eventRegister(data);
-  
-},
+      await eventRegister(data);
+
+    },
 
   });
 
@@ -181,11 +183,13 @@ const EventRegistrationForm = ({
               <p className="text-gray-400 mb-4 text-sm">
                 Stay connected with fellow participants and get event updates.
               </p>
-              <Link href={`https://chat.whatsapp.com/I05qT4HXSSaAKBUFTUnND8?mode=wwt`}>
-                <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
-                  <span className="relative z-20 font-medium">Join Now</span>
-                </button>
-              </Link>
+              {eventData?.event?.whatsappLink && (
+                <Link href={eventData?.event?.whatsappLink} target="_blank">
+                  <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
+                    <span className="relative z-20 font-medium">Join Now</span>
+                  </button>
+                </Link>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -405,16 +409,18 @@ const EventRegistrationForm = ({
             <div className="text-center text-white">
               <p className="text-lg">Registration Successful!</p>
               <div className="py-8">
-              <h2 className="font-semibold text-xl">Join Our Community</h2>
-              <p className="text-gray-400 mb-4 text-sm">
-                Stay connected with fellow participants and get event updates.
-              </p>
-              <Link href={`https://chat.whatsapp.com/I05qT4HXSSaAKBUFTUnND8?mode=wwt`}>
-                <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
-                  <span className="relative z-20 font-medium">Join Now</span>
-                </button>
-              </Link>
-            </div>
+                <h2 className="font-semibold text-xl">Join Our Community</h2>
+                <p className="text-gray-400 mb-4 text-sm">
+                  Stay connected with fellow participants and get event updates.
+                </p>
+                {eventData?.event?.whatsappLink && (
+                  <Link href={eventData?.event?.whatsappLink} target="_blank">
+                    <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
+                      <span className="relative z-20 font-medium">Join Now</span>
+                    </button>
+                  </Link>
+                )}
+              </div>
             </div>
           )}
         </CardContent>
