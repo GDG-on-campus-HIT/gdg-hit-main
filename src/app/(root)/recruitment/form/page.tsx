@@ -1,17 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import React, { useEffect, useState, useMemo } from "react";
+import { useFormik, getIn } from "formik";
 import { Button } from "@/components/ui/button";
 import CustomInput from "./CustomInput";
 import CustomSelector from "./CustomSelector";
 import CustomMultiSelector from "./CustomMultiSelector";
-import { getStep3Schema, step1Schema, step4Schema } from "./schema";
 import CustomTextArea from "./CustomTextArea";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { branch, position, year } from "./data";
+import { branch, year } from "./data";
+import { step1Schema, step4Schema } from "./schema";
+import * as Yup from "yup";
 import {
   useIsAlreadyRegisteredQuery,
   useRecruitmentFormSubmissionMutation,
+  useGetActiveRecruitmentFormQuery
 } from "@/redux/features/api/apiSlice";
 import { Bounce, toast } from "react-toastify";
 import { useTheme } from "next-themes";
@@ -23,8 +25,15 @@ const Page = () => {
   const {
     data: dataRecruitmentRegisterCheck,
     isLoading: isdataRecruitmentLoading,
-    refetch: refetchRecruitmentRegisterCheck 
+    refetch: refetchRecruitmentRegisterCheck
   } = useIsAlreadyRegisteredQuery({});
+
+  const {
+    data: activeFormData,
+    isLoading: isActiveFormLoading
+  } = useGetActiveRecruitmentFormQuery({});
+
+  const activeForm = activeFormData?.form;
 
   const { theme } = useTheme();
   const [step, setStep] = useState(1);
@@ -68,9 +77,49 @@ const Page = () => {
         });
       }
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, theme, refetchRecruitmentRegisterCheck]);
+
+  // Dynamic Schema Generation for Step 3 (Role Specific)
+  const dynamicSchema = useMemo(() => {
+    if (!activeForm || !selectedPositions.length) return Yup.object();
+
+    const schemaShape: any = {};
+
+    selectedPositions.forEach((posName) => {
+      // Find the role definition in the active form
+      const roleDef = activeForm.roles.find((r: any) => r.roleName === posName);
+      if (roleDef) {
+        const roleShape: any = {};
+        roleDef.fields.forEach((field: any) => {
+          let validator = Yup.string(); // Default to string
+
+          if (field.type === 'email') {
+            validator = validator.email("Invalid email format");
+          }
+          else if (field.type === 'url') {
+            validator = validator.url("Invalid URL format");
+          }
+
+          if (field.required) {
+            validator = validator.required(`${field.label} is required`);
+          }
+
+          roleShape[field.name] = validator;
+        });
+
+        // Add the role object schema to the main shape
+        schemaShape[posName] = Yup.object().shape(roleShape);
+      }
+    });
+
+    return Yup.object().shape({
+      roleSpecific: Yup.object().shape(schemaShape)
+    });
+  }, [selectedPositions, activeForm]);
+
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       // Step 1
       fullName: "",
@@ -81,51 +130,8 @@ const Page = () => {
       branchYear: "",
       positions: [],
 
-      // Step 3
-      webDeveloper: {
-        technologies: "",
-        projects: "",
-        learning: "",
-        featureSuggestion: "",
-      },
-      appDeveloper: {
-        technologies: "",
-        projects: "",
-        learning: "",
-        featureSuggestion: "",
-      },
-      machineLearning: {
-        technologies: "",
-        projects: "",
-        learning: "",
-      },
-      techMember: {
-        technologies: "",
-        learning: "",
-      },
-      publicRelations: {
-        mockPost: "",
-        experience: "",
-      },
-      videoEditor: {
-        tools: "",
-        videoLink: "",
-        motionGraphics: "",
-      },
-      contentWriter: {
-        hasWrittenBefore: "",
-      },
-      graphicsDesigner: {
-        designTools: "",
-        portfolioLink: "",
-        socialMediaDesign: "",
-      },
-      photographer: {
-        photographyType: "",
-        eventExperience: "",
-        photographyPortfolio: "",
-        cameraModel: "",
-      },
+      // Step 3 (Dynamic)
+      roleSpecific: {},
 
       // Step 4
       linkedIn: "",
@@ -136,11 +142,25 @@ const Page = () => {
       step === 1
         ? step1Schema
         : step === 2
-        ? getStep3Schema(selectedPositions)
-        : step4Schema,
+          ? dynamicSchema
+          : step4Schema,
     onSubmit: async (values) => {
       console.log("Submitted Data:", values);
+
+      // Validate formId exists
+      if (!activeForm?._id) {
+        toast.error("No active recruitment form found. Please refresh the page.", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: theme,
+          transition: Bounce,
+        });
+        console.error("❌ FormId is missing:", activeForm);
+        return;
+      }
+
       const data = {
+        formId: activeForm._id,
         generalInfo: {
           fullName: values.fullName,
           email: values.email,
@@ -150,50 +170,77 @@ const Page = () => {
           branchYear: values.branchYear,
           positions: values.positions,
         },
-        roleSpecific: {
-          webDeveloper: values.webDeveloper,
-          appDeveloper: values.appDeveloper,
-          machineLearning: values.machineLearning,
-          techMember: values.techMember,
-          publicRelations: values.publicRelations,
-          videoEditor: values.videoEditor,
-          contentWriter: values.contentWriter,
-          graphicsDesigner: values.graphicsDesigner,
-          photographer: values.photographer,
-        },
+        roleSpecific: values.roleSpecific,
         finalInfo: {
           linkedIn: values.linkedIn,
           portfolio: values.portfolio,
           previousClubs: values.previousClubs,
         },
       };
-      await recruitmentFormSubmission(data);
+
+      console.log("📤 Data being sent to server:", JSON.stringify(data, null, 2));
+
+      try {
+        await recruitmentFormSubmission(data);
+      } catch (err: any) {
+        console.error("❌ Submission Error Details:");
+        console.error("Error object:", err);
+        console.error("Response data:", err?.response?.data);
+        console.error("Response status:", err?.response?.status);
+        console.error("Request data:", err?.config?.data);
+
+        // The error is already being handled by the useEffect hook, 
+        // but we log it here for debugging purposes
+      }
     },
   });
 
-  const { errors, touched, values, handleChange, handleSubmit, setFieldValue } =
-    formik;
+  const { errors, touched, values, handleChange, handleSubmit, setFieldValue } = formik;
 
   const handleNext = async () => {
     // Trigger form validation for the current step
     const isValid = await formik.validateForm();
 
+    // Debug validation
+    console.log("Validation Errors for Step", step, isValid);
+    console.log("Current Values:", values);
+
+    // ValidateForm returns errors object. If empty, valid.
+    const stepErrors = (step === 1)
+      ? ['fullName', 'phoneNumber', 'rollNumber', 'branch', 'branchYear', 'positions']
+      : (step === 2)
+        ? ['roleSpecific']
+        : ['previousClubs']; // linkedIn/portfolio optional usually or handled by schema
+
+    // But formik.errors is the source of truth after validateForm.
+    // Because schema changes per step, validateForm() only validates current step schema!
+    // So checking Object.keys(isValid).length is correct IF validationSchema is correct.
+
     if (Object.keys(isValid).length === 0) {
-      // If the form is valid, proceed to the next step
       if (step < 3) {
         setStep(step + 1);
       }
     } else {
-      // If the form is not valid, show the validation errors
-      formik.setTouched({
-        ...formik.touched,
-        ...Object.keys(isValid).reduce(
-          (acc: { [key: string]: boolean }, key) => {
-            acc[key] = true;
-            return acc;
-          },
-          {}
-        ),
+      // Recursively create touched object from errors so nested fields show their error messages
+      const generateTouched = (errObj: any): any => {
+        if (!errObj) return undefined;
+        if (typeof errObj === 'string') return true;
+        if (typeof errObj === 'object') {
+          const touchedShape: any = {};
+          Object.keys(errObj).forEach(key => {
+            touchedShape[key] = generateTouched(errObj[key]);
+          });
+          return touchedShape;
+        }
+        return true;
+      };
+
+      formik.setTouched(generateTouched(isValid));
+      toast.error("Please fix the errors in the form to proceed", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: theme,
+        transition: Bounce,
       });
     }
   };
@@ -204,8 +251,20 @@ const Page = () => {
     }
   };
 
-  if (isdataRecruitmentLoading) {
+  if (isdataRecruitmentLoading || isActiveFormLoading) {
     return <Loader />;
+  }
+
+  // If no active form is returned
+  if (!activeForm && !isActiveFormLoading && !dataRecruitmentRegisterCheck?.isRegistered) {
+    return (
+      <div className="min-h-screen w-full relative flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">No Active Recruitment</h2>
+          <p>There are currently no active recruitment forms.</p>
+        </div>
+      </div>
+    );
   }
 
   if (dataRecruitmentRegisterCheck?.isRegistered) {
@@ -229,26 +288,31 @@ const Page = () => {
     );
   }
 
+  // Transform activeForm roles for selector
+  const positionList = activeForm?.roles.map((r: any) => ({
+    label: r.roleName,
+    value: r.roleName
+  })) || [];
+
   return (
     <div className="min-h-screen w-full relative">
       <div className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto shadow-lg rounded-lg  gradient-card">
+        <div className="max-w-4xl mx-auto shadow-lg rounded-lg gradient-card">
           <div className="p-6 md:p-8">
             {/* Heading and descriptions */}
             <div className="flex justify-between items-center mb-8">
               <div className="space-y-1">
                 <h1 className="text-3xl max-md:text-2xl font-bold from-blue-400  to-blue-600 bg-gradient-to-b bg-clip-text text-transparent">
-                  GDG HIT Recruitment
+                  {activeForm?.title || "Recruitment Form"}
                 </h1>
                 <div className="flex space-x-2 my-2">
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className={`h-2 rounded-full transition-all  ${
-                        i === step
-                          ? "w-8 bg-blue-500"
-                          : "w-4 bg-gray-300 dark:bg-gray-600"
-                      }`}
+                      className={`h-2 rounded-full transition-all  ${i === step
+                        ? "w-8 bg-blue-500"
+                        : "w-4 bg-gray-300 dark:bg-gray-600"
+                        }`}
                     ></div>
                   ))}
                 </div>
@@ -343,7 +407,7 @@ const Page = () => {
                       setFieldValue(field, value);
                       setSelectedPositions(value);
                     }}
-                    list={position}
+                    list={positionList}
                   />
                 </>
               )}
@@ -353,351 +417,75 @@ const Page = () => {
                   <h2 className="text-xl mb-3 font-bold from-red-400  to-red-600 bg-gradient-to-b bg-clip-text text-transparent">
                     Role-Specific Questions
                   </h2>
-                  {selectedPositions.includes("webDeveloper") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Web Developer
-                      </h2>
-                      <CustomTextArea
-                        label="What languages and tools do you use for web development?"
-                        id="webDeveloper.technologies"
-                        placeholder="eg.: HTML, CSS, JavaScript, React, Nodejs"
-                        handleChange={handleChange}
-                        value={values.webDeveloper.technologies}
-                        error={errors.webDeveloper?.technologies}
-                        touched={touched.webDeveloper?.technologies}
-                        rows={2}
-                      />
 
-                      <CustomTextArea
-                        label="Have you created any personal websites or projects?"
-                        id="webDeveloper.projects"
-                        placeholder="Please share links if available"
-                        handleChange={handleChange}
-                        value={values.webDeveloper.projects}
-                        error={errors.webDeveloper?.projects}
-                        touched={touched.webDeveloper?.projects}
-                        rows={2}
-                      />
-                      <CustomTextArea
-                        label="What’s a concept or tool you’re currently learning?"
-                        id="webDeveloper.learning"
-                        placeholder="Share what you are currently learing about"
-                        handleChange={handleChange}
-                        value={values.webDeveloper.learning}
-                        error={errors.webDeveloper?.learning}
-                        touched={touched.webDeveloper?.learning}
-                        rows={2}
-                      />
+                  {selectedPositions.map((posName) => {
+                    const roleDef = activeForm?.roles.find((r: any) => r.roleName === posName);
+                    if (!roleDef) return null;
 
-                      <CustomTextArea
-                        label="If you had the chance, what feature would you add to the GDG HIT website?"
-                        id="webDeveloper.featureSuggestion"
-                        placeholder="Share your creative ideas"
-                        handleChange={handleChange}
-                        value={values.webDeveloper.featureSuggestion}
-                        error={errors.webDeveloper?.featureSuggestion}
-                        touched={touched.webDeveloper?.featureSuggestion}
-                        rows={2}
-                      />
-                    </>
-                  )}
+                    return (
+                      <div key={posName} className="mb-6">
+                        <h2 className="text-lg font-bold from-yellow-400 to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent mb-4">
+                          {posName}
+                        </h2>
+                        {roleDef.description && (
+                          <p className="text-sm text-gray-500 mb-4">{roleDef.description}</p>
+                        )}
 
-                  {selectedPositions.includes("appDeveloper") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        App Developer
-                      </h2>
-                      <CustomTextArea
-                        label="Do you develop apps for Android, iOS, or both? Which tools or languages do you use?"
-                        id="appDeveloper.technologies"
-                        placeholder="eg.: Java, Dart, Android Studio, Flutter, React Native"
-                        handleChange={handleChange}
-                        value={values.appDeveloper.technologies}
-                        error={errors.appDeveloper?.technologies}
-                        touched={touched.appDeveloper?.technologies}
-                        rows={2}
-                      />
+                        <div className="space-y-4">
+                          {roleDef.fields.map((field: any) => {
+                            // Use bracket notation for paths with spaces: roleSpecific["Role Name"]["fieldName"]
+                            const fieldPath = `roleSpecific["${posName}"]["${field.name}"]`;
+                            const fieldError = getIn(errors, fieldPath);
+                            const fieldTouched = getIn(touched, fieldPath);
+                            const fieldValue = getIn(values, fieldPath) || "";
 
-                      <CustomTextArea
-                        label="Have you built any apps before?"
-                        id="appDeveloper.projects"
-                        placeholder="Please share links if available"
-                        handleChange={handleChange}
-                        value={values.appDeveloper.projects}
-                        error={errors.appDeveloper?.projects}
-                        touched={touched.appDeveloper?.projects}
-                        rows={2}
-                      />
-                      <CustomTextArea
-                        label="What’s a concept or tool you’re currently learning?"
-                        id="appDeveloper.learning"
-                        placeholder="Share what you are currently learing about"
-                        handleChange={handleChange}
-                        value={values.appDeveloper.learning}
-                        error={errors.appDeveloper?.learning}
-                        touched={touched.appDeveloper?.learning}
-                        rows={2}
-                      />
-
-                      <CustomTextArea
-                        label="What kind of app would you like to create for GDG HIT to help the student community?"
-                        id="appDeveloper.featureSuggestion"
-                        placeholder="Share your creative ideas"
-                        handleChange={handleChange}
-                        value={values.appDeveloper.featureSuggestion}
-                        error={errors.appDeveloper?.featureSuggestion}
-                        touched={touched.appDeveloper?.featureSuggestion}
-                        rows={2}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("machineLearning") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Machine Learning
-                      </h2>
-                      <CustomTextArea
-                        label="What ML frameworks and libraries do you use most often?"
-                        id="machineLearning.technologies"
-                        placeholder="e.g., TensorFlow, PyTorch, Scikit-Learn, Keras, etc."
-                        handleChange={handleChange}
-                        value={values.machineLearning.technologies}
-                        error={errors.machineLearning?.technologies}
-                        touched={touched.machineLearning?.technologies}
-                        rows={2}
-                      />
-
-                      <CustomTextArea
-                        label="Have you worked on any personal ML projects?"
-                        id="machineLearning.projects"
-                        placeholder="Please share links if available"
-                        handleChange={handleChange}
-                        value={values.machineLearning.projects}
-                        error={errors.machineLearning?.projects}
-                        touched={touched.machineLearning?.projects}
-                        rows={2}
-                      />
-                      <CustomTextArea
-                        label="What’s an ML concept or tool you are currently learning?"
-                        id="machineLearning.learning"
-                        placeholder="Share what you are currently learing about"
-                        handleChange={handleChange}
-                        value={values.machineLearning.learning}
-                        error={errors.machineLearning?.learning}
-                        touched={touched.machineLearning?.learning}
-                        rows={2}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("techMember") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Tech Member
-                      </h2>
-                      <CustomTextArea
-                        label="What technologies and programming languages are you most comfortable with?"
-                        id="techMember.technologies"
-                        placeholder="e.g., Java, Python, C++, etc."
-                        handleChange={handleChange}
-                        value={values.techMember.technologies}
-                        error={errors.techMember?.technologies}
-                        touched={touched.techMember?.technologies}
-                        rows={2}
-                      />
-                      <CustomTextArea
-                        label="What’s a new technology or concept you are currently learning?"
-                        id="techMember.learning"
-                        placeholder="Share what you are currently learing about"
-                        handleChange={handleChange}
-                        value={values.techMember.learning}
-                        error={errors.techMember?.learning}
-                        touched={touched.techMember?.learning}
-                        rows={2}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("publicRelations") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Public Relations
-                      </h2>
-                      <CustomTextArea
-                        label="Why do you think you are fit for Public Relations?"
-                        id="publicRelations.mockPost"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.publicRelations.mockPost}
-                        error={errors.publicRelations?.mockPost}
-                        touched={touched.publicRelations?.mockPost}
-                        rows={2}
-                      />
-
-                      <CustomTextArea
-                        label="Do you have experience in handling social media, outreach, or event management?"
-                        id="publicRelations.experience"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.publicRelations.experience}
-                        error={errors.publicRelations?.experience}
-                        touched={touched.publicRelations?.experience}
-                        rows={2}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("videoEditor") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Video Editor
-                      </h2>
-                      <CustomTextArea
-                        label="Which video editing tools do you use"
-                        id="videoEditor.tools"
-                        placeholder="eg.-Premiere Pro, DaVinci Resolve, CapCut, etc"
-                        handleChange={handleChange}
-                        value={values.videoEditor?.tools}
-                        error={errors.videoEditor?.tools}
-                        touched={touched.videoEditor?.tools}
-                        rows={2}
-                      />
-
-                      <CustomTextArea
-                        label="Provide a link to a video you've edited"
-                        id="videoEditor.videoLink"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.videoEditor.videoLink}
-                        error={errors.videoEditor?.videoLink}
-                        touched={touched.videoEditor?.videoLink}
-                        rows={2}
-                      />
-
-                      <CustomTextArea
-                        label="Are you familiar with color grading, motion graphics, or animations?"
-                        id="videoEditor.motionGraphics"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.videoEditor.motionGraphics}
-                        error={errors.videoEditor?.motionGraphics}
-                        touched={touched.videoEditor?.motionGraphics}
-                        rows={2}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("contentWriter") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Content Writer
-                      </h2>
-                      <CustomTextArea
-                        label="Have you written blogs/articles before"
-                        id="contentWriter.hasWrittenBefore"
-                        placeholder=" If Yes, share a sample or link"
-                        handleChange={handleChange}
-                        value={values.contentWriter?.hasWrittenBefore}
-                        error={errors.contentWriter?.hasWrittenBefore}
-                        touched={touched.contentWriter?.hasWrittenBefore}
-                        rows={2}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("graphicsDesigner") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Graphic Designer
-                      </h2>
-                      <CustomTextArea
-                        label="Which design tools do you use?"
-                        id="graphicsDesigner.designTools"
-                        placeholder="eg.- Photoshop, Illustrator, Figma, Canva, etc"
-                        handleChange={handleChange}
-                        value={values.graphicsDesigner?.designTools}
-                        error={errors.graphicsDesigner?.designTools}
-                        touched={touched.graphicsDesigner?.designTools}
-                        rows={1}
-                      />
-
-                      <CustomTextArea
-                        label="Provide a link to your design portfolio"
-                        id="graphicsDesigner.portfolioLink"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.graphicsDesigner?.portfolioLink}
-                        error={errors.graphicsDesigner?.portfolioLink}
-                        touched={touched.graphicsDesigner?.portfolioLink}
-                        rows={1}
-                      />
-
-                      <CustomTextArea
-                        label="Are you comfortable creating social media banners, event posters, and UI/UX designs?"
-                        id="graphicsDesigner.socialMediaDesign"
-                        placeholder="Yes/No"
-                        handleChange={handleChange}
-                        value={values.graphicsDesigner?.socialMediaDesign}
-                        error={errors.graphicsDesigner?.socialMediaDesign}
-                        touched={touched.graphicsDesigner?.socialMediaDesign}
-                        rows={1}
-                      />
-                    </>
-                  )}
-
-                  {selectedPositions.includes("photographer") && (
-                    <>
-                      <h2 className="text-lg font-bold from-yellow-400  to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-                        Photographer
-                      </h2>
-                      <CustomTextArea
-                        label="What type of photography are you skilled in?"
-                        id="photographer.photographyType"
-                        placeholder="eg.- Event, Portrait, Product, etc"
-                        handleChange={handleChange}
-                        value={values.photographer?.photographyType}
-                        error={errors.photographer?.photographyType}
-                        touched={touched.photographer?.photographyType}
-                        rows={1}
-                      />
-
-                      <CustomTextArea
-                        label="Do you have experience covering live events?"
-                        id="photographer.eventExperience"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.photographer?.eventExperience}
-                        error={errors.photographer?.eventExperience}
-                        touched={touched.photographer?.eventExperience}
-                        rows={1}
-                      />
-
-                      <CustomTextArea
-                        label="Provide a link to your photography portfolio"
-                        id="photographer.photographyPortfolio"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.photographer?.photographyPortfolio}
-                        error={errors.photographer?.photographyPortfolio}
-                        touched={touched.photographer?.photographyPortfolio}
-                        rows={1}
-                      />
-
-                      <CustomTextArea
-                        label="Do you own a DSLR/Mirrorless camera or use a smartphone for photography?"
-                        id="photographer.cameraModel"
-                        placeholder=""
-                        handleChange={handleChange}
-                        value={values.photographer?.cameraModel}
-                        error={errors.photographer?.cameraModel}
-                        touched={touched.photographer?.cameraModel}
-                        rows={1}
-                      />
-                    </>
-                  )}
-                  {/* Add other role-specific fields similarly */}
+                            if (field.type === 'textarea') {
+                              return (
+                                <CustomTextArea
+                                  key={field.name}
+                                  label={field.label}
+                                  id={fieldPath}
+                                  placeholder={field.placeholder || ""}
+                                  handleChange={(e) => setFieldValue(fieldPath, e.target.value)}
+                                  value={fieldValue}
+                                  error={fieldError}
+                                  touched={fieldTouched}
+                                  rows={2}
+                                />
+                              );
+                            } else if (field.type === 'select') {
+                              return (
+                                <CustomSelector
+                                  key={field.name}
+                                  id={fieldPath}
+                                  label={field.label}
+                                  value={fieldValue}
+                                  error={fieldError}
+                                  touched={fieldTouched}
+                                  setFieldValue={setFieldValue}
+                                  list={field.options || []}
+                                />
+                              );
+                            } else {
+                              return (
+                                <CustomInput
+                                  key={field.name}
+                                  label={field.label}
+                                  id={fieldPath}
+                                  type={field.type}
+                                  placeholder={field.placeholder || ""}
+                                  handleChange={(e) => setFieldValue(fieldPath, e.target.value)}
+                                  value={fieldValue}
+                                  error={fieldError}
+                                  touched={fieldTouched}
+                                />
+                              );
+                            }
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </>
               )}
 
@@ -738,12 +526,12 @@ const Page = () => {
                 </>
               )}
 
-              <div className="flex justify-between w-full end">
+              <div className="flex justify-between w-full end mt-6">
                 {step > 1 && (
                   <Button
                     type="button"
                     onClick={handlePrevious}
-                    className="font-semibold text-base bg-gray-500 hover:bg-gray-600 text-slate-100 transition-colors duration-300 ease-in-out mt-2"
+                    className="font-semibold text-base bg-gray-500 hover:bg-gray-600 text-slate-100 transition-colors duration-300 ease-in-out"
                   >
                     Previous
                   </Button>
@@ -753,7 +541,7 @@ const Page = () => {
                   <Button
                     type="button"
                     onClick={handleNext}
-                    className="font-semibold ms-auto bg-gradient-to-bl from-blue-600 to-blue-950  text-white transition-colors duration-300 ease-in-out mt-2"
+                    className="font-semibold ms-auto bg-gradient-to-bl from-blue-600 to-blue-950 text-white transition-colors duration-300 ease-in-out"
                   >
                     Next <MdKeyboardArrowRight />
                   </Button>
@@ -761,7 +549,7 @@ const Page = () => {
                   <Button
                     type="submit"
                     disabled={isSubmissionLoading}
-                    className="font-semibold text-base dark:text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 transition-colors duration-300 ease-in-out mt-2"
+                    className="font-semibold text-base dark:text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 transition-colors duration-300 ease-in-out"
                   >
                     {isSubmissionLoading && (
                       <ImSpinner2 className="mr-2 h-4 w-4 animate-spin text-primary-foreground" />

@@ -37,10 +37,10 @@ function CustomTextArea({
         onChange={handleChange}
         value={value}
         id={id}
+        name={id}
         placeholder={placeholder}
-        className={`${
-          error && touched ? "border-red-500 dark:border-red-600" : ""
-        } my-1 bg-transparent focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
+        className={`${error && touched ? "border-red-500 dark:border-red-600" : ""
+          } my-1 bg-transparent focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
       />
       {error && touched && (
         <span className="text-red-500 dark:text-red-600 text-sm block">{error}</span>

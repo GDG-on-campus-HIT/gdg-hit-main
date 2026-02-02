@@ -7,10 +7,12 @@ import { Spotlight } from "@/components/ui/spotlight";
 import Link from "next/link";
 import React from "react";
 import { useEventQuery } from "@/redux/features/api/event/eventApi";
+import { useGetActiveRecruitmentFormQuery } from "@/redux/features/api/apiSlice";
 
 export function HeroSection() {
   const [isMounted, setIsMounted] = React.useState(false);
   const { isLoading, isError, data } = useEventQuery({});
+  const { data: activeRecruitmentData } = useGetActiveRecruitmentFormQuery({});
 
   React.useEffect(() => {
     setIsMounted(true);
@@ -21,7 +23,7 @@ export function HeroSection() {
   const upcomingEvent = eventsArray.find((event) => event.is_upcoming === true);
 
   return (
-    <div className="min-h-[40rem] h-screen w-full rounded-md flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <div className="min-h-[40rem] h-screen w-full rounded-md flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden border">
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
       <div className="max-container relative z-10 w-full pt-24 max-sm:pt-32">
         <h1 className="text-2xl md:text-5xl font-bold text-center white-gradient-text bg-opacity-50">
@@ -41,7 +43,7 @@ export function HeroSection() {
           Join a vibrant community of developers, innovators, and tech enthusiasts. Experience the power of Google Developer technologies and shape the future of technology.
         </p>
 
-        <div className="w-full flex items-start justify-center space-x-5 mt-6">
+        <div className="w-full flex items-start justify-center space-x-5 mt-6 ">
           {isMounted && (
             <>
               {upcomingEvent ? (
@@ -50,7 +52,7 @@ export function HeroSection() {
                 <Link href="/events">
                   <PrimaryButton>
                     Recent Events
-                    </PrimaryButton>
+                  </PrimaryButton>
                 </Link>
               )}
 
@@ -62,6 +64,19 @@ export function HeroSection() {
             </>
           )}
         </div>
+
+        {activeRecruitmentData?.form && (
+          <div className=" text-center mt-8 ">
+            <p className="text-gray-700 dark:text-gray-300 text-xl">
+              We’re recruiting — Build, Learn, and Lead with us.
+            </p>
+            <div className="flex justify-center items-center mt-5">
+              <Link href="/recruitment">
+                <PrimaryButton>Join Our Community</PrimaryButton>
+              </Link>
+            </div>
+          </div>
+        )}
 
         <InfiniteMovingCardImg
           items={testimonials}
