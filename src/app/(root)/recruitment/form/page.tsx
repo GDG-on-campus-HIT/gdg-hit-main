@@ -83,13 +83,13 @@ const Page = () => {
   const dynamicSchema = useMemo(() => {
     if (!activeForm || !selectedPositions.length) return Yup.object();
 
-    let schemaShape: any = {};
+    const schemaShape: any = {};
 
     selectedPositions.forEach((posName) => {
       // Find the role definition in the active form
       const roleDef = activeForm.roles.find((r: any) => r.roleName === posName);
       if (roleDef) {
-        let roleShape: any = {};
+        const roleShape: any = {};
         roleDef.fields.forEach((field: any) => {
           let validator = Yup.string(); // Default to string
 
@@ -146,8 +146,21 @@ const Page = () => {
           : step4Schema,
     onSubmit: async (values) => {
       console.log("Submitted Data:", values);
+
+      // Validate formId exists
+      if (!activeForm?._id) {
+        toast.error("No active recruitment form found. Please refresh the page.", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: theme,
+          transition: Bounce,
+        });
+        console.error("❌ FormId is missing:", activeForm);
+        return;
+      }
+
       const data = {
-        formId: activeForm?._id,
+        formId: activeForm._id,
         generalInfo: {
           fullName: values.fullName,
           email: values.email,
@@ -164,7 +177,21 @@ const Page = () => {
           previousClubs: values.previousClubs,
         },
       };
-      await recruitmentFormSubmission(data);
+
+      console.log("📤 Data being sent to server:", JSON.stringify(data, null, 2));
+
+      try {
+        await recruitmentFormSubmission(data);
+      } catch (err: any) {
+        console.error("❌ Submission Error Details:");
+        console.error("Error object:", err);
+        console.error("Response data:", err?.response?.data);
+        console.error("Response status:", err?.response?.status);
+        console.error("Request data:", err?.config?.data);
+
+        // The error is already being handled by the useEffect hook, 
+        // but we log it here for debugging purposes
+      }
     },
   });
 
