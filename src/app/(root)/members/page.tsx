@@ -28,6 +28,7 @@ interface Member {
 }
 
 interface MembersState {
+  founder: Member[];
   coreTeam: Member[];
   mediaTeam: Record<string, Member[]>;
   prTeam: Member[];
@@ -40,7 +41,7 @@ const MembersPage: React.FC = () => {
     (state: { member: { members: MembersState } }) => state.member
   );
 
-  const [activeTab, setActiveTab] = useState<"core" | "media" | "pr" | "tech">(
+  const [activeTab, setActiveTab] = useState<"founder" | "core" | "media" | "pr" | "tech">(
     "core"
   );
 
@@ -111,23 +112,24 @@ const MembersPage: React.FC = () => {
 
         {/* Tabs for Categories */}
         <div className="flex justify-center gap-4 mb-8 max-sm:flex-col items-center">
-          {(["core", "tech", "media", "pr"] as const).map((tab) => (
+          {(["founder", "core", "tech", "media", "pr"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-                activeTab === tab
+              className={`px-6 py-2 rounded-full font-semibold transition-colors ${activeTab === tab
                   ? "bg-yellow-400 text-black"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-              }`}
+                }`}
             >
               {tab === "core"
                 ? "Core Team"
                 : tab === "tech"
-                ? "Tech Team"
-                : tab === "media"
-                ? "Media Team"
-                : "PR Team"}
+                  ? "Tech Team"
+                  : tab === "media"
+                    ? "Media Team"
+                    : tab === "pr"
+                      ? "PR Team"
+                      : "Founder"}
             </button>
           ))}
         </div>
@@ -135,6 +137,8 @@ const MembersPage: React.FC = () => {
         {/* Render Members */}
         {members && (
           <>
+            {activeTab === "founder" &&
+              renderTeamSection("Founder", members.founder)}
             {activeTab === "core" &&
               renderTeamSection("Core Team", members.coreTeam)}
             {activeTab === "media" &&

@@ -88,7 +88,7 @@ const EventRegistrationForm = ({
   const { theme } = useTheme();
   const { user } = useSelector((state: any) => state.auth);
 
-  const batchOptions = ["1st", "2nd", "3rd", "4th"];
+  const batchOptions = ["1st", "2nd", "3rd", "4th","5th"];
   const yearOptions = ["1st", "2nd", "3rd", "4th"];
   const sessionOptions = ["2024-25", "2025-26", "2026-27"];
 
