@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer/Footer";
 
 // Get the base URL from the environment variable or default to localhost for development
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
 
 export const metadata: Metadata = {
   title: "GDG On Campus - Haldia Institute of Technology",
@@ -47,7 +47,7 @@ export default function RootLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow">{children}</main>
+      <main className="flex-grow pb-20 lg:pb-0">{children}</main>
       <Footer />
     </div>
   );

@@ -13,7 +13,7 @@ import type {
 
 // Define the base query with token handling
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_SERVER_URI,
+  baseUrl: process.env.NEXT_PUBLIC_SERVER_URI || "http://localhost:8080/api/v1",
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
     const token = state?.auth.accessToken;
@@ -106,7 +106,7 @@ export const apiSlice = createApi({
     }),
 
     contactUs: builder.mutation({
-      query: (data:any) => ({
+      query: (data: any) => ({
         url: "contact",
         method: "POST",
         body: data,
@@ -123,8 +123,8 @@ export const apiSlice = createApi({
 
 
     recruitmentFormSubmission: builder.mutation({
-      query: (data:any) => ({
-        url: "recruitmentFormSubmission",
+      query: (data: any) => ({
+        url: "recruitment/recruitmentFormSubmission",
         method: "POST",
         body: data,
         credentials: "include" as const,
@@ -139,7 +139,7 @@ export const apiSlice = createApi({
     }),
 
     studentRegistration: builder.mutation({
-      query: (data:any) => ({
+      query: (data: any) => ({
         url: "student-registration",
         method: "POST",
         body: data,
@@ -174,7 +174,7 @@ export const apiSlice = createApi({
 
     isAlreadyRegistered: builder.query({
       query: () => ({
-        url: "isAlreadyRegistered",
+        url: "recruitment/isAlreadyRegistered",
         method: "GET",
         credentials: "include" as const,
       }),
@@ -186,10 +186,16 @@ export const apiSlice = createApi({
         }
       },
     }),
-   
 
-    
+    getActiveRecruitmentForm: builder.query({
+      query: () => ({
+        url: "recruitment/active-form",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+    }),
+
   }),
 });
 
-export const { useLoadUserQuery, useLoadTestimonialQuery, useContactUsMutation , useRecruitmentFormSubmissionMutation, useStudentRegistrationMutation, useSubmitStudentFormMutation, useIsAlreadyRegisteredQuery} = apiSlice;
+export const { useLoadUserQuery, useLoadTestimonialQuery, useContactUsMutation, useRecruitmentFormSubmissionMutation, useStudentRegistrationMutation, useSubmitStudentFormMutation, useIsAlreadyRegisteredQuery, useGetActiveRecruitmentFormQuery } = apiSlice;
