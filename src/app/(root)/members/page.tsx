@@ -63,27 +63,37 @@ const MembersPage: React.FC = () => {
   const renderTeamSection = (
     title: string,
     members: Member[] | Record<string, Member[]>
-  ) => (
-    <div className="space-y-8">
-      {Array.isArray(members) ? (
-        <>
-          <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-            {title}
-          </h3>
-          {renderMemberCards(members)}
-        </>
-      ) : (
-        Object.entries(members).map(([subcategory, members]) => (
-          <div key={subcategory} className="my-4">
-            <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white capitalize">
-              {subcategory.replace(/([A-Z])/g, " $1").trim()}
+  ) => {
+    if (!members) {
+      return (
+        <div className="text-center text-gray-500 py-8">
+          No members found for {title}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-8">
+        {Array.isArray(members) ? (
+          <>
+            <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+              {title}
             </h3>
             {renderMemberCards(members)}
-          </div>
-        ))
-      )}
-    </div>
-  );
+          </>
+        ) : (
+          Object.entries(members).map(([subcategory, members]) => (
+            <div key={subcategory} className="my-4">
+              <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white capitalize">
+                {subcategory.replace(/([A-Z])/g, " $1").trim()}
+              </h3>
+              {renderMemberCards(members)}
+            </div>
+          ))
+        )}
+      </div>
+    );
+  };
 
   if (isLoading) return <Loader />;
   if (isError)
@@ -111,14 +121,14 @@ const MembersPage: React.FC = () => {
         </div>
 
         {/* Tabs for Categories */}
-        <div className="flex justify-center gap-4 mb-8 max-sm:flex-col items-center">
+        <div className="flex justify-center gap-4 mb-8 max-sm:grid max-sm:grid-cols-2 items-center">
           {(["founder", "core", "tech", "media", "pr"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-2 rounded-full font-semibold transition-colors ${activeTab === tab
-                  ? "bg-yellow-400 text-black"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                ? "bg-yellow-400 text-black"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                 }`}
             >
               {tab === "core"

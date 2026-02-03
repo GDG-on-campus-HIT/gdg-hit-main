@@ -1,11 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface memberState {
-  members: object;
+  members: any;
 }
 
 const initialState: memberState = {
-  members: [],
+  members: null,
 };
 
 const memberSlice = createSlice({
