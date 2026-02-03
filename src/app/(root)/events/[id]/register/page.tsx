@@ -183,6 +183,7 @@ const EventRegistrationForm = ({
               <p className="text-gray-400 mb-4 text-sm">
                 Stay connected with fellow participants and get event updates.
               </p>
+
               {eventData?.event?.whatsappLink && (
                 <Link href={eventData?.event?.whatsappLink} target="_blank">
                   <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
