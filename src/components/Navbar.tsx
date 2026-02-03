@@ -41,9 +41,13 @@ const BottomNavBar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-      <div className="backdrop-blur-lg bg-white/80 dark:bg-gray-950/80 border-t border-gray-200 dark:border-gray-800">
-        <div className="flex items-center justify-around px-2 py-2">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
+      {/* Enhanced backdrop with gradient */}
+      <div className="backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/90 to-white/80 dark:from-gray-950/95 dark:via-gray-950/90 dark:to-gray-950/80 border-t border-gray-300/50 dark:border-gray-700/50 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.3)]">
+        <div className="flex items-center justify-around px-2 py-1">
           {navBarLinks.map((link) => {
             const isActive =
               pathname === link.route ||
@@ -54,27 +58,66 @@ const BottomNavBar = () => {
                 href={link.route}
                 key={link.label}
                 className={cn(
-                  "relative flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 min-w-[60px] active:scale-95",
+                  "relative flex flex-col items-center justify-center gap-0.5 px-3 py-3 rounded-xl transition-all duration-300 min-w-[70px] max-[375px]:min-w-fit max-[375px]:px-2",
+                  "hover:scale-105 active:scale-95",
                   {
                     "text-brand-500-main dark:text-brand-500-main": isActive,
-                    "text-gray-600 dark:text-gray-400": !isActive,
+                    "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300": !isActive,
                   }
                 )}
               >
-                <img
-                  src={link.icon}
-                  alt={link.label}
-                  className={cn(
-                    "w-5 h-5 transition-all duration-200",
-                    {
-                      "opacity-100 scale-110": isActive,
-                      "opacity-70": !isActive,
-                    }
-                  )}
-                />
-                <span className="text-xs font-medium">{link.label}</span>
+                {/* Active background glow effect */}
                 {isActive && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-brand-500-main dark:bg-brand-500-main rounded-full" />
+                  <div className="absolute inset-0 -m-1.5 bg-brand-500/10 dark:bg-brand-500/20 rounded-xl blur-sm transition-all duration-300" />
+                )}
+
+                {/* Icon container with enhanced active state */}
+                <div className="relative z-10">
+                  <div className={cn(
+                    "relative p-2.5 rounded-lg transition-all duration-300",
+                    {
+                      "bg-brand-500/10 dark:bg-brand-500/20": isActive,
+                      "hover:bg-gray-100 dark:hover:bg-gray-800/50": !isActive,
+                    }
+                  )}>
+                    <img
+                      src={link.icon}
+                      alt={link.label}
+                      className={cn(
+                        "w-5 h-5 transition-all duration-300",
+                        {
+                          "scale-125": isActive,
+                          "opacity-90": !isActive,
+                        }
+                      )}
+                    />
+
+                    {/* Animated dot for active state */}
+                    {isActive && (
+                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-brand-500-main dark:bg-brand-500-main rounded-full animate-pulse" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Label with better typography */}
+                <span className={cn(
+                  "text-xs font-semibold transition-all duration-300 relative z-10 max-[375px]:hidden",
+                  {
+                    "scale-110": isActive,
+                    "font-medium": !isActive,
+                  }
+                )}>
+                  {link.label}
+                </span>
+
+                {/* Enhanced active indicator */}
+                {isActive && (
+                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+                    {/* Main indicator */}
+                    <div className="w-8 h-1 bg-gradient-to-r from-brand-500-main to-brand-400 dark:from-brand-500-main dark:to-brand-400 rounded-full shadow-lg shadow-brand-500/30 dark:shadow-brand-500/40" />
+                    {/* Subtle glow */}
+                    <div className="absolute -bottom-0.5 w-10 h-0.5 bg-brand-500/20 dark:bg-brand-500/30 blur-sm" />
+                  </div>
                 )}
               </Link>
             );
@@ -95,7 +138,7 @@ const NavBar = () => {
       <nav className="w-full top-0 z-50 backdrop-blur-lg  fixed">
         <ScrollProgress className="top-[65px]" />
         {/* main nav bar  */}
-        <div className="max-container py-3 flex justify-between items-center ">
+        <div className="max-container py-3 flex justify-between items-center  ">
           <div className="flex items-center space-x-2">
             <Link href="/">
               <img src="/assets/gdg-hit-logo.svg" alt="" className="h-10" />
