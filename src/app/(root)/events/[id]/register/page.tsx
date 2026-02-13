@@ -209,11 +209,11 @@ const EventRegistrationForm = ({
             </div>
           ) : (
             <img
-              src={posterData?.poster?.url || "/img/banner_reacrtjs_final.png"}
+              src={posterData?.poster?.url || "/assets/DefaultBanner.png"}
               alt="Event Poster"
               className="w-full"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = "/img/banner_reacrtjs_final.png";
+                (e.target as HTMLImageElement).src = "/assets/DefaultBanner.png";
               }}
             />
           )}
@@ -414,13 +414,20 @@ const EventRegistrationForm = ({
                 <p className="text-gray-400 mb-4 text-sm">
                   Stay connected with fellow participants and get event updates.
                 </p>
-                {eventData?.event?.whatsappLink && (
-                  <Link href={eventData?.event?.whatsappLink} target="_blank">
+
+                {eventData?.event?.whatsappLink ? (
+                  <Link href={eventData.event.whatsappLink} target="_blank">
                     <button className="px-8 py-2 rounded-full relative bg-gradient-to-bl from-green-600 to-green-950 text-white text-sm">
                       <span className="relative z-20 font-medium">Join Now</span>
                     </button>
                   </Link>
+                ) : (
+                  <p className="text-gray-500 text-sm italic">
+                    WhatsApp&apos;s Group link is not ready yet. Please check again
+                    after some time.
+                  </p>
                 )}
+
               </div>
             </div>
           )}

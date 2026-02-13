@@ -20,7 +20,7 @@ export function HeroSection() {
 
   // Get events safely
   const eventsArray: any[] = data?.events ?? [];
-  const upcomingEvent = eventsArray.find((event) => event.is_upcoming === true);
+  const upcomingEvent = eventsArray.find((event) => event.registration_open === true);
 
   return (
     <div className="min-h-[40rem] h-screen w-full rounded-md flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden border">
@@ -51,7 +51,7 @@ export function HeroSection() {
               ) : (
                 <Link href="/events">
                   <PrimaryButton>
-                    Recent Events
+                    Past Events
                   </PrimaryButton>
                 </Link>
               )}

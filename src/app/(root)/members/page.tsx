@@ -29,6 +29,7 @@ interface Member {
 
 interface MembersState {
   founder: Member[];
+  facultyCoOrdinator: Member[];
   coreTeam: Member[];
   mediaTeam: Record<string, Member[]>;
   prTeam: Member[];
@@ -41,8 +42,8 @@ const MembersPage: React.FC = () => {
     (state: { member: { members: MembersState } }) => state.member
   );
 
-  const [activeTab, setActiveTab] = useState<"founder" | "core" | "media" | "pr" | "tech">(
-    "core"
+  const [activeTab, setActiveTab] = useState<"founder" | "facultyCoOrdinator" | "core" | "media" | "pr" | "tech">(
+    "facultyCoOrdinator"
   );
 
   const renderMemberCards = (members: Member[]) => (
@@ -122,7 +123,7 @@ const MembersPage: React.FC = () => {
 
         {/* Tabs for Categories */}
         <div className="flex justify-center gap-4 mb-8 max-sm:grid max-sm:grid-cols-2 items-center">
-          {(["founder", "core", "tech", "media", "pr"] as const).map((tab) => (
+          {(["facultyCoOrdinator", "founder", "core", "tech", "media", "pr"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -139,7 +140,10 @@ const MembersPage: React.FC = () => {
                     ? "Media Team"
                     : tab === "pr"
                       ? "PR Team"
-                      : "Founder"}
+                      : tab === "facultyCoOrdinator"
+                        ? "Faculty Co-ordinator"
+                        : "Founder"
+              }
             </button>
           ))}
         </div>
@@ -156,6 +160,8 @@ const MembersPage: React.FC = () => {
             {activeTab === "pr" && renderTeamSection("PR Team", members.prTeam)}
             {activeTab === "tech" &&
               renderTeamSection("Tech Team", members.techTeam)}
+            {activeTab === "facultyCoOrdinator" &&
+              renderTeamSection("Faculty Co-ordinator", members.facultyCoOrdinator)}
           </>
         )}
       </div>
