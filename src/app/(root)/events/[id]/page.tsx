@@ -158,7 +158,7 @@ export default function EventRegistration({
                 </div>
               </div>
               <div className="flex">
-                {eventData?.is_upcoming ? (
+                {eventData?.registration_open ? (
                   <Link
                     href={`/events/${eventData?._id || params.id}/register`}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl flex items-center"
@@ -207,7 +207,7 @@ export default function EventRegistration({
             <div className="md:w-1/2 md:pl-10">
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img
-                  src={eventData?.eventBanner?.url || "/img/events/image.png"}
+                  src={eventData?.eventBanner?.url || "/assets/DeafultPoster.png"}
                   alt="Event Poster"
                   width={600}
                   height={600}
