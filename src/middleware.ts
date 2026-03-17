@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
               secure: isProduction,
 
               ...(isProduction && {
-                domain: "gdghit.site",
+                domain: "gdghit.dev",
               }),
             });
 
@@ -96,7 +96,7 @@ export async function middleware(request: NextRequest) {
               secure: isProduction,
 
               ...(isProduction && {
-                domain: "gdghit.site",
+                domain: "gdghit.dev",
               }),
             });
 
