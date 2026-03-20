@@ -63,12 +63,14 @@ export const authApi = apiSlice.injectEndpoints({
           localStorage.setItem('refresh_token_expiry', Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
           
           // Set tokens in cookies for middleware recognition
-          // For localhost development, set cookies without domain (exact host match)
-          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+          // In development mode, always set cookies via JavaScript (works with any backend domain)
+          const isDevelopment = process.env.NEXT_PUBLIC_ENV === 'development';
+          
+          if (isDevelopment || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))) {
             const accessTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.accessToken || 1200000));
             const refreshTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
             
-            // Development cookies - no domain, just path
+            // Development cookies - no domain, just path (works with localhost frontend)
             document.cookie = `access_token=${result.data.accessToken}; path=/; expires=${accessTokenExpiry.toUTCString()}; SameSite=Lax`;
             document.cookie = `refresh_token=${result.data.refreshToken}; path=/; expires=${refreshTokenExpiry.toUTCString()}; SameSite=Lax`;
           }
@@ -108,13 +110,15 @@ export const authApi = apiSlice.injectEndpoints({
           localStorage.setItem('refresh_token_expiry', Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
     
           // Set tokens in cookies for middleware recognition
-          // For localhost development, set cookies without domain (exact host match)
-          // For production, API response should set cookies via Set-Cookie headers
-          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+          // In development mode, always set cookies via JavaScript (works with any backend domain)
+          // In production, API response should set cookies via Set-Cookie headers
+          const isDevelopment = process.env.NEXT_PUBLIC_ENV === 'development';
+          
+          if (isDevelopment || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))) {
             const accessTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.accessToken || 1200000));
             const refreshTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
             
-            // Development cookies - no domain, just path
+            // Development cookies - no domain, just path (works with localhost frontend)
             document.cookie = `access_token=${result.data.accessToken}; path=/; expires=${accessTokenExpiry.toUTCString()}; SameSite=Lax`;
             document.cookie = `refresh_token=${result.data.refreshToken}; path=/; expires=${refreshTokenExpiry.toUTCString()}; SameSite=Lax`;
           }
@@ -153,12 +157,14 @@ export const authApi = apiSlice.injectEndpoints({
           localStorage.setItem('refresh_token_expiry', Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
 
           // Set tokens in cookies for middleware recognition
-          // For localhost development, set cookies without domain (exact host match)
-          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+          // In development mode, always set cookies via JavaScript (works with any backend domain)
+          const isDevelopment = process.env.NEXT_PUBLIC_ENV === 'development';
+          
+          if (isDevelopment || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))) {
             const accessTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.accessToken || 1200000));
             const refreshTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
             
-            // Development cookies - no domain, just path
+            // Development cookies - no domain, just path (works with localhost frontend)
             document.cookie = `access_token=${result.data.accessToken}; path=/; expires=${accessTokenExpiry.toUTCString()}; SameSite=Lax`;
             document.cookie = `refresh_token=${result.data.refreshToken}; path=/; expires=${refreshTokenExpiry.toUTCString()}; SameSite=Lax`;
           }
@@ -193,7 +199,9 @@ export const authApi = apiSlice.injectEndpoints({
           localStorage.removeItem('refresh_token_expiry');
           
           // Clear cookies from JavaScript for development environments
-          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+          const isDevelopment = process.env.NEXT_PUBLIC_ENV === 'development';
+          
+          if (isDevelopment || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))) {
             document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
             document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
           }

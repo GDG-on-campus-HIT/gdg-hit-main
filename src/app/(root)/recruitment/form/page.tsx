@@ -7,6 +7,7 @@ import CustomSelector from "./CustomSelector";
 import CustomMultiSelector from "./CustomMultiSelector";
 import CustomTextArea from "./CustomTextArea";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { FaInstagram, FaLinkedin } from "react-icons/fa";
 import { branch, year } from "./data";
 import { step1Schema, step4Schema } from "./schema";
 import * as Yup from "yup";
@@ -317,11 +318,38 @@ const Page = () => {
               <h2 className="text-2xl font-semibold mb-4">
                 🎉 Application Submitted!
               </h2>
-              <p>Your application has been submitted successfully. ✅</p>
-              <p>
+              <p className="mb-2">Your application has been submitted successfully. ✅</p>
+              <p className="mb-6">
                 We will review your responses and get back to you soon. Stay
                 tuned for updates! 🚀
               </p>
+              
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg font-semibold mb-4">Follow us for latest updates</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  Stay connected with us on social media for announcements and updates!
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="https://www.instagram.com/gdg_hit/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-lg transition-all hover:scale-105"
+                  >
+                    <FaInstagram className="text-lg" />
+                    Follow on Instagram
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/company/gdgoncampushit/?viewAsMember=true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all hover:scale-105"
+                  >
+                    <FaLinkedin className="text-lg" />
+                    Follow on LinkedIn
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
