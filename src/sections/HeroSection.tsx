@@ -128,8 +128,8 @@ export function HeroSection() {
                   We&apos;re recruiting — Build, Learn, and Lead with us.
                 </p>
                 <div className="flex justify-center items-center mt-5">
-                  <Link href="/recruitment/form">
-                    <PrimaryButton>Join Our Community</PrimaryButton>
+                  <Link href={`/recruitment/form?formId=${activeRecruitmentForm._id}`}>
+                    <PrimaryButton>Register for Recruitment</PrimaryButton>
                   </Link>
                 </div>
               </div>

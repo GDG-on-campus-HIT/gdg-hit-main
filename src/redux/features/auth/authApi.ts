@@ -55,10 +55,29 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
+          
+          // Save tokens in localStorage for client-side persistence
+          localStorage.setItem('access_token', result.data.accessToken);
+          localStorage.setItem('refresh_token', result.data.refreshToken);
+          localStorage.setItem('access_token_expiry', Date.now() + (result.data.expiresIn?.accessToken || 1200000));
+          localStorage.setItem('refresh_token_expiry', Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
+          
+          // Set tokens in cookies for middleware recognition
+          // For localhost development, set cookies without domain (exact host match)
+          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+            const accessTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.accessToken || 1200000));
+            const refreshTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
+            
+            // Development cookies - no domain, just path
+            document.cookie = `access_token=${result.data.accessToken}; path=/; expires=${accessTokenExpiry.toUTCString()}; SameSite=Lax`;
+            document.cookie = `refresh_token=${result.data.refreshToken}; path=/; expires=${refreshTokenExpiry.toUTCString()}; SameSite=Lax`;
+          }
+          
+          // API response already sets cookies via Set-Cookie headers with credentials: include
           dispatch(userRegistrationDone());
           dispatch(
             userLoggedIn({
-              accessToken: result.data.activationToken,
+              accessToken: result.data.accessToken,
               user: result.data.user,
             })
           );
@@ -82,13 +101,23 @@ export const authApi = apiSlice.injectEndpoints({
         try {
           const result = await queryFulfilled;
     
-          // Save tokens in localStorage
+          // Save tokens in localStorage for client-side persistence
           localStorage.setItem('access_token', result.data.accessToken);
           localStorage.setItem('refresh_token', result.data.refreshToken);
+          localStorage.setItem('access_token_expiry', Date.now() + (result.data.expiresIn?.accessToken || 1200000));
+          localStorage.setItem('refresh_token_expiry', Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
     
-          // Optionally store expiry times if provided
-          localStorage.setItem('access_token_expiry', Date.now() + result.data.expiresIn.accessToken);
-          localStorage.setItem('refresh_token_expiry', Date.now() + result.data.expiresIn.refreshToken);
+          // Set tokens in cookies for middleware recognition
+          // For localhost development, set cookies without domain (exact host match)
+          // For production, API response should set cookies via Set-Cookie headers
+          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+            const accessTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.accessToken || 1200000));
+            const refreshTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
+            
+            // Development cookies - no domain, just path
+            document.cookie = `access_token=${result.data.accessToken}; path=/; expires=${accessTokenExpiry.toUTCString()}; SameSite=Lax`;
+            document.cookie = `refresh_token=${result.data.refreshToken}; path=/; expires=${refreshTokenExpiry.toUTCString()}; SameSite=Lax`;
+          }
     
           // Dispatch user login action with the user and access token
           dispatch(
@@ -116,6 +145,25 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
+          
+          // Save tokens in localStorage for client-side persistence
+          localStorage.setItem('access_token', result.data.accessToken);
+          localStorage.setItem('refresh_token', result.data.refreshToken);
+          localStorage.setItem('access_token_expiry', Date.now() + (result.data.expiresIn?.accessToken || 1200000));
+          localStorage.setItem('refresh_token_expiry', Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
+
+          // Set tokens in cookies for middleware recognition
+          // For localhost development, set cookies without domain (exact host match)
+          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+            const accessTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.accessToken || 1200000));
+            const refreshTokenExpiry = new Date(Date.now() + (result.data.expiresIn?.refreshToken || 7200000));
+            
+            // Development cookies - no domain, just path
+            document.cookie = `access_token=${result.data.accessToken}; path=/; expires=${accessTokenExpiry.toUTCString()}; SameSite=Lax`;
+            document.cookie = `refresh_token=${result.data.refreshToken}; path=/; expires=${refreshTokenExpiry.toUTCString()}; SameSite=Lax`;
+          }
+    
+          // API response already sets cookies via Set-Cookie headers with credentials: include
           dispatch(
             userLoggedIn({
               accessToken: result.data.accessToken,
@@ -135,6 +183,21 @@ export const authApi = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
+          // API request with credentials: include will trigger server-side cookie clearing
+          await queryFulfilled;
+          
+          // Clear tokens from localStorage
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('access_token_expiry');
+          localStorage.removeItem('refresh_token_expiry');
+          
+          // Clear cookies from JavaScript for development environments
+          if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+            document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+            document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+          }
+          
           dispatch(userLoggedOut());
         } catch (error: any) {
           console.log(error);

@@ -25,7 +25,7 @@ const LoginComponent = () => {
   const { theme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirect") || "/";
+  const redirectUrl = searchParams.get("redirectTo") || searchParams.get("redirect") || "/";
 
   const [login, { data, isSuccess, error, isLoading }] = useLoginMutation();
   const { refetch } = useLoadUserQuery({}, { refetchOnMountOrArgChange: true });

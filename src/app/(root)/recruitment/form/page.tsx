@@ -13,15 +13,22 @@ import * as Yup from "yup";
 import {
   useIsAlreadyRegisteredQuery,
   useRecruitmentFormSubmissionMutation,
-  useGetActiveRecruitmentFormQuery
+  useGetActiveRecruitmentFormQuery,
+  useLoadUserQuery
 } from "@/redux/features/api/apiSlice";
 import { Bounce, toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 import { ImSpinner2 } from "react-icons/im";
 
 const Page = () => {
+  // Load user data to ensure authentication
+  const { data: userData, isLoading: isUserLoading } = useLoadUserQuery({});
+  const searchParams = useSearchParams();
+  const formIdFromUrl = searchParams?.get("formId");
+
   const {
     data: dataRecruitmentRegisterCheck,
     isLoading: isdataRecruitmentLoading,
@@ -33,7 +40,13 @@ const Page = () => {
     isLoading: isActiveFormLoading
   } = useGetActiveRecruitmentFormQuery({});
 
-  const activeForm = activeFormData?.form;
+  // Use form ID from URL if provided, otherwise use active form
+  let activeForm = activeFormData?.form;
+  if (formIdFromUrl && activeFormData?.form?._id !== formIdFromUrl) {
+    // If a specific form ID is requested via URL, could filter here
+    // For now, we'll use the active form
+    activeForm = activeFormData?.form;
+  }
 
   const { theme } = useTheme();
   const [step, setStep] = useState(1);
@@ -123,7 +136,7 @@ const Page = () => {
     initialValues: {
       // Step 1
       fullName: "",
-      email: (user?.email as string) || "",
+      email: (user?.email as string) || (userData?.user?.email as string) || "",
       phoneNumber: "",
       rollNumber: "",
       branch: "",
@@ -159,6 +172,18 @@ const Page = () => {
         return;
       }
 
+      // Validate user is authenticated
+      if (!user?.email) {
+        toast.error("User authentication failed. Please log in again.", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: theme,
+          transition: Bounce,
+        });
+        console.error("❌ User email is missing");
+        return;
+      }
+
       const data = {
         formId: activeForm._id,
         generalInfo: {
@@ -179,6 +204,7 @@ const Page = () => {
       };
 
       console.log("📤 Data being sent to server:", JSON.stringify(data, null, 2));
+      console.log("📝 User Info:", { email: user.email, userId: user._id });
 
       try {
         await recruitmentFormSubmission(data);
@@ -251,8 +277,23 @@ const Page = () => {
     }
   };
 
-  if (isdataRecruitmentLoading || isActiveFormLoading) {
+  if (isdataRecruitmentLoading || isActiveFormLoading || isUserLoading) {
     return <Loader />;
+  }
+
+  // If user is not authenticated
+  if (!user || !user.email) {
+    return (
+      <div className="min-h-screen w-full relative flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">Please log in to register for recruitment.</p>
+          <a href="/login" className="text-blue-500 hover:text-blue-700 underline">
+            Go to Login
+          </a>
+        </div>
+      </div>
+    );
   }
 
   // If no active form is returned

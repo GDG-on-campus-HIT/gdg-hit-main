@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
           try {
             const response = await fetch(
               `${process.env.NEXT_PUBLIC_ENV === "production"
-                ? "https://api.gdghit.site/api/v1/refresh-token"
+                ? "https://api.gdghit.dev/api/v1/refresh-token"
                 : "http://localhost:8080/api/v1/refresh-token"
               }`,
               {
