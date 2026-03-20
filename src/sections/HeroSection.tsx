@@ -125,7 +125,7 @@ export function HeroSection() {
             {activeRecruitmentForm && (
               <div className="text-center mt-8">
                 <p className="text-gray-700 dark:text-gray-300 text-xl">
-                  We're recruiting — Build, Learn, and Lead with us.
+                  We&apos;re recruiting — Build, Learn, and Lead with us.
                 </p>
                 <div className="flex justify-center items-center mt-5">
                   <Link href="/recruitment/form">
