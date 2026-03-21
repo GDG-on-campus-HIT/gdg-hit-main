@@ -136,7 +136,9 @@ export async function middleware(request: NextRequest) {
   } else if (!isAuthenticated && !authPaths.includes(path)) {
     // Unauthenticated user trying to access protected path
     const signinUrl = new URL("/login", request.url);
-    signinUrl.searchParams.set("redirectTo", path);
+    // Ensure path is valid and not undefined before setting redirectTo
+    const validPath = path && typeof path === 'string' && path !== 'undefined' ? path : "/";
+    signinUrl.searchParams.set("redirectTo", validPath);
     console.log("Redirecting to login with:", signinUrl.toString());
     return NextResponse.redirect(signinUrl);
   }

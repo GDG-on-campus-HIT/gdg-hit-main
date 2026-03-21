@@ -45,7 +45,9 @@ const LoginComponent = () => {
         transition: Bounce,
       });
       refetch();
-      router.push(redirectUrl);
+      // Ensure redirectUrl is a valid string before pushing
+      const validRedirectUrl = redirectUrl && typeof redirectUrl === 'string' && redirectUrl !== 'undefined' ? redirectUrl : "/";
+      router.push(validRedirectUrl);
     }
     if (error) {
       if ("data" in error) {
@@ -64,7 +66,7 @@ const LoginComponent = () => {
         });
       }
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, redirectUrl, router, theme, refetch]);
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
@@ -100,7 +102,9 @@ const LoginComponent = () => {
     window.addEventListener("message", (event) => {
       if (event.data?.success) {
         authWindow?.close();
-        window.location.href = event.data.redirectUrl;
+        // Ensure redirectUrl is valid, default to home if undefined
+        const redirectUrl = event.data.redirectUrl && typeof event.data.redirectUrl === 'string' && event.data.redirectUrl !== 'undefined' ? event.data.redirectUrl : "/";
+        window.location.href = redirectUrl;
       }
     }, { once: true });
   };
