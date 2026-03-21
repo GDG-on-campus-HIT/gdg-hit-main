@@ -37,13 +37,12 @@ const handleLogOut = () => {
         <DropdownMenuLabel className="font-normal -mt-2 dark:text-slate-300">
           {user.email}
         </DropdownMenuLabel>
-        {/* <DropdownMenuSeparator /> */}
-        {/* <DropdownMenuGroup>
-          <Link href="/profile">
-            <DropdownMenuItem>My Profile</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <Link href="/dashboard">
+            <DropdownMenuItem>Dashboard</DropdownMenuItem>
           </Link>
-
-        </DropdownMenuGroup> */}
+        </DropdownMenuGroup>
         {/* {
           user.role == "admin" &&
         <DropdownMenuGroup>
