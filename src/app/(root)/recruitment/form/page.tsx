@@ -285,8 +285,10 @@ const Page = () => {
   // If user is not authenticated
   if (!user || !user.email) {
     return (
-      <div className="min-h-screen w-full relative flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen w-full relative flex items-center justify-center bg-gradient-to-br from-red-900 via-gray-900 to-blue-900 dark:from-red-950 dark:via-gray-950 dark:to-blue-950">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-red-600/20 via-transparent to-blue-600/20 opacity-40" />
+        <div className="relative z-10 text-center">
           <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">Please log in to register for recruitment.</p>
           <a href="/login" className="text-blue-500 hover:text-blue-700 underline">
@@ -300,8 +302,10 @@ const Page = () => {
   // If no active form is returned
   if (!activeForm && !isActiveFormLoading && !dataRecruitmentRegisterCheck?.isRegistered) {
     return (
-      <div className="min-h-screen w-full relative flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen w-full relative flex items-center justify-center bg-gradient-to-br from-red-900 via-gray-900 to-blue-900 dark:from-red-950 dark:via-gray-950 dark:to-blue-950">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-red-600/20 via-transparent to-blue-600/20 opacity-40" />
+        <div className="relative z-10 text-center">
           <h2 className="text-2xl font-bold mb-4">No Active Recruitment</h2>
           <p>There are currently no active recruitment forms.</p>
         </div>
@@ -311,8 +315,10 @@ const Page = () => {
 
   if (dataRecruitmentRegisterCheck?.isRegistered) {
     return (
-      <div className="min-h-screen w-full relative">
-        <div className="container mx-auto px-4 py-20">
+      <div className="min-h-screen w-full bg-gradient-to-br from-red-900 via-gray-900 to-blue-900 dark:from-red-950 dark:via-gray-950 dark:to-blue-950">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-red-600/20 via-transparent to-blue-600/20 opacity-40 pointer-events-none" />
+        <div className="relative z-10 container mx-auto px-4 py-20">
           <div className="max-w-4xl mx-auto shadow-lg rounded-lg  gradient-card">
             <div className="p-6 md:p-8">
               <h2 className="text-2xl font-semibold mb-4">
@@ -401,8 +407,10 @@ const Page = () => {
   })) || [];
 
   return (
-    <div className="min-h-screen w-full relative">
-      <div className="container mx-auto px-4 py-20">
+    <div className="min-h-screen w-full bg-gradient-to-br from-red-900 via-gray-900 to-blue-900 dark:from-red-950 dark:via-gray-950 dark:to-blue-950">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-red-600/20 via-transparent to-blue-600/20 opacity-40 pointer-events-none" />
+      <div className="relative z-10 container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto shadow-lg rounded-lg gradient-card">
           <div className="p-6 md:p-8">
             {/* Heading and descriptions */}
