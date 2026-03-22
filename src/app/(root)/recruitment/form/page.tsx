@@ -7,7 +7,7 @@ import CustomSelector from "./CustomSelector";
 import CustomMultiSelector from "./CustomMultiSelector";
 import CustomTextArea from "./CustomTextArea";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { branch, year } from "./data";
 import { step1Schema, step4Schema } from "./schema";
 import * as Yup from "yup";
@@ -323,6 +323,43 @@ const Page = () => {
                 We will review your responses and get back to you soon. Stay
                 tuned for updates! 🚀
               </p>
+
+              {/* WhatsApp Groups Section */}
+              {dataRecruitmentRegisterCheck?.application?.positions && 
+               dataRecruitmentRegisterCheck.application.positions.length > 0 && (
+                <div className="border-t pt-6 mt-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-4">Join WhatsApp Groups</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    Join the WhatsApp groups for your applied positions to stay updated!
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {dataRecruitmentRegisterCheck.application.positions.map((position: string) => {
+                      const whatsappLink = dataRecruitmentRegisterCheck.application?.whatsappGroupLinks?.[position];
+                      return (
+                        <a
+                          key={position}
+                          href={whatsappLink || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-2 px-5 py-2 rounded-lg font-semibold transition-all hover:scale-105 ${
+                            whatsappLink
+                              ? "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white cursor-pointer"
+                              : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-300 cursor-not-allowed"
+                          }`}
+                          onClick={(e) => {
+                            if (!whatsappLink) {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
+                          <FaWhatsapp className="text-lg" />
+                          {position}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               
               <div className="border-t pt-6 mt-6">
                 <h3 className="text-lg font-semibold mb-4">Follow us for latest updates</h3>
