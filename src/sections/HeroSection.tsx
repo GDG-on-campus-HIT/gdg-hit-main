@@ -959,28 +959,7 @@ export function HeroSection() {
               Join a vibrant community of developers, innovators, and tech enthusiasts. Experience the power of Google Developer technologies and shape the future of technology.
             </p>
 
-            <div className="w-full flex items-start justify-center flex-wrap gap-5 mt-6">
-              {isMounted && (
-                <>
-                  {registrationOpenEvent ? (
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <RegisterNowButton eventId={registrationOpenEvent._id} />
-                    </motion.div>
-                  ) : (
-                    <SpidermanButton href="/events" variant="primary" icon={Film}>
-                      SWING INTO ACTION
-                    </SpidermanButton>
-                  )}
-
-                  <SpidermanButton href="/about-us" variant="secondary" icon={BookOpen}>
-                    DISCOVER YOUR POWER
-                  </SpidermanButton>
-                </>
-              )}
-            </div>
+            {/* Upper buttons hidden - showing only recruitment button below */}
 
             {/* Recruitment Form CTA - Only shown if no upcoming event */}
             {activeRecruitmentForm && (
@@ -994,7 +973,73 @@ export function HeroSection() {
                   <Globe2 className="w-6 h-6" style={{ color: "#EC1C24" }} />
                   <span className="font-black">WITH GREAT OPPORTUNITY COMES GREAT RESPONSIBILITY!</span>
                 </p>
-                <div className="flex justify-center items-center mt-5">
+                
+                {/* Mobile Web Hanging Effect */}
+                <div className="md:hidden relative flex justify-center mt-8">
+                  {/* Web string connecting from top */}
+                  <motion.svg
+                    className="absolute top-0 left-1/2 pointer-events-none"
+                    width="2"
+                    height="80"
+                    viewBox="0 0 2 80"
+                    style={{
+                      transform: "translateX(-1px)",
+                    }}
+                    animate={{
+                      scaleY: [0, 1, 1],
+                    }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.5,
+                    }}
+                  >
+                    <line
+                      x1="1"
+                      y1="0"
+                      x2="1"
+                      y2="80"
+                      stroke="#EC1C24"
+                      strokeWidth="2"
+                      opacity="0.7"
+                    />
+                    {/* Web glow effect */}
+                    <line
+                      x1="1"
+                      y1="0"
+                      x2="1"
+                      y2="80"
+                      stroke="#EC1C24"
+                      strokeWidth="4"
+                      opacity="0.3"
+                    />
+                  </motion.svg>
+                  
+                  {/* Button container with hanging animation */}
+                  <motion.div
+                    className="relative"
+                    animate={{
+                      rotate: [-8, 8, -8, 8, -4, 4, -2, 0],
+                      x: [-15, 15, -15, 15, -8, 8, -4, 0],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      repeatDelay: 3,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <SpidermanButton
+                      href={`/recruitment/form?formId=${activeRecruitmentForm._id}`}
+                      variant="primary"
+                      icon={Zap}
+                    >
+                      CHOOSE YOUR DESTINY
+                    </SpidermanButton>
+                  </motion.div>
+                </div>
+
+                {/* Desktop Button */}
+                <div className="hidden md:flex justify-center items-center mt-5">
                   <SpidermanButton
                     href={`/recruitment/form?formId=${activeRecruitmentForm._id}`}
                     variant="primary"
