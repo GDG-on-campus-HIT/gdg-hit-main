@@ -73,7 +73,7 @@ const EventCard: React.FC<Props> = ({
           <img
             src={event.eventBanner?.url || "/img/events/image.png"}
             alt={event.name}
-            className="w-full h-full object-cover brightness-100 dark:brightness-90"
+            className="w-full h-full object-cover brightness-90"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40"></div>
         </div>
@@ -86,7 +86,7 @@ const EventCard: React.FC<Props> = ({
         >
           <h3
             className={`
-              ${titleClasses[variant]} text-gray-900 dark:text-white 
+              ${titleClasses[variant]} text-white 
               ${variant === "compact" ? "mb-2" : ""}
             `}
           >
@@ -94,7 +94,7 @@ const EventCard: React.FC<Props> = ({
           </h3>
 
           <div
-            className={`space-y-2 text-gray-600 dark:text-gray-400 ${
+            className={`space-y-2 text-gray-400 ${
               variant === "compact" ? "mb-2" : ""
             }`}
           >
@@ -109,7 +109,7 @@ const EventCard: React.FC<Props> = ({
           </div>
 
           <p
-            className={`text-gray-700 dark:text-gray-300 ${textSizeClasses[variant]} line-clamp-2 ${
+            className={`text-gray-300 ${textSizeClasses[variant]} line-clamp-2 ${
               variant === "compact" ? "mb-3" : ""
             }`}
           >

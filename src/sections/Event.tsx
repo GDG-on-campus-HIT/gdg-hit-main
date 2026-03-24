@@ -3,123 +3,14 @@
 import { motion } from "framer-motion";
 import PrimaryButton from "@/components/PrimaryButton";
 import Link from "next/link";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Calendar, Clock, MapPin, Zap, Target } from "lucide-react";
 
 interface EventProps {
     event: any;
 }
 
-// Extract dominant color from image
-const extractColorFromImage = (imageSrc: string): Promise<string> => {
-    return new Promise((resolve) => {
-        const img = new window.Image();
-        img.crossOrigin = 'anonymous';
-        
-        img.onload = () => {
-            try {
-                const canvas = document.createElement('canvas');
-                canvas.width = 150;
-                canvas.height = 150;
-                const ctx = canvas.getContext('2d');
-                
-                if (ctx) {
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const data = imageData.data;
 
-                    // Calculate average color
-                    let r = 0, g = 0, b = 0;
-                    const pixelCount = data.length / 4;
-
-                    for (let i = 0; i < data.length; i += 4) {
-                        const brightness = (data[i] * 299 + data[i + 1] * 587 + data[i + 2] * 114) / 1000;
-                        if (brightness > 50) { // Skip very dark pixels
-                            r += data[i];
-                            g += data[i + 1];
-                            b += data[i + 2];
-                        }
-                    }
-
-                    r = Math.floor(r / pixelCount);
-                    g = Math.floor(g / pixelCount);
-                    b = Math.floor(b / pixelCount);
-
-                    // Convert to relatively saturated color
-                    const hsl = rgbToHsl(r, g, b);
-                    const saturatedColor = hslToRgb(hsl[0], Math.min(hsl[1] + 20, 100), Math.min(hsl[2] + 10, 90));
-                    const hex = rgbToHex(saturatedColor[0], saturatedColor[1], saturatedColor[2]);
-                    
-                    resolve(hex);
-                }
-            } catch {
-                resolve('#3b82f6'); // Fallback blue
-            }
-        };
-
-        img.onerror = () => {
-            resolve('#3b82f6'); // Fallback blue
-        };
-
-        img.src = imageSrc;
-    });
-};
-
-// Helper functions for color conversion
-const rgbToHsl = (r: number, g: number, b: number) => {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h = 0, s = 0;
-    const l = (max + min) / 2;
-
-    if (max !== min) {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-            case g: h = ((b - r) / d + 2) / 6; break;
-            case b: h = ((r - g) / d + 4) / 6; break;
-        }
-    }
-    return [h * 360, s * 100, l * 100];
-};
-
-const hslToRgb = (h: number, s: number, l: number) => {
-    h /= 360;
-    s /= 100;
-    l /= 100;
-    let r, g, b;
-
-    if (s === 0) {
-        r = g = b = l;
-    } else {
-        const hue2rgb = (p: number, q: number, t: number) => {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1/6) return p + (q - p) * 6 * t;
-            if (t < 1/2) return q;
-            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-        };
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        const p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1/3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
-    }
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-};
-
-const rgbToHex = (r: number, g: number, b: number) => {
-    return '#' + [r, g, b].map(x => {
-        const hex = x.toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
-    }).join('');
-};
 
 // Convert hex to RGB for usage
 const hexToRgb = (hex: string) => {
@@ -131,83 +22,51 @@ const hexToRgb = (hex: string) => {
     } : { r: 59, g: 130, b: 246 }; // Default blue
 };
 
-// Animated Professional Background Theme
-const AnimatedEventBackground = ({ themeColor }: { themeColor: string }) => {
+// Animated Background Component
+const AnimatedBackground = ({ themeColor }: { themeColor: string }) => {
     const rgb = hexToRgb(themeColor);
     
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Base gradient background */}
+        <div className="absolute inset-0 overflow-hidden">
+            {/* Base gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-black" />
-
-            {/* Animated gradient orbs - top right */}
+            
+            {/* Animated gradient blob - top right */}
             <motion.div
-                className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-3xl"
+                className="absolute -top-64 -right-64 w-96 h-96 rounded-full blur-3xl"
                 style={{
-                    background: `radial-gradient(circle, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15) 0%, transparent 70%)`,
+                    background: `radial-gradient(circle, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08) 0%, transparent 70%)`,
                 }}
                 animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.4, 0.6, 0.4],
+                    x: [0, 50, -30, 0],
+                    y: [0, 30, 50, 0],
+                    scale: [1, 1.2, 1.1, 1],
                 }}
                 transition={{
-                    duration: 6,
+                    duration: 15,
                     repeat: Infinity,
                     ease: "easeInOut",
                 }}
             />
-
-            {/* Animated glow - bottom left */}
+            
+            {/* Animated gradient blob - bottom left */}
             <motion.div
-                className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full blur-3xl"
+                className="absolute -bottom-64 -left-64 w-96 h-96 rounded-full blur-3xl"
                 style={{
-                    background: `radial-gradient(circle, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1) 0%, transparent 70%)`,
+                    background: `radial-gradient(circle, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.06) 0%, transparent 70%)`,
                 }}
                 animate={{
-                    scale: [1.2, 1, 1.2],
-                    opacity: [0.3, 0.5, 0.3],
+                    x: [0, -40, 30, 0],
+                    y: [0, -50, -30, 0],
+                    scale: [1, 1.1, 1.2, 1],
                 }}
                 transition={{
-                    duration: 8,
+                    duration: 18,
                     repeat: Infinity,
                     ease: "easeInOut",
                     delay: 0.5,
                 }}
             />
-
-            {/* Floating particles */}
-            {[0, 1, 2, 3, 4].map((i) => (
-                <motion.div
-                    key={`particle-${i}`}
-                    className="absolute w-1 h-1 rounded-full opacity-30"
-                    animate={{
-                        y: [0, -20, 0],
-                        x: [0, Math.sin(i) * 10, 0],
-                        opacity: [0.2, 0.5, 0.2],
-                    }}
-                    transition={{
-                        duration: 4 + i,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: i * 0.3,
-                    }}
-                    style={{
-                        backgroundColor: themeColor,
-                        left: `${20 + i * 15}%`,
-                        top: `${10 + i * 20}%`,
-                    }}
-                />
-            ))}
-
-            {/* Subtle grid pattern */}
-            <svg className="absolute inset-0 w-full h-full opacity-5" preserveAspectRatio="none">
-                <defs>
-                    <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke={themeColor} strokeWidth="0.5"/>
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-            </svg>
         </div>
     );
 };
@@ -269,76 +128,67 @@ const EventInfoItem = ({ icon: Icon, label, value, delay, themeColor }: any) => 
     
     return (
         <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay, duration: 0.5 }}
-            whileHover={{ scale: 1.05 }}
+            transition={{ delay, duration: 0.6 }}
+            whileHover={{ scale: 1.08, y: -4 }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm p-6 rounded-lg transition-all duration-300"
+            className="bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 relative group"
             style={{
                 borderColor: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${isHovered ? 0.6 : 0.2})`,
                 borderWidth: "1px",
+                boxShadow: isHovered ? `0 0 24px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)` : "none",
             }}
         >
+            {/* Animated border glow */}
+            <motion.div
+                className="absolute inset-0 rounded-lg pointer-events-none"
+                style={{
+                    border: `1px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`,
+                }}
+                animate={{
+                    boxShadow: isHovered 
+                        ? `inset 0 0 20px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1), 0 0 20px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)` 
+                        : "none",
+                }}
+                transition={{ duration: 0.3 }}
+            />
             <div className="flex items-center gap-3 mb-3">
-                <Icon style={{ color: themeColor }} size={24} />
+                <motion.div
+                    animate={{
+                        rotate: isHovered ? [0, -10, 10, 0] : 0,
+                    }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <Icon style={{ color: themeColor }} size={24} />
+                </motion.div>
             </div>
             <p className="font-semibold text-lg text-white mb-1">{label}</p>
-            <p className="font-bold text-lg" style={{ color: themeColor }}>{value}</p>
+            <motion.p 
+                className="font-bold text-lg" 
+                style={{ color: themeColor }}
+                animate={{
+                    scale: isHovered ? 1.05 : 1,
+                }}
+                transition={{ duration: 0.3 }}
+            >
+                {value}
+            </motion.p>
         </motion.div>
     );
 };
 
 export function Event({ event }: EventProps) {
-    const [themeColor, setThemeColor] = useState('#3b82f6'); // Default blue
-    const [colorLoaded, setColorLoaded] = useState(false);
-
-    useEffect(() => {
-        if (event?.eventBanner?.url) {
-            extractColorFromImage(event.eventBanner.url).then((color) => {
-                setThemeColor(color);
-                setColorLoaded(true);
-            });
-        } else {
-            setColorLoaded(true);
-        }
-    }, [event?.eventBanner?.url]);
+    const themeColor = '#EC1C24'; // Brand color - Google red
 
     if (!event || !event.registration_open) {
         return null;
     }
 
-    const hasBanner = event.eventBanner?.url;
-
-    if (!colorLoaded) {
-        return null; // Return null while loading color
-    }
-
     return (
-        <section className={`relative w-full py-20 px-6 overflow-hidden ${!hasBanner ? 'bg-slate-900' : ''}`}>
-            {/* Poster as Background when present */}
-            {hasBanner && (
-                <div className="absolute inset-0 z-0">
-                    <Image
-                        src={event.eventBanner.url}
-                        alt={event.name}
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                    {/* Dark overlay for readability */}
-                    <motion.div
-                        className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-slate-900/50"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.8 }}
-                    />
-                </div>
-            )}
-
-            {/* Animated Background - Fallback when no poster */}
-            {!hasBanner && <AnimatedEventBackground themeColor={themeColor} />}
+        <section className="relative w-full py-20 px-6 overflow-hidden bg-slate-900">
+            <AnimatedBackground themeColor={themeColor} />
 
             <div className="max-w-4xl mx-auto relative z-10">
                 {/* Event Content Container */}
@@ -350,18 +200,19 @@ export function Event({ event }: EventProps) {
                 >
                     {/* Event Title with glow effect */}
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3, duration: 0.6 }}
                         className="relative mb-6"
                     >
                         <motion.div
-                            className="absolute inset-0 blur-2xl"
+                            className="absolute inset-0 blur-2xl -z-10"
                             style={{
                                 background: `linear-gradient(90deg, transparent, ${themeColor}33, transparent)`,
                             }}
                             animate={{
                                 opacity: [0.3, 0.6, 0.3],
+                                scale: [1, 1.05, 1],
                             }}
                             transition={{
                                 duration: 3,
@@ -372,10 +223,18 @@ export function Event({ event }: EventProps) {
                         <h2 className="relative text-4xl md:text-6xl font-black text-white mb-2">
                             {event.name}
                         </h2>
-                        <div 
+                        <motion.div 
                             className="h-1 w-20 mx-auto rounded-full"
                             style={{
                                 background: `linear-gradient(90deg, ${themeColor}, ${themeColor}99)`,
+                            }}
+                            animate={{
+                                width: ["80px", "120px", "80px"],
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                                ease: "easeInOut",
                             }}
                         />
                     </motion.div>
@@ -446,42 +305,7 @@ export function Event({ event }: EventProps) {
                     </motion.div>
                 </motion.div>
 
-                {/* Floating accent elements - only when no banner */}
-                {!hasBanner && (
-                    <>
-                        <motion.div
-                            className="absolute top-1/4 -right-10 w-40 h-40 rounded-full blur-3xl pointer-events-none"
-                            style={{
-                                background: `radial-gradient(circle, ${themeColor}0d 0%, transparent 70%)`,
-                            }}
-                            animate={{
-                                y: [0, 20, 0],
-                                scale: [1, 1.1, 1],
-                            }}
-                            transition={{
-                                duration: 5,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
-                        />
-                        <motion.div
-                            className="absolute bottom-1/4 -left-10 w-32 h-32 rounded-full blur-3xl pointer-events-none"
-                            style={{
-                                background: `radial-gradient(circle, ${themeColor}08 0%, transparent 70%)`,
-                            }}
-                            animate={{
-                                y: [0, -20, 0],
-                                scale: [1, 0.9, 1],
-                            }}
-                            transition={{
-                                duration: 6,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: 0.5,
-                            }}
-                        />
-                    </>
-                )}
+
             </div>
         </section>
     );

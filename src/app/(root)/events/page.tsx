@@ -30,8 +30,8 @@ export default function EventsPage() {
             {/* <br /> */}
             Through Our Events
           </h2>
-          <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed  mx-auto text-center">
-          Explore workshops, hackathons, speaker sessions, and tech meetups designed to enhance learning, collaboration, and innovation.
+          <p className="max-w-2xl text-base text-gray-400 leading-relaxed mx-auto text-center">
+            Explore workshops, hackathons, speaker sessions, and tech meetups designed to enhance learning, collaboration, and innovation.
           </p>
         </div>
 
