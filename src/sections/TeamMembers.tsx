@@ -69,6 +69,7 @@ function TeamMembers() {
             members.coreTeam.map((item: Member, index: number) => (
               <MemberCard
                 key={`${index} ${item.name}`}
+                id={item._id}
                 name={item.name}
                 role={item.designation}
                 bio={item.bio || ""}
