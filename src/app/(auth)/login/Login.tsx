@@ -102,9 +102,9 @@ const LoginComponent = () => {
     window.addEventListener("message", (event) => {
       if (event.data?.success) {
         authWindow?.close();
-        // Ensure redirectUrl is valid, default to home if undefined
-        const redirectUrl = event.data.redirectUrl && typeof event.data.redirectUrl === 'string' && event.data.redirectUrl !== 'undefined' ? event.data.redirectUrl : "/";
-        window.location.href = redirectUrl;
+        refetch();
+        const targetUrl = event.data.redirectUrl || redirectTo || "/";
+        window.location.href = targetUrl;
       }
     }, { once: true });
   };
