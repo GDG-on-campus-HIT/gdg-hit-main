@@ -101,14 +101,23 @@ const LoginComponent = () => {
 
     const authWindow = window.open(`${serverRoot}/auth/google`,
       "_blank", "width=500,height=600");
-    window.addEventListener("message", (event) => {
+
+    // Use a named handler instead of { once: true }.
+    // { once: true } removes the listener after ANY first message — including
+    // React DevTools, Redux DevTools, browser extensions — so the actual
+    // Google Auth success message is never received.
+    const handleAuthMessage = (event: MessageEvent) => {
       if (event.data?.success) {
+        // Only act on the real Google OAuth success message
+        window.removeEventListener("message", handleAuthMessage);
         authWindow?.close();
         refetch();
         const targetUrl = event.data.redirectUrl || redirectTo || "/";
         window.location.href = targetUrl;
       }
-    }, { once: true });
+    };
+
+    window.addEventListener("message", handleAuthMessage);
   };
 
 
