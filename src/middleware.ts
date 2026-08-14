@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
           try {
             const response = await fetch(
               `${process.env.NEXT_PUBLIC_ENV === "production"
-                ? "https://api.gdghit.dev/api/v1/refresh-token"
+                ? "https://apiv2.gdghit.dev/api/v1/refresh-token"
                 : "http://localhost:8080/api/v1/refresh-token"
               }`,
               {
@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
               secure: isProduction,
 
               ...(isProduction && {
-                domain: "gdghit.dev",
+                domain: ".gdghit.dev",
               }),
             });
 
@@ -96,7 +96,7 @@ export async function middleware(request: NextRequest) {
               secure: isProduction,
 
               ...(isProduction && {
-                domain: "gdghit.dev",
+                domain: ".gdghit.dev",
               }),
             });
 
@@ -125,6 +125,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Paths that explicitly require authentication
+  const protectedPaths = [
+    "/dashboard",
+    "/profile",
+  ];
+  const isProtectedPath =
+    protectedPaths.includes(path) ||
+    path.startsWith("/events/") && (path.endsWith("/register") || path.includes("/prior-knowledge")) ||
+    path.startsWith("/admin");
+
   // Check if the path requires admin access
   if (path.startsWith(adminPathPrefix)) {
     if (!isAuthenticated || userRole !== "admin") {
@@ -133,13 +143,11 @@ export async function middleware(request: NextRequest) {
   } else if (isAuthenticated && authPaths.includes(path)) {
     // Authenticated user trying to access login/signup - redirect to home
     return NextResponse.redirect(new URL("/", request.url));
-  } else if (!isAuthenticated && !authPaths.includes(path)) {
-    // Unauthenticated user trying to access protected path
+  } else if (!isAuthenticated && isProtectedPath) {
+    // Unauthenticated user trying to access a protected path
     const signinUrl = new URL("/login", request.url);
-    // Ensure path is valid and not undefined before setting redirectTo
-    const validPath = path && typeof path === 'string' && path !== 'undefined' ? path : "/";
+    const validPath = path && typeof path === "string" && path !== "undefined" ? path : "/";
     signinUrl.searchParams.set("redirectTo", validPath);
-    console.log("Redirecting to login with:", signinUrl.toString());
     return NextResponse.redirect(signinUrl);
   }
 

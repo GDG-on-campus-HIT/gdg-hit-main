@@ -88,8 +88,10 @@ const LoginComponent = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const redirectTo = searchParams.get("redirectTo") || "/";
 
-    const isProduction = window.location.hostname !== "localhost";
-    const domainAttr = isProduction ? "; domain=.gdghit.site" : "";
+    const isProduction = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
+    const hostnameParts = window.location.hostname.split(".");
+    const rootDomain = hostnameParts.length >= 2 ? hostnameParts.slice(-2).join(".") : window.location.hostname;
+    const domainAttr = isProduction ? `; domain=.${rootDomain}` : "";
     const flags = isProduction ? "; samesite=none; secure" : "; samesite=lax";
 
     document.cookie = `redirectTo=${redirectTo}; path=/${domainAttr}${flags}`;
