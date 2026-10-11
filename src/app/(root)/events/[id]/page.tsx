@@ -4,6 +4,9 @@ import React from "react";
 
 import Link from "next/link";
 import { useEventByIDQuery, useGetEventContactsQuery } from "@/redux/features/api/event/eventApi";
+import { useMyPassQuery } from "@/redux/features/api/me/meApi";
+import UserAuth from "@/hooks/userAuth";
+import EntryPass from "@/components/EntryPass";
 
 interface FormData {
   name: string;
@@ -34,6 +37,8 @@ export default function EventRegistration({
     isLoading: contactLoading,
     isError: contactError
   } = useGetEventContactsQuery(params.id);
+  const isAuth = UserAuth();
+  const { data: pass } = useMyPassQuery(params.id, { skip: !isAuth, refetchOnMountOrArgChange: true });
 
   if (isLoading || contactLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading event data</div>;
@@ -158,7 +163,14 @@ export default function EventRegistration({
                 </div>
               </div>
               <div className="flex">
-                {eventData?.registration_open ? (
+                {pass ? (
+                  <a
+                    href="#entry-pass"
+                    className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl flex items-center"
+                  >
+                    You&apos;re registered · View entry pass
+                  </a>
+                ) : eventData?.registration_open ? (
                   <Link
                     href={`/events/${eventData?._id || params.id}/register`}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl flex items-center"
@@ -218,6 +230,18 @@ export default function EventRegistration({
           </div>
         </div>
       </section>
+
+      {pass && (
+        <section id="entry-pass" className="max-container scroll-mt-28 py-8">
+          <EntryPass
+            qrUrl={pass.qrUrl}
+            passUrl={pass.passUrl}
+            eventName={eventData.name}
+            checkedIn={pass.checkedIn}
+            checkedInAt={pass.checkedInAt}
+          />
+        </section>
+      )}
 
       <section className="py-16   max-container">
         <div

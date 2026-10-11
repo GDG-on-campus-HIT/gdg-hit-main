@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useLogOutMutation } from "@/redux/features/auth/authApi";
@@ -17,11 +18,13 @@ import { useLogOutMutation } from "@/redux/features/auth/authApi";
 export default function ProfileDropDown() {
   const { user } = useSelector((state: any) => state.auth);
 
+  const router = useRouter();
   const [logOut, { data, isLoading, error }] = useLogOutMutation();
 
 // Call this function when you want to log out
-const handleLogOut = () => {
-  logOut(1);
+const handleLogOut = async () => {
+  await logOut(1);
+  router.push("/");
 };
   // console.log(user)
   return (
@@ -37,13 +40,12 @@ const handleLogOut = () => {
         <DropdownMenuLabel className="font-normal -mt-2 dark:text-slate-300">
           {user.email}
         </DropdownMenuLabel>
-        {/* TODO: Uncomment in next big update */}
-        {/* <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <Link href="/dashboard">
-            <DropdownMenuItem>Dashboard</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">My events &amp; certificates</DropdownMenuItem>
           </Link>
-        </DropdownMenuGroup> */}
+        </DropdownMenuGroup>
         {/* {
           user.role == "admin" &&
         <DropdownMenuGroup>

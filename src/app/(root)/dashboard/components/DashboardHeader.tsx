@@ -25,6 +25,7 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           <h1 className="text-3xl md:text-4xl font-bold from-blue-400 to-blue-600 bg-gradient-to-r bg-clip-text text-transparent">
             {getGreeting()}, {user?.name?.split(" ")[0]}! 👋
           </h1>
+          {user?.email && <p className="text-sm text-slate-500 mt-1 break-all">Signed in as {user.email}</p>}
           <p className="text-slate-400 mt-2">
             Welcome to your GDG HIT Dashboard. Track your progress and stay updated!
           </p>

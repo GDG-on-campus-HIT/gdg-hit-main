@@ -82,33 +82,26 @@ const LoginComponent = () => {
   const { errors, touched, handleChange, handleSubmit } = formik;
 
 
+  // Full-page redirect: Google's sign-in pages cut the link back to popup openers,
+  // so the popup flow could never tell this tab that sign-in finished.
   const handleGoogleSignin = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const redirectTo = searchParams.get("redirectTo") || "/";
-
-    const isProduction = window.location.hostname !== "localhost";
-    const domainAttr = isProduction ? "; domain=.gdghit.site" : "";
-    const flags = isProduction ? "; samesite=none; secure" : "; samesite=lax";
-
-    document.cookie = `redirectTo=${redirectTo}; path=/${domainAttr}${flags}`;
-
+    const target = redirectUrl.startsWith("/") && !redirectUrl.startsWith("//") ? redirectUrl : "/";
     const apiUrl = process.env.NEXT_PUBLIC_SERVER_URI || "http://localhost:8080/api/v1";
     const serverRoot = apiUrl.replace(/\/api\/v1\/?$/, "");
-
-    const authWindow = window.open(`${serverRoot}/auth/google`,
-      "_blank", "width=500,height=600");
-    window.addEventListener("message", (event) => {
-      if (event.data?.success) {
-        authWindow?.close();
-        window.location.href = event.data.redirectUrl;
-      }
-    }, { once: true });
+    const returnTo = new URL(target, window.location.origin).toString();
+    window.location.href = `${serverRoot}/auth/google?redirect=${encodeURIComponent(returnTo)}`;
   };
 
-
-
-
-
+  useEffect(() => {
+    if (searchParams.get("error") === "google") {
+      toast.error("Google sign-in was cancelled or failed. Please try again.", {
+        position: "top-right",
+        theme: theme,
+        transition: Bounce,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="w-full min-h-screen  flex items-center justify-center p-4 overflow-hidden">
