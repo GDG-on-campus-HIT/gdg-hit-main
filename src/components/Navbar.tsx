@@ -46,7 +46,7 @@ const BottomNavBar = () => {
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {/* Enhanced backdrop with gradient */}
-      <div className="backdrop-blur-xl bg-gradient-to-t from-white/95 via-white/90 to-white/80 dark:from-gray-950/95 dark:via-gray-950/90 dark:to-gray-950/80 border-t border-gray-300/50 dark:border-gray-700/50 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.3)]">
+      <div className="backdrop-blur-xl bg-gradient-to-t from-[#f7f4ee]/95 via-[#f7f4ee]/90 to-[#f7f4ee]/80 dark:from-gray-950/95 dark:via-gray-950/90 dark:to-gray-950/80 border-t border-gray-300/50 dark:border-gray-700/50 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.3)]">
         <div className="flex items-center justify-around px-2 py-1">
           {navBarLinks.map((link) => {
             const isActive =
@@ -140,8 +140,9 @@ const NavBar = () => {
         {/* main nav bar  */}
         <div className="max-container py-3 flex justify-between items-center  ">
           <div className="flex items-center space-x-2">
-            <Link href="/">
-              <img src="/assets/gdg-hit-logo.svg" alt="" className="h-10" />
+            <Link href="/" aria-label="GDG on Campus HIT home">
+              <img src="/assets/gdg-hit-logo-light.svg" alt="" className="h-10 dark:hidden" />
+              <img src="/assets/gdg-hit-logo.svg" alt="" className="hidden h-10 dark:block" />
             </Link>
           </div>
 

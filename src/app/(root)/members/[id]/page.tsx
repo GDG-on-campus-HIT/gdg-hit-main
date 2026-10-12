@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, Github, Linkedin, GraduationCap, Building, Calendar } from "lucide-react";
 import { useGetMemberByIdQuery } from "@/redux/features/api/member/memberApi";
 import Loader from "@/components/Loader/Loader";
+import MemberPhoto from "@/components/MemberPhoto";
 
 interface ProfileImage {
   public_id: string;
@@ -89,9 +90,9 @@ export default function MemberDetailsPage({
             
             {/* Profile Image container */}
             <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-yellow-400/80 dark:border-yellow-400/50 shadow-lg relative bg-neutral-900 group-hover:scale-105 transition-transform duration-300">
-              <img
-                src={member.profile_image?.url || "/assets/Rectangle.svg"}
-                alt={member.name}
+              <MemberPhoto
+                src={member.profile_image?.url}
+                name={member.name}
                 className="w-full h-full object-cover object-center"
               />
             </div>

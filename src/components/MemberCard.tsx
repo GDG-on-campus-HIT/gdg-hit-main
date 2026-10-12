@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
 import { cn } from "@/lib/utils";
+import MemberPhoto, { AvatarTone, toneFor } from "@/components/MemberPhoto";
 
 type Props = {
   id?: string;
@@ -13,20 +14,16 @@ type Props = {
   linkedin: string;
 };
 
-const accents = [
-  { shape: "/assets/RectangleBlue.svg", role: "dark:text-blue-400 text-blue-600" },
-  { shape: "/assets/RectangleRed.svg", role: "dark:text-red-400 text-red-600" },
-  { shape: "/assets/RectangleYellow.svg", role: "dark:text-yellow-400 text-yellow-600" },
-  { shape: "/assets/RectangleGreen.svg", role: "dark:text-green-400 text-green-600" },
-];
-
-function accentFor(name: string) {
-  const hash = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  return accents[hash % accents.length];
-}
+const accents: Record<AvatarTone, { shape: string; role: string }> = {
+  blue: { shape: "/assets/RectangleBlue.svg", role: "dark:text-blue-400 text-blue-600" },
+  red: { shape: "/assets/RectangleRed.svg", role: "dark:text-red-400 text-red-600" },
+  yellow: { shape: "/assets/RectangleYellow.svg", role: "dark:text-yellow-400 text-yellow-600" },
+  green: { shape: "/assets/RectangleGreen.svg", role: "dark:text-green-400 text-green-600" },
+};
 
 export default function MemberCard({ id, name, imageSrc, role, bio, linkedin }: Props) {
-  const accent = accentFor(name);
+  const tone = toneFor(name);
+  const accent = accents[tone];
 
   return (
     <div className="group relative w-full">
@@ -46,9 +43,10 @@ export default function MemberCard({ id, name, imageSrc, role, bio, linkedin }: 
           aria-hidden
           className="absolute bottom-0 -z-10 w-full opacity-0 saturate-[0.85] transition-opacity duration-500 group-hover:opacity-70 dark:group-hover:opacity-60"
         />
-        <img
+        <MemberPhoto
           src={imageSrc}
-          alt={name}
+          name={name}
+          tone={tone}
           loading="lazy"
           className="aspect-square h-auto object-contain object-bottom transition-all duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03] dark:grayscale dark:group-hover:grayscale-0"
         />
