@@ -1,127 +1,169 @@
+"use client";
+
 import React from "react";
-import { Globe, Users, Calendar, ExternalLink } from "lucide-react";
+import { useSelector } from "react-redux";
+import { Calendar, Check, Globe, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { GradientWord, Reveal, SectionHeading, SectionLink } from "@/components/home/primitives";
+import { Accent, accentStyles } from "@/components/home/accents";
+
+const features: { icon: typeof Calendar; accent: Accent; title: string; description: string }[] = [
+  {
+    icon: Calendar,
+    accent: "blue",
+    title: "Free & Accessible Events",
+    description: "Open to all students interested in technology and innovation.",
+  },
+  {
+    icon: Users,
+    accent: "green",
+    title: "Strong Community",
+    description: "Connect with like-minded tech enthusiasts and mentors.",
+  },
+  {
+    icon: Globe,
+    accent: "red",
+    title: "Global Network",
+    description: "Part of the worldwide Google Developers Group community.",
+  },
+];
+
+const missionPoints = [
+  "Hands-on workshops and training",
+  "Expert mentorship programs",
+  "Networking opportunities",
+  "Project collaborations",
+  "Tech talks and seminars",
+];
 
 const About = () => {
-  const features = [
-    {
-      icon: (
-        <Calendar className="w-8 h-8 text-blue-500 dark:text-blue-600/80 transition-transform group-hover:scale-110" />
-      ),
-      title: "Free & Accessible Events",
-      description:
-        "Open to all students interested in technology and innovation.",
-    },
-    {
-      icon: (
-        <Users className="w-8 h-8 text-green-500 transition-transform group-hover:scale-110" />
-      ),
-      title: "Strong Community",
-      description: "Connect with like-minded tech enthusiasts and mentors.",
-    },
-    {
-      icon: (
-        <Globe className="w-8 h-8 text-red-500 transition-transform group-hover:scale-110" />
-      ),
-      title: "Global Network",
-      description: "Part of the worldwide Google Developers Group community.",
-    },
-  ];
+  const { event } = useSelector((state: any) => state.event);
+  const { members } = useSelector((state: any) => state.member);
 
-  const missionPoints = [
-    "Hands-on workshops and training",
-    "Expert mentorship programs",
-    "Networking opportunities",
-    "Project collaborations",
-    "Tech talks and seminars",
-  ];
+  const eventCount = Array.isArray(event) ? event.length : 0;
+  const memberCount = members
+    ? Object.values(members).reduce<number>(
+        (total, group) => total + (Array.isArray(group) ? group.length : 0),
+        0
+      )
+    : 0;
+
+  const stats = [
+    eventCount > 0 && { value: `${eventCount}+`, label: "Events hosted" },
+    memberCount > 0 && { value: `${memberCount}+`, label: "Team members" },
+    { value: "100%", label: "Free to join" },
+  ].filter(Boolean) as { value: string; label: string }[];
 
   return (
-    <main className="w-full   transition-colors duration-300 overflow-hidden py-16">
-      {/* Hero Section with Google-inspired design */}
+    <section id="about" className="relative py-16 md:py-24">
+      <div className="max-container">
+        <SectionHeading
+          title={
+            <>
+              Who We Are and What
+              <br className="hidden sm:block" /> We <GradientWord accent="red">Stand For</GradientWord>
+            </>
+          }
+          description="Learn how GDG HIT fosters a vibrant tech community, empowering students through innovation, collaboration, and real-world learning opportunities."
+          action={<SectionLink href="/about-us">More about us</SectionLink>}
+        />
 
-      <div className="max-container  ">
-        {/* Header Section */}
-        <div className=" mb-8">
-          <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3">
-            Who We Are and What
-            <br /> We{" "}
-            <span className="from-red-400  to-red-600 bg-gradient-to-b bg-clip-text text-transparent">
-              {" "}
-              Stand For
-            </span>
-          </h2>
-          <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-          Learn how GDG HIT fosters a vibrant tech community, empowering students through innovation, collaboration, and real-world learning opportunities.
-          </p>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-          {/* Left Section - Features */}
-          <div className="space-y-4">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group p-6  gradient-card transition-all duration-300"
-              >
-                <div className="flex items-center gap-4">
-                  {feature.icon}
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-300">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      {feature.description}
-                    </p>
-                  </div>
+        <div className="grid gap-4 md:grid-cols-6">
+          <Reveal className="md:col-span-4">
+            <div className="gradient-card relative flex h-full flex-col overflow-hidden rounded-3xl border border-black/5 p-8 dark:border-white/5 md:p-10">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-red-500" />
+                  <span className="h-2 w-2 rounded-full bg-yellow-500" />
+                  <span className="h-2 w-2 rounded-full bg-green-500" />
                 </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-300">Our Mission</h3>
               </div>
-            ))}
-          </div>
 
-          {/* Right Section - Mission */}
-          <div className="p-6 gradient-card flex flex-col h-full">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-red-500" />
-                <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-300">
-                Our Mission
-              </h2>
-            </div>
-
-            <div className="space-y-3 flex-1">
-              <p className="text-sm text-gray-700 dark:text-gray-400">
-                Empower students with practical knowledge of Google technologies
-                through:
+              <p className="white-gradient-text mt-6 max-w-xl text-2xl leading-snug tracking-tight md:text-3xl">
+                Empower students with practical knowledge of Google technologies.
               </p>
-              <ul className="space-y-2 overflow-y-auto">
-                {missionPoints.map((item, index) => (
+
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                {missionPoints.map((item) => (
                   <li
-                    key={index}
-                    className="flex items-center gap-3 text-gray-800 dark:text-gray-400 group text-sm"
+                    key={item}
+                    className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300"
                   >
-                    <span className="w-4 h-4 flex items-center justify-center rounded-full bg-blue-600 dark:bg-blue-600/90 text-white font-bold text-xs group-hover:scale-110 transition-transform">
-                      ✓
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 ring-1 ring-blue-500/20">
+                      <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
                     {item}
                   </li>
                 ))}
               </ul>
-            </div>
 
-            <a
-              href="#join-us"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-500/80 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
-            >
-              Join our community <ExternalLink className="w-3 h-3" />
-            </a>
+              <div className="relative z-10 mt-auto pt-10">
+                <SectionLink href="/events">Join our next event</SectionLink>
+              </div>
+
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl"
+              />
+            </div>
+          </Reveal>
+
+          <div className="flex flex-col gap-4 md:col-span-2">
+            {features.map((feature, index) => (
+              <Reveal key={feature.title} delay={0.08 * (index + 1)} className="flex-1">
+                <div className="gradient-card group flex h-full items-start gap-4 rounded-3xl border border-black/5 p-6 transition-colors duration-300 hover:border-black/10 dark:border-white/5 dark:hover:border-white/10">
+                  <span
+                    className={cn(
+                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110",
+                      accentStyles[feature.accent].chip
+                    )}
+                  >
+                    <feature.icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
           </div>
+
+          <Reveal className="md:col-span-6" delay={0.1}>
+            <div className="relative overflow-hidden rounded-3xl border border-black/5 dark:border-white/5">
+              <img
+                src="/img/group-img1.jpeg"
+                alt="GDG On Campus HIT team at Haldia Institute of Technology"
+                className="h-[320px] w-full object-cover object-[center_60%] md:h-[380px]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 p-6 md:flex-row md:items-end md:justify-between md:p-10">
+                <p className="max-w-md text-xl font-medium leading-snug tracking-tight text-white md:text-2xl">
+                  A campus community of builders, designers and dreamers.
+                </p>
+                <dl className="flex gap-8 md:gap-12">
+                  {stats.map((stat) => (
+                    <div key={stat.label}>
+                      <dt className="text-xs uppercase tracking-[0.18em] text-white/60">
+                        {stat.label}
+                      </dt>
+                      <dd className="mt-1 text-3xl font-semibold tracking-tight text-white md:text-4xl">
+                        {stat.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 

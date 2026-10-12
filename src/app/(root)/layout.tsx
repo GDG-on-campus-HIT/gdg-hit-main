@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer/Footer";
 
 // Get the base URL from the environment variable or default to localhost for development
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   title: "GDG On Campus - Haldia Institute of Technology",

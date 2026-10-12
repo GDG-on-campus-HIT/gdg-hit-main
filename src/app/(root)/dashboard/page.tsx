@@ -37,11 +37,11 @@ export default function DashboardPage() {
       <div className="space-y-8 mt-8">
         <DashboardStats user={user} />
         
-        <EventsSection user={user} />
+        <EventsSection />
         
         <ApplicationsSection user={user} />
         
-        <CertificatesSection user={user} />
+        <CertificatesSection />
       </div>
     </div>
   );

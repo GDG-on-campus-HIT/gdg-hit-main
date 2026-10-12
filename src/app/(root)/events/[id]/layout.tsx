@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { fetchEventByID } from "@/lib/api"; // Adjust the path as needed
 
 // Get the base URL from environment variables or default to localhost
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export async function generateMetadata({
   params: paramsPromise,

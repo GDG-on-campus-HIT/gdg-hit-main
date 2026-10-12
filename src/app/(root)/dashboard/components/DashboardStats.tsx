@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
-import { useEventQuery } from "@/redux/features/api/event/eventApi";
-import { Calendar, FileText, Award, CheckCircle } from "lucide-react";
+import { useMyCertificatesQuery, useMyEventsQuery } from "@/redux/features/api/me/meApi";
+import { Calendar, Award, CheckCircle, Ticket } from "lucide-react";
 
 interface DashboardStatsProps {
   user: any;
@@ -32,43 +32,44 @@ const StatCard = ({
 );
 
 export default function DashboardStats({ user }: DashboardStatsProps) {
-  const { data: eventData } = useEventQuery({});
+  const { data: eventsData } = useMyEventsQuery();
+  const { data: certificatesData } = useMyCertificatesQuery();
 
-  // Calculate stats (placeholder values until backend provides them)
   const stats = useMemo(() => {
+    const events = eventsData?.events ?? [];
     return {
-      eventsAttended: 0, // Will be fetched from user event history
-      activeApplications: 0, // Will be fetched from user applications
-      certificatesEarned: 0, // Will be available when certificate API is ready
-      upcomingEvents: eventData?.events?.filter((e: any) => e.is_upcoming)?.length || 0,
+      registered: events.length,
+      attended: events.filter((e) => e.attendance).length,
+      certificates: certificatesData?.certificates?.length ?? 0,
+      upcoming: events.filter((e) => e.event.is_upcoming && !e.attendance).length,
     };
-  }, [eventData]);
+  }, [eventsData, certificatesData]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <StatCard
-        icon={Calendar}
-        label="Events Attended"
-        value={stats.eventsAttended}
-        color="bg-gradient-to-br from-blue-500 to-blue-600"
+        icon={Ticket}
+        label="Events Registered"
+        value={stats.registered}
+        color="bg-gradient-to-br from-purple-500 to-purple-600"
       />
       <StatCard
-        icon={FileText}
-        label="Active Applications"
-        value={stats.activeApplications}
-        color="bg-gradient-to-br from-purple-500 to-purple-600"
+        icon={CheckCircle}
+        label="Events Attended"
+        value={stats.attended}
+        color="bg-gradient-to-br from-green-500 to-green-600"
       />
       <StatCard
         icon={Award}
         label="Certificates Earned"
-        value={stats.certificatesEarned}
+        value={stats.certificates}
         color="bg-gradient-to-br from-yellow-500 to-yellow-600"
       />
       <StatCard
-        icon={CheckCircle}
-        label="Upcoming Events"
-        value={stats.upcomingEvents}
-        color="bg-gradient-to-br from-green-500 to-green-600"
+        icon={Calendar}
+        label="Upcoming For You"
+        value={stats.upcoming}
+        color="bg-gradient-to-br from-blue-500 to-blue-600"
       />
     </div>
   );

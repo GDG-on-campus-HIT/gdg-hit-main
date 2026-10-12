@@ -7,6 +7,14 @@ const adminPathPrefix = "/admin";
 // Add closed paths for recruitment
 const closedRecruitmentPaths = ["/recruitment", "/recruitment/form"];
 
+const cookieDomain = (() => {
+  try {
+    return `.${new URL(process.env.NEXT_PUBLIC_BASE_URL || "").hostname.replace(/^www\./, "")}`;
+  } catch {
+    return undefined;
+  }
+})();
+
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
@@ -35,10 +43,7 @@ export async function middleware(request: NextRequest) {
         if (refreshToken) {
           try {
             const response = await fetch(
-              `${process.env.NEXT_PUBLIC_ENV === "production"
-                ? "https://apiv2.gdghit.dev/api/v1/refresh-token"
-                : "http://localhost:8080/api/v1/refresh-token"
-              }`,
+              `${process.env.NEXT_PUBLIC_SERVER_URI || "http://localhost:8080/api/v1"}/refresh-token`,
               {
                 method: "GET",
                 headers: {
@@ -81,9 +86,7 @@ export async function middleware(request: NextRequest) {
               sameSite: isProduction ? "none" : "lax",
               secure: isProduction,
 
-              ...(isProduction && {
-                domain: ".gdghit.dev",
-              }),
+              ...(isProduction && cookieDomain && { domain: cookieDomain }),
             });
 
             nextResponse.cookies.set("refresh_token", data.refreshToken, {
@@ -95,9 +98,7 @@ export async function middleware(request: NextRequest) {
               sameSite: isProduction ? "none" : "lax",
               secure: isProduction,
 
-              ...(isProduction && {
-                domain: ".gdghit.dev",
-              }),
+              ...(isProduction && cookieDomain && { domain: cookieDomain }),
             });
 
             if (authPaths.includes(path)) {

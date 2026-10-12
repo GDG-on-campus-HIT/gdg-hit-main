@@ -84,46 +84,26 @@ const LoginComponent = () => {
   const { errors, touched, handleChange, handleSubmit } = formik;
 
 
+  // Full-page redirect: Google's sign-in pages cut the link back to popup openers,
+  // so the popup flow could never tell this tab that sign-in finished.
   const handleGoogleSignin = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const redirectTo = searchParams.get("redirectTo") || "/";
-
-    const isProduction = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
-    const hostnameParts = window.location.hostname.split(".");
-    const rootDomain = hostnameParts.length >= 2 ? hostnameParts.slice(-2).join(".") : window.location.hostname;
-    const domainAttr = isProduction ? `; domain=.${rootDomain}` : "";
-    const flags = isProduction ? "; samesite=none; secure" : "; samesite=lax";
-
-    document.cookie = `redirectTo=${redirectTo}; path=/${domainAttr}${flags}`;
-
+    const target = redirectUrl.startsWith("/") && !redirectUrl.startsWith("//") ? redirectUrl : "/";
     const apiUrl = process.env.NEXT_PUBLIC_SERVER_URI || "http://localhost:8080/api/v1";
     const serverRoot = apiUrl.replace(/\/api\/v1\/?$/, "");
-
-    const authWindow = window.open(`${serverRoot}/auth/google`,
-      "_blank", "width=500,height=600");
-
-    // Use a named handler instead of { once: true }.
-    // { once: true } removes the listener after ANY first message — including
-    // React DevTools, Redux DevTools, browser extensions — so the actual
-    // Google Auth success message is never received.
-    const handleAuthMessage = (event: MessageEvent) => {
-      if (event.data?.success) {
-        // Only act on the real Google OAuth success message
-        window.removeEventListener("message", handleAuthMessage);
-        authWindow?.close();
-        refetch();
-        const targetUrl = event.data.redirectUrl || redirectTo || "/";
-        window.location.href = targetUrl;
-      }
-    };
-
-    window.addEventListener("message", handleAuthMessage);
+    const returnTo = new URL(target, window.location.origin).toString();
+    window.location.href = `${serverRoot}/auth/google?redirect=${encodeURIComponent(returnTo)}`;
   };
 
-
-
-
-
+  useEffect(() => {
+    if (searchParams.get("error") === "google") {
+      toast.error("Google sign-in was cancelled or failed. Please try again.", {
+        position: "top-right",
+        theme: theme,
+        transition: Bounce,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="w-full min-h-screen  flex items-center justify-center p-4 overflow-hidden">
