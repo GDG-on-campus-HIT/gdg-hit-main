@@ -1,81 +1,65 @@
 "use client";
+import React from "react";
+import { useSelector } from "react-redux";
 import MemberCard from "@/components/MemberCard";
 import { useMemberQuery } from "@/redux/features/api/member/memberApi";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-
-interface ProfileImage {
-  public_id: string;
-  url: string;
-}
+import { GradientWord, Reveal, SectionHeading, SectionLink } from "@/components/home/primitives";
 
 interface Member {
-  profile_image: ProfileImage;
+  profile_image: { public_id: string; url: string };
   _id: string;
   name: string;
-  department: string;
   designation: string;
-  email_id: string;
-  batch: string;
   bio: string;
-  github_url: string;
   linkedin_url: string;
-  leader: boolean;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
 }
 
+const SKELETON_COUNT = 8;
+
 function TeamMembers() {
-  const { isLoading, isError, data } = useMemberQuery({});
+  const { isLoading, isError } = useMemberQuery({});
   const { members } = useSelector((state: any) => state.member);
-  const [isClient, setIsClient] = useState(false); // Track client-side rendering
 
-  useEffect(() => {
-    setIsClient(true); // Set to true after component mounts on the client
-  }, []);
+  const coreTeam: Member[] = members?.coreTeam ?? [];
 
-  if (!isClient) {
-    return null; // Return nothing during SSR to avoid hydration mismatch
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Show loading state while data is being fetched
-  }
-
-  if (isError) {
-    return <div>Error loading members</div>; // Show error state if the query fails
+  if (isError && coreTeam.length === 0) {
+    return null;
   }
 
   return (
-    <section className="">
+    <section id="team" className="relative py-16 md:py-24">
       <div className="max-container">
-        <div className="mb-8">
-          <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25]">
-            The{" "}
-            <span className="from-yellow-400 to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">
-              Faces
-            </span>{" "}
-            Behind
-            <br />
-            GDG HIT
-          </h2>
-          <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-            Get to know the passionate leaders driving GDG HIT, fostering innovation, collaboration, and growth within our tech community.
-          </p>
-        </div>
-        <div className="grid grid-cols-4 gap-5 my-20 max-sm:my-5 max-sm:gap-10 max-md:grid-cols-3 max-sm:grid-cols-1 max-sm:p-4">
-          {members?.coreTeam &&
-            members.coreTeam.map((item: Member, index: number) => (
-              <MemberCard
-                key={`${index} ${item.name}`}
-                name={item.name}
-                role={item.designation}
-                bio={item.bio || ""}
-                imageSrc={item.profile_image.url}
-                linkedin={item.linkedin_url}
-              />
-            ))}
+        <SectionHeading
+          title={
+            <>
+              The <GradientWord accent="yellow">Faces</GradientWord> Behind
+              <br /> GDG HIT
+            </>
+          }
+          description="Get to know the passionate leaders driving GDG HIT, fostering innovation, collaboration, and growth within our tech community."
+          action={<SectionLink href="/members">Meet the full team</SectionLink>}
+        />
+
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {isLoading && coreTeam.length === 0
+            ? Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+                <div key={index} className="w-full">
+                  <div className="aspect-square w-full animate-pulse rounded-2xl bg-neutral-200/60 dark:bg-white/[0.03]" />
+                  <div className="mt-3 h-5 w-2/3 animate-pulse rounded bg-neutral-200/60 dark:bg-white/[0.05]" />
+                  <div className="mt-2 h-4 w-1/3 animate-pulse rounded bg-neutral-200/60 dark:bg-white/[0.04]" />
+                </div>
+              ))
+            : coreTeam.map((member, index) => (
+                <Reveal key={member._id} delay={0.04 * (index % 4)}>
+                  <MemberCard
+                    name={member.name}
+                    role={member.designation}
+                    bio={member.bio || ""}
+                    imageSrc={member.profile_image?.url}
+                    linkedin={member.linkedin_url}
+                  />
+                </Reveal>
+              ))}
         </div>
       </div>
     </section>

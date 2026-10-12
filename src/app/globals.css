@@ -101,6 +101,14 @@ body {
     @apply max-w-screen-xl mx-auto px-4
   }
 
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: center -1px;
+  }
+
   .white-gradient-text{
     @apply  dark:from-gray-50 dark:to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent from-gray-400 to-gray-900
   }

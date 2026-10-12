@@ -1,154 +1,109 @@
 'use client';
 
-import PrimaryButton from "@/components/PrimaryButton";
-import RegisterNowButton from "@/components/RegisterNowButton";
-import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
-import { Spotlight } from "@/components/ui/spotlight";
 import Link from "next/link";
 import React from "react";
-import Image from "next/image";
+import { InfiniteMovingCardImg } from "@/components/ui/infinite-moving-cards-img";
+import FeaturedEventCard from "@/components/events/FeaturedEventCard";
+import { Spotlight } from "@/components/ui/spotlight";
+import { CtaLink, GradientWord } from "@/components/home/primitives";
 import { useEventQuery } from "@/redux/features/api/event/eventApi";
 import { useGetActiveRecruitmentFormQuery } from "@/redux/features/api/apiSlice";
 
 export function HeroSection() {
   const [isMounted, setIsMounted] = React.useState(false);
-  const { isLoading, isError, data } = useEventQuery({});
+  const { data } = useEventQuery({});
   const { data: activeRecruitmentData } = useGetActiveRecruitmentFormQuery({});
 
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Get events safely
   const eventsArray: any[] = data?.events ?? [];
-  // Check for upcoming events with is_upcoming flag
   const upcomingEvent = eventsArray.find((event) => event.is_upcoming === true);
-  // Fallback to registration_open if no is_upcoming event found
-  const registrationOpenEvent = eventsArray.find((event) => event.registration_open === true && !upcomingEvent);
-  
-  // Get active recruitment form
+  const registrationOpenEvent = eventsArray.find(
+    (event) => event.registration_open === true && !upcomingEvent
+  );
   const activeRecruitmentForm = activeRecruitmentData?.form;
 
+  const primaryEvent = upcomingEvent ?? registrationOpenEvent;
+
   return (
-    <div className="min-h-[40rem] h-screen w-full rounded-md flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden border">
-      {/* Case 1: Upcoming Event with Banner */}
-      {isMounted && upcomingEvent ? (
-        <div className="relative w-full h-full">
-          {/* Event Banner Background */}
-          {upcomingEvent.eventBanner?.url && (
-            <div className="absolute inset-0 w-full h-full">
-              <Image
-                src={upcomingEvent.eventBanner.url}
-                alt={upcomingEvent.name}
-                fill
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-black/40"></div>
-            </div>
-          )}
+    <section className="relative isolate overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_70%_55%_at_50%_0%,black,transparent)]" />
+        <div className="absolute left-1/2 top-[-12rem] h-[34rem] w-[60rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-500/30 via-red-500/15 to-yellow-500/25 opacity-50 blur-[140px] dark:opacity-30" />
+        <div className="absolute bottom-0 right-[-10rem] h-[24rem] w-[24rem] rounded-full bg-green-500/20 opacity-40 blur-[120px] dark:opacity-20" />
+      </div>
+      <Spotlight className="-top-40 left-0 md:-top-20 md:left-60" fill="white" />
 
-          {/* Event Content Overlay */}
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6">
-            <div className="max-w-3xl text-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-                {upcomingEvent.name}
-              </h1>
-              <p className="text-lg md:text-xl text-gray-200 mb-6">
-                {upcomingEvent.description}
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                <div className="text-white">
-                  <p className="font-semibold">📅 {upcomingEvent.eventDate}</p>
-                  <p className="font-semibold">🕐 {upcomingEvent.eventTime}</p>
-                  <p className="font-semibold">📍 {upcomingEvent.venue}</p>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href={`/events/${upcomingEvent._id}`}>
-                  <PrimaryButton>Register Now</PrimaryButton>
-                </Link>
-                <Link href="/events">
-                  <button className="px-8 py-2 rounded-full relative gradient-card text-white text-sm hover:shadow-2xl transition duration-200 border border-white/20">
-                    <span className="relative z-20 font-medium">View All Events</span>
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* Default/Fallback View */
-        <>
-          <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
-          <div className="max-container relative z-10 w-full pt-24 max-sm:pt-32">
-            <h1 className="text-2xl md:text-5xl font-bold text-center white-gradient-text bg-opacity-50">
-              <span className="white-gradient-text font-bold">
-                Step into the World of Possibilities <br />
-              </span>
-              <span>
-                <span className="from-red-400 to-red-600 bg-gradient-to-b bg-clip-text text-transparent">Grow,</span>{" "}
-                <span className="from-blue-400 to-blue-600 bg-gradient-to-b bg-clip-text text-transparent">Connect</span>{" "}
-                <span className="from-green-400 to-green-600 bg-gradient-to-b bg-clip-text text-transparent">and</span>{" "}
-                <span className="from-yellow-400 to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent">Lead </span>{" "}
-                <span className="white-gradient-text font-bold">with GDG HIT!</span>
-              </span>
-            </h1>
+      <div className="max-container relative z-10 flex flex-col items-center pb-20 pt-20 text-center md:pt-32">
+        <h1 className="max-w-6xl tracking-tight">
+          <span className="white-gradient-text block text-xl font-medium sm:text-2xl md:text-3xl lg:text-4xl">
+            Step into the World of Possibilities with GDG HIT
+          </span>
+          <span className="mt-3 block text-5xl font-semibold leading-[1.02] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+            <GradientWord accent="red">Grow,</GradientWord>{" "}
+            <GradientWord accent="blue">Connect</GradientWord>{" "}
+            <GradientWord accent="green">and</GradientWord>{" "}
+            <GradientWord accent="yellow">Lead</GradientWord>
+          </span>
+        </h1>
 
-            <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed text-center mx-auto my-3">
-              Join a vibrant community of developers, innovators, and tech enthusiasts. Experience the power of Google Developer technologies and shape the future of technology.
-            </p>
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-neutral-600 dark:text-neutral-400 md:text-lg">
+          Join a vibrant community of developers, innovators, and tech enthusiasts.
+          Experience the power of Google Developer technologies and shape the
+          future of technology.
+        </p>
 
-            <div className="w-full flex items-start justify-center space-x-5 mt-6">
-              {isMounted && (
-                <>
-                  {registrationOpenEvent ? (
-                    <RegisterNowButton eventId={registrationOpenEvent._id} />
-                  ) : (
-                    <Link href="/events">
-                      <PrimaryButton>
-                        Past Events
-                      </PrimaryButton>
-                    </Link>
-                  )}
-
-                  <Link href="/about-us">
-                    <button className="px-8 py-2 rounded-full relative gradient-card text-gray-700 dark:text-white text-sm hover:shadow-2xl transition duration-200 border dark:border-white/10">
-                      <span className="relative z-20 font-medium">Learn more</span>
-                    </button>
-                  </Link>
-                </>
+        <div className="mt-10 flex min-h-[48px] flex-col items-center gap-3 sm:flex-row">
+          {isMounted && (
+            <>
+              {primaryEvent ? (
+                <CtaLink href={`/events/${primaryEvent._id}`}>Register now</CtaLink>
+              ) : (
+                <CtaLink href="/events">Explore events</CtaLink>
               )}
-            </div>
+              <CtaLink href="/about-us" variant="secondary">
+                Learn more
+              </CtaLink>
+            </>
+          )}
+        </div>
 
-            {/* Recruitment Form CTA - Only shown if no upcoming event */}
-            {activeRecruitmentForm && (
-              <div className="text-center mt-8">
-                <p className="text-gray-700 dark:text-gray-300 text-xl">
-                  We&apos;re recruiting — Build, Learn, and Lead with us.
-                </p>
-                <div className="flex justify-center items-center mt-5">
-                  <Link href={`/recruitment/form?formId=${activeRecruitmentForm._id}`}>
-                    <PrimaryButton>Register for Recruitment</PrimaryButton>
-                  </Link>
-                </div>
-              </div>
-            )}
+        {isMounted && activeRecruitmentForm && (
+          <p className="mt-6 text-sm text-neutral-600 dark:text-neutral-400 md:text-base">
+            We&apos;re recruiting — build, learn and lead with us.{" "}
+            <Link
+              href={`/recruitment/form?formId=${activeRecruitmentForm._id}`}
+              className="font-medium text-neutral-900 underline decoration-blue-500 underline-offset-4 transition-all hover:decoration-2 dark:text-white"
+            >
+              Apply now
+            </Link>
+          </p>
+        )}
 
+        {isMounted && upcomingEvent ? (
+          <FeaturedEventCard
+            event={upcomingEvent}
+            label="Upcoming event"
+            className="mt-16 max-w-5xl md:mt-20"
+          />
+        ) : (
+          <div className="relative mt-16 w-full md:mt-20">
             <InfiniteMovingCardImg
-              items={testimonials}
+              items={galleryImages}
               direction="right"
               speed="slow"
-              className="mt-10"
+              className="mx-auto [mask-image:linear-gradient(to_right,transparent,white_15%,white_85%,transparent)]"
             />
           </div>
-        </>
-      )}
-    </div>
+        )}
+      </div>
+    </section>
   );
 }
 
-const testimonials = [
+const galleryImages = [
   { image: "/img/group-img1.jpeg" },
   { image: "/img/sliders/1.jpg" },
   { image: "/img/sliders/2.jpg" },

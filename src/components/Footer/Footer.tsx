@@ -60,10 +60,10 @@ const Footer = () => {
               <p className="text-neutral-700 dark:text-neutral-300">
                 <EnvelopeClosedIcon className="inline-block" width={16} height={16} /> 
                 <a 
-                  href="mailto:gdg@hit.ac.in" 
+                  href="mailto:gdgoncampushit@gmail.com" 
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  <span> gdg@hit.ac.in</span>
+                  <span> gdgoncampushit@gmail.com</span>
                 </a>
               </p>
               <p className="text-neutral-700 dark:text-neutral-300">

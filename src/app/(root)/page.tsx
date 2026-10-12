@@ -6,19 +6,16 @@ import ActivitiesComponent from "@/sections/Activities";
 import React from "react";
 import TeamMembers from "@/sections/TeamMembers";
 import { HeroSection } from "@/sections/HeroSection";
-import NewsletterSection from "@/sections/NewsletterSection";
-
 const LandingPage = () => {
   return (
     <div className="relative overflow-hidden pt-20">
       <HeroSection />
       <About />
-      <WhyChooseSection />
       <ActivitiesComponent />
-      <TeamMembers />
       <Events />
+      <WhyChooseSection />
+      <TeamMembers />
       <TestimonialsSection />
-      <NewsletterSection />
     </div>
   );
 };

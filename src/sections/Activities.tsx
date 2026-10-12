@@ -1,131 +1,102 @@
 import React from "react";
 import { Package, Lightbulb, CloudLightning, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { GradientWord, Reveal, SectionHeading } from "@/components/home/primitives";
+import { Accent, accentStyles } from "@/components/home/accents";
+
+const activities: { icon: typeof Package; accent: Accent; title: string; description: string }[] = [
+  {
+    icon: Package,
+    accent: "blue",
+    title: "Free Workshops",
+    description:
+      "Regular technical workshops on various Google technologies and development tools.",
+  },
+  {
+    icon: Lightbulb,
+    accent: "red",
+    title: "Gen AI Study Jams",
+    description: "Focused sessions on Generative AI technologies and their applications.",
+  },
+  {
+    icon: CloudLightning,
+    accent: "green",
+    title: "Cloud Study Jams",
+    description: "Hands-on learning sessions focused on Google Cloud Platform and services.",
+  },
+  {
+    icon: Users,
+    accent: "yellow",
+    title: "DevFest Meetups",
+    description:
+      "Annual developer festival featuring keynotes, technical sessions, and networking.",
+  },
+];
 
 const ActivitiesComponent = () => {
-  const activities = [
-    {
-      icon: Package,
-      title: "Free Workshops",
-      description:
-        "Regular technical workshops on various Google technologies and development tools.",
-      lightBg: "bg-blue-50",
-      darkBg: "bg-gray-800 bg-opacity-50",
-      darkBorder: "border-gray-700",
-      lightText: "text-blue-900",
-      darkText: "text-blue-200",
-      lightIcon: "text-blue-600",
-      darkIcon: "text-blue-300",
-    },
-    {
-      icon: Lightbulb,
-      title: "Gen AI Study Jams",
-      description:
-        "Focused sessions on Generative AI technologies and their applications.",
-      lightBg: "bg-purple-50",
-      darkBg: "bg-gray-800 bg-opacity-50",
-      darkBorder: "border-gray-700",
-      lightText: "text-purple-900",
-      darkText: "text-purple-200",
-      lightIcon: "text-purple-600",
-      darkIcon: "text-purple-300",
-    },
-    {
-      icon: CloudLightning,
-      title: "Cloud Study Jams",
-      description:
-        "Hands-on learning sessions focused on Google Cloud Platform and services.",
-      lightBg: "bg-green-50",
-      darkBg: "bg-gray-800 bg-opacity-50",
-      darkBorder: "border-gray-700",
-      lightText: "text-green-900",
-      darkText: "text-green-200",
-      lightIcon: "text-green-600",
-      darkIcon: "text-green-300",
-    },
-    {
-      icon: Users,
-      title: "DevFest Meetups",
-      description:
-        "Annual developer festival featuring keynotes, technical sessions, and networking.",
-      lightBg: "bg-red-50",
-      darkBg: "bg-gray-800 bg-opacity-50",
-      darkBorder: "border-gray-700",
-      lightText: "text-red-900",
-      darkText: "text-red-200",
-      lightIcon: "text-red-600",
-      darkIcon: "text-red-300",
-    },
-  ];
-
   return (
-    <div className="w-full py-20 max-sm:py-12">
-      <div className="max-container transition-colors duration-300">
-        <div className=" mb-8">
-          <h2 className="text-6xl max-lg:text-5xl max-md:text-3xl white-gradient-text mb-3 leading-[1.25]">
-            What We Do at
-            <br />
-            <span className="from-green-400  to-green-600 bg-gradient-to-b bg-clip-text text-transparent">
-              {" "}
-              GDG HIT
-            </span>
-          </h2>
-          <p className="max-w-2xl text-base text-gray-700 dark:text-gray-400 leading-relaxed">
-          Engaging workshops, coding challenges, mentorship programs, and collaborative projects to enhance skills and innovation.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {activities.map((activity, index) => (
-            <div
-              key={index}
-              className={`
-              relative group
-              gradient-card
-              rounded-3xl p-6
-              backdrop-blur-xl
-              
-              shadow-lg dark:shadow-xl
-              transform transition-all duration-300
-              hover:scale-105 hover:rotate-3
-              hover:shadow-xl dark:hover:shadow-2xl
-            `}
-            >
-              <div className="absolute inset-0 bg-white/5 dark:bg-white/10 rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+    <section id="activities" className="relative py-16 md:py-24">
+      <div className="max-container">
+        <SectionHeading
+          title={
+            <>
+              What We Do at
+              <br />
+              <GradientWord accent="green">GDG HIT</GradientWord>
+            </>
+          }
+          description="Engaging workshops, coding challenges, mentorship programs, and collaborative projects to enhance skills and innovation."
+        />
 
-              <div
-                className={`
-              w-16 h-16 rounded-2xl mb-4 flex items-center justify-center
-              bg-white/20 dark:bg-white/5
-              backdrop-blur-md
-            `}
-              >
-                <activity.icon
-                  className={`
-                  w-8 h-8 
-                  ${activity.lightIcon} dark:${activity.darkIcon}
-                `}
-                />
-              </div>
-              <h3
-                className={`
-              text-xl font-bold mb-2
-              dark:text-gray-300
-            `}
-              >
-                {activity.title}
-              </h3>
-              <p
-                className={`
-              text-sm 
-              text-gray-600 dark:text-gray-400
-            `}
-              >
-                {activity.description}
-              </p>
-            </div>
-          ))}
-        </div>
+        <ul className="border-t border-black/10 dark:border-white/10">
+          {activities.map((activity, index) => {
+            const accent = accentStyles[activity.accent];
+            return (
+              <li key={activity.title}>
+                <Reveal delay={0.06 * index}>
+                  <div className="group relative grid grid-cols-12 items-center gap-x-4 gap-y-3 border-b border-black/10 py-8 transition-colors duration-500 hover:bg-black/[0.015] dark:border-white/10 dark:hover:bg-white/[0.015] md:py-10">
+                    <span
+                      className={cn(
+                        "col-span-2 font-mono text-sm tabular-nums md:col-span-1",
+                        accent.text
+                      )}
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <div className="col-span-10 flex items-center gap-4 md:col-span-5">
+                      <span
+                        className={cn(
+                          "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110",
+                          accent.chip
+                        )}
+                      >
+                        <activity.icon className="h-5 w-5" />
+                      </span>
+                      <h3 className="text-xl font-semibold tracking-tight text-neutral-900 transition-transform duration-500 group-hover:translate-x-1 dark:text-neutral-100 md:text-2xl">
+                        {activity.title}
+                      </h3>
+                    </div>
+
+                    <p className="col-span-10 col-start-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400 md:col-span-6 md:col-start-7 md:text-base">
+                      {activity.description}
+                    </p>
+
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "absolute -bottom-px left-0 h-px w-0 transition-all duration-700 ease-out group-hover:w-full",
+                        accent.bar
+                      )}
+                    />
+                  </div>
+                </Reveal>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-    </div>
+    </section>
   );
 };
 

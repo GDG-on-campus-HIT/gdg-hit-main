@@ -88,24 +88,26 @@ export const InfiniteMovingCards = ({
       >
         {items.map((item, idx) => (
           <li
-            className="w-[350px] gradient-card max-w-full relative rounded-2xl border border-b-0 flex-shrink-0 border-white/10 px-8 py-6 md:w-[450px]"
-            key={item.name}
+            className="w-[350px] gradient-card max-w-full relative flex flex-col justify-between gap-6 rounded-3xl border flex-shrink-0 border-black/5 dark:border-white/5 p-8 md:w-[450px]"
+            key={item.name + idx}
           >
-            <div className="flex flex-row items-center gap-2">
+            <blockquote className="text-base leading-relaxed text-neutral-800 dark:text-neutral-200">
+              {item.message}
+            </blockquote>
+            <div className="flex flex-row items-center gap-3 border-t border-black/5 dark:border-white/5 pt-5">
               <Avatar>
-                <AvatarImage src="#" alt="@shadcn" />
+                <AvatarImage src="#" alt={item.name} />
                 <AvatarFallback className="uppercase">
                   {item.name.substring(0, 1)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <figcaption className="text-sm font-medium dark:text-white">
+                <figcaption className="text-sm font-semibold text-neutral-900 dark:text-white">
                   {item.name}
                 </figcaption>
-                <p className="text-xs font-medium dark:text-white/40">{item.department}</p>
+                <p className="text-xs text-neutral-500">{item.department}</p>
               </div>
             </div>
-            <blockquote className="mt-2 text-sm">{item.message}</blockquote>
           </li>
         ))}
       </ul>
