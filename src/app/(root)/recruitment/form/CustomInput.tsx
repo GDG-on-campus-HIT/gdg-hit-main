@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import { getTheme } from "./theme.config";
 
 type Props = {
   label: string;
@@ -15,11 +16,12 @@ type Props = {
 };
 
 function CustomInput({ handleChange, value, error, touched, type, id, label, placeholder, disabled }: Props) {
+  const config = getTheme();
   return (
     <div className="my-3">
       <Label
         htmlFor={id}
-        className="ms-1 font-normal dark:text-gray-300 text-gray-600"
+        className={config.label}
       >
         {label}
       </Label>
@@ -31,11 +33,10 @@ function CustomInput({ handleChange, value, error, touched, type, id, label, pla
         name={id}
         disabled={disabled}
         placeholder={placeholder}
-        className={`${error && touched ? "border-red-500 dark:border-red-600" : ""
-          } my-1 bg-transparent focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
+        className={`${error && touched ? config.inputErrorBorder : config.inputBorder} ${config.inputBg} ${config.inputText} ${config.inputFocus} my-1 w-full`}
       />
       {error && touched && (
-        <span className="text-red-500 text-sm block dark:text-red-600">{error}</span>
+        <span className="text-red-500 text-sm block dark:text-red-600 mt-1">{error}</span>
       )}
     </div>
   );

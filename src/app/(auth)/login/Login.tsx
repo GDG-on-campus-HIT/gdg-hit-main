@@ -45,7 +45,9 @@ const LoginComponent = () => {
         transition: Bounce,
       });
       refetch();
-      router.push(redirectUrl);
+      // Ensure redirectUrl is a valid string before pushing
+      const validRedirectUrl = redirectUrl && typeof redirectUrl === 'string' && redirectUrl !== 'undefined' ? redirectUrl : "/";
+      router.push(validRedirectUrl);
     }
     if (error) {
       if ("data" in error) {
@@ -64,7 +66,7 @@ const LoginComponent = () => {
         });
       }
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, redirectUrl, router, theme, refetch]);
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },

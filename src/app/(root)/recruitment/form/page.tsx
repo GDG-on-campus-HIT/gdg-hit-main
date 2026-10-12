@@ -7,7 +7,7 @@ import CustomSelector from "./CustomSelector";
 import CustomMultiSelector from "./CustomMultiSelector";
 import CustomTextArea from "./CustomTextArea";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { branch, year } from "./data";
 import { step1Schema, step4Schema } from "./schema";
 import * as Yup from "yup";
@@ -23,6 +23,8 @@ import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 import { ImSpinner2 } from "react-icons/im";
+
+import { getTheme } from "./theme.config";
 
 const Page = () => {
   // Load user data to ensure authentication
@@ -50,6 +52,7 @@ const Page = () => {
   }
 
   const { theme } = useTheme();
+  const config = getTheme();
   const [step, setStep] = useState(1);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const { user } = useSelector((state: any) => state.auth);
@@ -285,12 +288,15 @@ const Page = () => {
   // If user is not authenticated
   if (!user || !user.email) {
     return (
-      <div className="min-h-screen w-full relative flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">Please log in to register for recruitment.</p>
-          <a href="/login" className="text-blue-500 hover:text-blue-700 underline">
-            Go to Login
+      <div className={config.pageBgAuth}>
+        <config.components.BackgroundElementsAuth />
+        <div className={config.cardBg}>
+          <config.components.CardTopGlow />
+          <config.components.LogoElement />
+          <h2 className={config.headingGradient}>{config.text.authTitle}</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{config.text.authDesc}</p>
+          <a href="/login" className={config.authButton}>
+            {config.text.authBtn}
           </a>
         </div>
       </div>
@@ -300,10 +306,13 @@ const Page = () => {
   // If no active form is returned
   if (!activeForm && !isActiveFormLoading && !dataRecruitmentRegisterCheck?.isRegistered) {
     return (
-      <div className="min-h-screen w-full relative flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">No Active Recruitment</h2>
-          <p>There are currently no active recruitment forms.</p>
+      <div className={config.pageBgAuth}>
+        <config.components.BackgroundElementsAuth />
+        <div className={config.cardBg}>
+          <config.components.CardTopGlow />
+          <config.components.LogoElement />
+          <h2 className={config.headingGradient}>{config.text.noFormTitle}</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{config.text.noFormDesc}</p>
         </div>
       </div>
     );
@@ -311,30 +320,66 @@ const Page = () => {
 
   if (dataRecruitmentRegisterCheck?.isRegistered) {
     return (
-      <div className="min-h-screen w-full relative">
-        <div className="container mx-auto px-4 py-20">
-          <div className="max-w-4xl mx-auto shadow-lg rounded-lg  gradient-card">
-            <div className="p-6 md:p-8">
-              <h2 className="text-2xl font-semibold mb-4">
-                🎉 Application Submitted!
+      <div className={config.pageBg}>
+        <config.components.BackgroundElements />
+
+        <div className={config.mainCardWrapper}>
+          <div className={config.mainCardBg}>
+            <config.components.CardTopGlow />
+            <div className={config.mainCardPadding}>
+              <config.components.LogoElement />
+              <h2 className={config.successHeading}>
+                {config.text.successTitle}
               </h2>
-              <p className="mb-2">Your application has been submitted successfully. ✅</p>
-              <p className="mb-6">
-                We will review your responses and get back to you soon. Stay
-                tuned for updates! 🚀
+              <p className="mb-2 text-lg text-gray-500 dark:text-gray-300 font-medium">{config.text.successDesc1}</p>
+              <p className="mb-8 text-gray-400">
+                {config.text.successDesc2}
               </p>
-              
-              <div className="border-t pt-6 mt-6">
-                <h3 className="text-lg font-semibold mb-4">Follow us for latest updates</h3>
+
+              {/* WhatsApp Groups Section */}
+              {dataRecruitmentRegisterCheck?.application?.positions &&
+                dataRecruitmentRegisterCheck.application.positions.length > 0 && (
+                  <div className="border-t pt-6 mt-6 mb-6 border-gray-200 dark:border-gray-800">
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Join WhatsApp Groups</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                      Join the WhatsApp groups for your applied positions to stay updated!
+                    </p>
+                    <div className="flex flex-wrap gap-3 justify-center">
+                      {dataRecruitmentRegisterCheck.application.positions.map((position: string) => {
+                        const whatsappLink = dataRecruitmentRegisterCheck.application?.whatsappGroupLinks?.[position];
+                        return (
+                          <a
+                            key={position}
+                            href={whatsappLink || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-2 px-5 py-2 ${whatsappLink ? config.socialBtnWhatsapp : config.whatsappDisabled}`}
+                            onClick={(e) => {
+                              if (!whatsappLink) {
+                                e.preventDefault();
+                              }
+                            }}
+                          >
+                            <FaWhatsapp className="text-lg" />
+                            {position}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+              <div className="border-t pt-6 mt-6 border-gray-200 dark:border-gray-800">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Follow us for latest updates</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Stay connected with us on social media for announcements and updates!
                 </p>
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-4 justify-center">
                   <a
                     href="https://www.instagram.com/gdg_hit/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold rounded-lg transition-all hover:scale-105"
+                    className={`inline-flex items-center gap-2 px-6 py-3 ${config.socialBtnInsta}`}
                   >
                     <FaInstagram className="text-lg" />
                     Follow on Instagram
@@ -343,7 +388,7 @@ const Page = () => {
                     href="https://www.linkedin.com/company/gdgoncampushit/?viewAsMember=true"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all hover:scale-105"
+                    className={`inline-flex items-center gap-2 px-6 py-3 ${config.socialBtnLinkedin}`}
                   >
                     <FaLinkedin className="text-lg" />
                     Follow on LinkedIn
@@ -364,30 +409,31 @@ const Page = () => {
   })) || [];
 
   return (
-    <div className="min-h-screen w-full relative">
-      <div className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto shadow-lg rounded-lg gradient-card">
-          <div className="p-6 md:p-8">
+    <div className={config.pageBg}>
+      <config.components.BackgroundElements />
+
+      <div className={config.mainCardWrapper}>
+        <div className={config.mainCardBg}>
+          <config.components.CardTopGlow />
+          <div className={config.mainCardPadding}>
+            <config.components.LogoElement />
             {/* Heading and descriptions */}
-            <div className="flex justify-between items-center mb-8">
-              <div className="space-y-1">
-                <h1 className="text-3xl max-md:text-2xl font-bold from-blue-400  to-blue-600 bg-gradient-to-b bg-clip-text text-transparent">
+            <div className={config.headerFlex}>
+              <div className={config.headerSpace}>
+                <h1 className={config.headingForm}>
                   {activeForm?.title || "Recruitment Form"}
                 </h1>
-                <div className="flex space-x-2 my-2">
+                <div className={config.stepProgressWrapper}>
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className={`h-2 rounded-full transition-all  ${i === step
-                        ? "w-8 bg-blue-500"
-                        : "w-4 bg-gray-300 dark:bg-gray-600"
-                        }`}
+                      className={i === step ? config.stepProgressActive : config.stepProgressInactive}
                     ></div>
                   ))}
                 </div>
               </div>
-              <span className="text-sm text-gray-500 dark:text-gray-300 text-nowrap ms-4">
-                Step {step} of 3
+              <span className={config.stepText}>
+                {config.text.stepTextFormat(step)}
               </span>
             </div>
 
@@ -482,22 +528,29 @@ const Page = () => {
               )}
 
               {step === 2 && (
-                <>
-                  <h2 className="text-xl mb-3 font-bold from-red-400  to-red-600 bg-gradient-to-b bg-clip-text text-transparent">
-                    Role-Specific Questions
-                  </h2>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className={config.roleSectionWrapper}>
+                    <h2 className={config.roleSectionHeading}>
+                      {config.text.roleSectionTitle}
+                    </h2>
+                    {config.text.roleSectionDesc && (
+                      <p className={config.roleSectionDescStyle}>{config.text.roleSectionDesc}</p>
+                    )}
+                  </div>
 
                   {selectedPositions.map((posName) => {
                     const roleDef = activeForm?.roles.find((r: any) => r.roleName === posName);
                     if (!roleDef) return null;
 
                     return (
-                      <div key={posName} className="mb-6">
-                        <h2 className="text-lg font-bold from-yellow-400 to-yellow-600 bg-gradient-to-b bg-clip-text text-transparent mb-4">
+                      <div key={posName} className={config.roleBlockBg}>
+                        <config.components.RoleBlockHoverEffect />
+                        <h2 className={config.roleHeading}>
+                          <config.components.RoleHeadingIcon />
                           {posName}
                         </h2>
                         {roleDef.description && (
-                          <p className="text-sm text-gray-500 mb-4">{roleDef.description}</p>
+                          <p className="text-sm font-medium text-gray-400 mb-6 italic border-l-2 border-red-900 dark:border-gray-600 pl-3 relative z-10">{roleDef.description}</p>
                         )}
 
                         <div className="space-y-4">
@@ -555,11 +608,19 @@ const Page = () => {
                       </div>
                     )
                   })}
-                </>
+                </div>
               )}
 
               {step === 3 && (
-                <>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className={config.roleSectionWrapper}>
+                    <h2 className={config.roleSectionHeading}>
+                      {config.text.step3Title}
+                    </h2>
+                    {config.text.step3Desc && (
+                      <p className={config.roleSectionDescStyle}>{config.text.step3Desc}</p>
+                    )}
+                  </div>
                   <CustomInput
                     label="LinkedIn URL"
                     id="linkedIn"
@@ -592,38 +653,38 @@ const Page = () => {
                     error={errors.previousClubs}
                     touched={touched.previousClubs}
                   />
-                </>
+                </div>
               )}
 
-              <div className="flex justify-between w-full end mt-6">
-                {step > 1 && (
+              <div className={config.buttonWrapper}>
+                {step > 1 ? (
                   <Button
                     type="button"
                     onClick={handlePrevious}
-                    className="font-semibold text-base bg-gray-500 hover:bg-gray-600 text-slate-100 transition-colors duration-300 ease-in-out"
+                    className={config.secondaryButton}
                   >
-                    Previous
+                    {config.text.btnPrevious}
                   </Button>
-                )}
+                ) : <div></div>}
 
                 {step < 3 ? (
                   <Button
                     type="button"
                     onClick={handleNext}
-                    className="font-semibold ms-auto bg-gradient-to-bl from-blue-600 to-blue-950 text-white transition-colors duration-300 ease-in-out"
+                    className={config.primaryButtonNext}
                   >
-                    Next <MdKeyboardArrowRight />
+                    {config.text.btnNext} <MdKeyboardArrowRight className="text-xl" />
                   </Button>
                 ) : (
                   <Button
                     type="submit"
                     disabled={isSubmissionLoading}
-                    className="font-semibold text-base dark:text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 transition-colors duration-300 ease-in-out"
+                    className={config.primaryButton}
                   >
                     {isSubmissionLoading && (
-                      <ImSpinner2 className="mr-2 h-4 w-4 animate-spin text-primary-foreground" />
+                      <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    {isSubmissionLoading ? "Submitting..." : "Submit"}
+                    {isSubmissionLoading ? "Submitting..." : config.text.btnSubmit}
                   </Button>
                 )}
               </div>

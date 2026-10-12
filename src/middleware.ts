@@ -9,7 +9,7 @@ const closedRecruitmentPaths = ["/recruitment", "/recruitment/form"];
 
 const cookieDomain = (() => {
   try {
-    return new URL(process.env.NEXT_PUBLIC_BASE_URL || "").hostname.replace(/^www\./, "");
+    return `.${new URL(process.env.NEXT_PUBLIC_BASE_URL || "").hostname.replace(/^www\./, "")}`;
   } catch {
     return undefined;
   }
@@ -126,19 +126,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Paths that explicitly require authentication
+  const protectedPaths = [
+    "/dashboard",
+    "/profile",
+  ];
+  const isProtectedPath =
+    protectedPaths.includes(path) ||
+    path.startsWith("/events/") && (path.endsWith("/register") || path.includes("/prior-knowledge")) ||
+    path.startsWith("/admin");
+
   // Check if the path requires admin access
   if (path.startsWith(adminPathPrefix)) {
     if (!isAuthenticated || userRole !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   } else if (isAuthenticated && authPaths.includes(path)) {
-    // Authenticated user trying to access login/signup - redirect to home
-    return NextResponse.redirect(new URL("/", request.url));
-  } else if (!isAuthenticated && !authPaths.includes(path)) {
-    // Unauthenticated user trying to access protected path
+    // Authenticated user at login/signup - redirect to redirectTo if present, else home
+    const redirectTo = request.nextUrl.searchParams.get("redirectTo");
+    const safeRedirect = redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//") ? redirectTo : "/";
+    return NextResponse.redirect(new URL(safeRedirect, request.url));
+  } else if (!isAuthenticated && isProtectedPath) {
+    // Unauthenticated user trying to access a protected path
     const signinUrl = new URL("/login", request.url);
-    signinUrl.searchParams.set("redirectTo", path);
-    console.log("Redirecting to login with:", signinUrl.toString());
+    const validPath = path && typeof path === "string" && path !== "undefined" ? path : "/";
+    signinUrl.searchParams.set("redirectTo", validPath);
     return NextResponse.redirect(signinUrl);
   }
 

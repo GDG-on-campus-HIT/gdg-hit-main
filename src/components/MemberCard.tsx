@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
 type Props = {
+  id?: string;
   name: string;
   imageSrc: string;
   role: string;
@@ -23,11 +25,14 @@ function accentFor(name: string) {
   return accents[hash % accents.length];
 }
 
-export default function MemberCard({ name, imageSrc, role, bio, linkedin }: Props) {
+export default function MemberCard({ id, name, imageSrc, role, bio, linkedin }: Props) {
   const accent = accentFor(name);
 
   return (
-    <div className="group w-full">
+    <div className="group relative w-full">
+      {id && (
+        <Link href={`/members/${id}`} aria-label={`View ${name}'s profile`} className="absolute inset-0 z-[1]" />
+      )}
       <div className="relative isolate flex aspect-square w-full items-center justify-center overflow-hidden">
         <img
           src="/assets/Rectangle.svg"
@@ -53,7 +58,7 @@ export default function MemberCard({ name, imageSrc, role, bio, linkedin }: Prop
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${name} on LinkedIn`}
-            className="absolute bottom-2 right-2 flex h-10 w-10 items-center justify-center rounded-full border-[2px] bg-gradient-to-bl from-[#3c3c3f] to-[#000000] transition-all duration-300 hover:scale-110 hover:border-[#0A66C2] hover:from-[#0A66C2] hover:to-[#004182] dark:border-[#484848]"
+            className="absolute bottom-2 right-2 z-10 flex h-10 w-10 items-center justify-center rounded-full border-[2px] bg-gradient-to-bl from-[#3c3c3f] to-[#000000] transition-all duration-300 hover:scale-110 hover:border-[#0A66C2] hover:from-[#0A66C2] hover:to-[#004182] dark:border-[#484848]"
           >
             <FaLinkedinIn className="text-white/60 transition-colors group-hover:text-white/90" size={18} />
           </a>

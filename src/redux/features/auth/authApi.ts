@@ -198,12 +198,20 @@ export const authApi = apiSlice.injectEndpoints({
           localStorage.removeItem('access_token_expiry');
           localStorage.removeItem('refresh_token_expiry');
           
-          // Clear cookies from JavaScript for development environments
+          // Clear cookies from JavaScript
           const isDevelopment = process.env.NEXT_PUBLIC_ENV === 'development';
+          const isProduction = !isDevelopment;
           
-          if (isDevelopment || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))) {
-            document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
-            document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+          if (typeof window !== 'undefined') {
+            // Development/localhost: clear without domain
+            if (isDevelopment || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+              document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+            } else if (isProduction) {
+              // Production: clear with domain attribute (must match the domain used when setting)
+              document.cookie = 'access_token=; path=/; domain=gdghit.dev; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=None; Secure';
+              document.cookie = 'refresh_token=; path=/; domain=gdghit.dev; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=None; Secure';
+            }
           }
           
           dispatch(userLoggedOut());

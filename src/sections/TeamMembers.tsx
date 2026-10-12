@@ -52,6 +52,7 @@ function TeamMembers() {
             : coreTeam.map((member, index) => (
                 <Reveal key={member._id} delay={0.04 * (index % 4)}>
                   <MemberCard
+                    id={member._id}
                     name={member.name}
                     role={member.designation}
                     bio={member.bio || ""}

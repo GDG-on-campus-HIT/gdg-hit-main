@@ -15,7 +15,9 @@ const RecruitmentPage = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden ">      
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-red-900 via-gray-900 to-blue-900 dark:from-red-950 dark:via-gray-950 dark:to-blue-950">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-red-600/20 via-transparent to-blue-600/20 opacity-40" />
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-16 text-center">
         {/* Google-inspired logo section */}
         <div className="mb-8 transform hover:scale-105 transition-transform duration-300">

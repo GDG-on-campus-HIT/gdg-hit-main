@@ -1,7 +1,7 @@
-
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
+import { getTheme } from "./theme.config";
 
 type Props = {
   label: string;
@@ -24,11 +24,12 @@ function CustomTextArea({
   placeholder,
   rows,
 }: Props) {
+  const config = getTheme();
   return (
     <div className="my-3">
       <Label
         htmlFor={id}
-        className="ms-1 font-normal dark:text-gray-400 text-gray-600"
+        className={config.label}
       >
         {label}
       </Label>
@@ -39,11 +40,10 @@ function CustomTextArea({
         id={id}
         name={id}
         placeholder={placeholder}
-        className={`${error && touched ? "border-red-500 dark:border-red-600" : ""
-          } my-1 bg-transparent focus-visible:ring-gray-300 dark:focus-visible:ring-gray-600`}
+        className={`${error && touched ? config.inputErrorBorder : config.inputBorder} ${config.inputBg} ${config.inputText} ${config.inputFocus} my-1`}
       />
       {error && touched && (
-        <span className="text-red-500 dark:text-red-600 text-sm block">{error}</span>
+        <span className="text-red-500 dark:text-red-600 text-sm block mt-1">{error}</span>
       )}
     </div>
   );

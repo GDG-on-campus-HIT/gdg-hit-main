@@ -51,6 +51,7 @@ const MembersPage: React.FC = () => {
       {members.map((member, index) => (
         <MemberCard
           key={`${index}-${member._id}`}
+          id={member._id}
           name={member.name}
           role={member.designation}
           bio={member.bio}

@@ -1,5 +1,6 @@
 import { Label } from "@/components/ui/label";
 import React from "react";
+import { getTheme } from "./theme.config";
 
 interface CustomMultiSelectorProps {
   id: string;
@@ -20,6 +21,7 @@ const CustomMultiSelector: React.FC<CustomMultiSelectorProps> = ({
   setFieldValue,
   list,
 }) => {
+  const config = getTheme();
   const handleSelect = (item: string) => {
     if (value.includes(item)) {
       setFieldValue(id, value.filter((selected) => selected !== item));
@@ -30,27 +32,26 @@ const CustomMultiSelector: React.FC<CustomMultiSelectorProps> = ({
 
   return (
     <div className="my-3">
-      <Label className="ms-1 font-normal dark:text-gray-400 text-gray-600">
+      <Label className={config.labelSelect}>
         {label}
       </Label>
-      <div className="flex flex-wrap gap-2 my-1">
+      <div className="flex flex-wrap gap-2 my-2">
         {list.map((item) => (
           <button
             key={item.value}
             type="button"
             onClick={() => handleSelect(item.value)}
-            className={`px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 text-sm transition-all ${
-              value.includes(item.value)
-                ? "from-blue-500 to-blue-700 bg-gradient-to-b text-white "
-                : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-white/5 dark:text-gray-300"
-            }`}
+            className={`px-4 py-2 transition-all duration-300 ${value.includes(item.value)
+                ? config.tagActive
+                : config.tagInactive
+              }`}
           >
             {item.label}
           </button>
         ))}
       </div>
       {error && touched && (
-        <p className="text-red-500 dark:text-red-600 text-sm mt-2">{error}</p>
+        <p className="text-red-500 dark:text-red-600 text-sm mt-1">{error}</p>
       )}
     </div>
   );

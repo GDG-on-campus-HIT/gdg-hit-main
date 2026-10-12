@@ -18,6 +18,7 @@ export const branch = [
   "CSE-CS",
   "CSE-AIML",
   "ECE",
+  "CE",
   "EE",
   "CHE",
   "AEIE",

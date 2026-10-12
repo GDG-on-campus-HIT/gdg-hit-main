@@ -72,6 +72,20 @@ export const memberApi = apiSlice.injectEndpoints({
         },
       }),
 
+      getMemberById: builder.query({
+        query: (id: string) => ({
+          url: `members/${id}`,
+          method: "GET",
+        }),
+        async onQueryStarted(arg, { queryFulfilled }) {
+          try {
+            await queryFulfilled;
+          } catch (error: any) {
+            console.log(error);
+          }
+        },
+      }),
+
   }),
 });
 
@@ -79,6 +93,7 @@ export const {
   useMemberQuery,
   useMemberAddMutation,
   useMemberDeleteMutation,
-  useMemberUpdateMutation
-  
+  useMemberUpdateMutation,
+  useGetMemberByIdQuery
 } = memberApi;
+
