@@ -1,196 +1,170 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+
+import React from "react";
 import Link from "next/link";
-import { ScrollProgress } from "./magicui/scroll-progress";
+import { usePathname } from "next/navigation";
+import { MotionConfig, motion } from "framer-motion";
+import { CalendarDays, Home, Info, LucideIcon, Mail, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
 import UserAuth from "@/hooks/userAuth";
 import ProfileDropDown from "./ProfileDropDown";
-// import ProfileDropDown from "./ProfileDropDown";
-// import UserAuth from "@/hooks/userAuth";
 
-export const navBarLinks = [
-  {
-    label: "Home",
-    route: "/",
-    icon: "/assets/Home.png",
-  },
-  {
-    label: "Events",
-    route: "/events",
-    icon: "/assets/events.png",
-  },
-  {
-    label: "Members",
-    route: "/members",
-    icon: "/assets/Members.png",
-  },
-  {
-    label: "About us",
-    route: "/about-us",
-    icon: "/assets/AboutUs.png",
-  },
-  {
-    label: "Contact us",
-    route: "/contact-us",
-    icon: "/assets/ContactUs.png",
-  },
+type NavLink = { label: string; tab: string; route: string; icon: LucideIcon };
+
+export const navBarLinks: NavLink[] = [
+  { label: "Home", tab: "Home", route: "/", icon: Home },
+  { label: "Events", tab: "Events", route: "/events", icon: CalendarDays },
+  { label: "Members", tab: "Members", route: "/members", icon: Users },
+  { label: "About us", tab: "About", route: "/about-us", icon: Info },
+  { label: "Contact us", tab: "Contact", route: "/contact-us", icon: Mail },
 ];
 
-const BottomNavBar = () => {
-  const pathname = usePathname();
+// Glass is reserved for the floating bars; it falls back to an opaque surface when people
+// ask for less transparency or more contrast.
+const glass =
+  "bg-[hsl(var(--background)/0.75)] backdrop-blur-xl backdrop-saturate-150 contrast-more:bg-background [@media(prefers-reduced-transparency:reduce)]:bg-background";
+
+function isActiveRoute(pathname: string, route: string) {
+  return route === "/" ? pathname === "/" : pathname === route || pathname.startsWith(`${route}/`);
+}
+
+function useScrolled(threshold = 8) {
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [threshold]);
+
+  return scrolled;
+}
+
+function AccountAction() {
+  const isAuth = UserAuth();
+
+  if (isAuth) return <ProfileDropDown />;
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    <Link
+      href="/login"
+      className="inline-flex h-11 items-center rounded-full border border-black/10 px-5 text-sm font-medium text-neutral-900 transition-colors hover:border-black/25 hover:bg-black/[0.04] dark:border-white/15 dark:text-white dark:hover:border-white/30 dark:hover:bg-white/[0.06] lg:h-9 lg:px-4"
     >
-      {/* Enhanced backdrop with gradient */}
-      <div className="backdrop-blur-xl bg-gradient-to-t from-[#f7f4ee]/95 via-[#f7f4ee]/90 to-[#f7f4ee]/80 dark:from-gray-950/95 dark:via-gray-950/90 dark:to-gray-950/80 border-t border-gray-300/50 dark:border-gray-700/50 shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_20px_-8px_rgba(0,0,0,0.3)]">
-        <div className="flex items-center justify-around px-2 py-1">
-          {navBarLinks.map((link) => {
-            const isActive =
-              pathname === link.route ||
-              pathname.startsWith(`${link.route}/`);
-
-            return (
-              <Link
-                href={link.route}
-                key={link.label}
-                className={cn(
-                  "relative flex flex-col items-center justify-center gap-0.5 px-3 py-3 rounded-xl transition-all duration-300 min-w-[70px] max-[375px]:min-w-fit max-[375px]:px-2",
-                  "hover:scale-105 active:scale-95",
-                  {
-                    "text-brand-500-main dark:text-brand-500-main": isActive,
-                    "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300": !isActive,
-                  }
-                )}
-              >
-                {/* Active background glow effect */}
-                {isActive && (
-                  <div className="absolute inset-0 -m-1.5 bg-brand-500/10 dark:bg-brand-500/20 rounded-xl blur-sm transition-all duration-300" />
-                )}
-
-                {/* Icon container with enhanced active state */}
-                <div className="relative z-10">
-                  <div className={cn(
-                    "relative p-2.5 rounded-lg transition-all duration-300",
-                    {
-                      "bg-brand-500/10 dark:bg-brand-500/20": isActive,
-                      "hover:bg-gray-100 dark:hover:bg-gray-800/50": !isActive,
-                    }
-                  )}>
-                    <img
-                      src={link.icon}
-                      alt={link.label}
-                      className={cn(
-                        "w-5 h-5 transition-all duration-300",
-                        {
-                          "scale-125": isActive,
-                          "opacity-90": !isActive,
-                        }
-                      )}
-                    />
-
-                    {/* Animated dot for active state */}
-                    {isActive && (
-                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-brand-500-main dark:bg-brand-500-main rounded-full animate-pulse" />
-                    )}
-                  </div>
-                </div>
-
-                {/* Label with better typography */}
-                <span className={cn(
-                  "text-xs font-semibold transition-all duration-300 relative z-10 max-[375px]:hidden",
-                  {
-                    "scale-110": isActive,
-                    "font-medium": !isActive,
-                  }
-                )}>
-                  {link.label}
-                </span>
-
-                {/* Enhanced active indicator */}
-                {isActive && (
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-                    {/* Main indicator */}
-                    <div className="w-8 h-1 bg-gradient-to-r from-brand-500-main to-brand-400 dark:from-brand-500-main dark:to-brand-400 rounded-full shadow-lg shadow-brand-500/30 dark:shadow-brand-500/40" />
-                    {/* Subtle glow */}
-                    <div className="absolute -bottom-0.5 w-10 h-0.5 bg-brand-500/20 dark:bg-brand-500/30 blur-sm" />
-                  </div>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </nav>
+      Log in
+    </Link>
   );
-};
+}
 
-const NavBar = () => {
-  const pathname = usePathname();
-  const { theme } = useTheme();
+function TopBar({ pathname }: { pathname: string }) {
+  const scrolled = useScrolled();
 
-  const isAuth = UserAuth()
   return (
-    <>
-      <nav className="w-full top-0 z-50 backdrop-blur-lg  fixed">
-        <ScrollProgress className="top-[65px]" />
-        {/* main nav bar  */}
-        <div className="max-container py-3 flex justify-between items-center  ">
-          <div className="flex items-center space-x-2">
-            <Link href="/" aria-label="GDG on Campus HIT home">
-              <img src="/assets/gdg-hit-logo-light.svg" alt="" className="h-10 dark:hidden" />
-              <img src="/assets/gdg-hit-logo.svg" alt="" className="hidden h-10 dark:block" />
-            </Link>
-          </div>
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
+        scrolled ? cn(glass, "border-black/[0.08] dark:border-white/[0.08]") : "border-transparent"
+      )}
+    >
+      <div className="max-container flex h-16 items-center justify-between gap-6">
+        <Link href="/" aria-label="GDG on Campus HIT home" className="shrink-0">
+          <img src="/assets/gdg-hit-logo-light.svg" alt="" className="h-9 dark:hidden" />
+          <img src="/assets/gdg-hit-logo.svg" alt="" className="hidden h-9 dark:block" />
+        </Link>
 
-          <div className="flex space-x-6 items-center ">
-            <div className="space-x-8 max-lg:hidden">
-              {navBarLinks.map((link) => {
-                const isActive =
-                  pathname === link.route ||
-                  pathname.startsWith(`${link.route}/`);
-
-                return (
+        <nav aria-label="Main" className="max-lg:hidden">
+          <ul className="flex items-center gap-1">
+            {navBarLinks.map((link) => {
+              const active = isActiveRoute(pathname, link.route);
+              return (
+                <li key={link.route}>
                   <Link
                     href={link.route}
-                    key={link.label}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative text-brand-primary font-medium hover:text-brand-500-main dark:hover:text-brand-500-main underline-offset-4 transition duration-200 dark:text-gray-100 text-sm pb-1",
-                      {
-                        " font-medium text-brand-500-main dark:text-brand-500-main":
-                          isActive,
-                      }
+                      "relative flex h-9 items-center px-3.5 text-sm font-medium transition-colors",
+                      active
+                        ? "text-neutral-950 dark:text-white"
+                        : "text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white"
                     )}
                   >
                     {link.label}
-                    {isActive && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-500-main dark:bg-brand-500-main rounded-full" />
+                    {active && (
+                      <motion.span
+                        layoutId="desktop-nav-indicator"
+                        aria-hidden
+                        className="absolute inset-x-3.5 -bottom-[13px] h-0.5 rounded-full bg-neutral-950 dark:bg-white"
+                        transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                      />
                     )}
                   </Link>
-                );
-              })}
-            </div>
-            <div className="flex items-center">
-              {
-                !isAuth ?
-                  <Link href="/login">
-                    <button className="px-8 py-2 rounded-full relative gradient-card dark:text-white text-neutral-800 text-sm hover:shadow-2xl  transition duration-200 border dark:border-white/10">
-                      <div className="absolute inset-x-0 h-px w-1/2 mx-auto -bottom-px shadow-2xl  bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                      <span className="relative z-20 font-medium">Login</span>
-                    </button>
-                  </Link>
-                  :
-                  <ProfileDropDown />
-              }
-            </div>
-          </div>
-        </div>
-      </nav>
-      <BottomNavBar />
-    </>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        <AccountAction />
+      </div>
+    </header>
+  );
+}
+
+function TabBar({ pathname }: { pathname: string }) {
+  return (
+    <nav
+      aria-label="Main"
+      className="fixed inset-x-0 bottom-0 z-50 px-3 lg:hidden"
+      style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+    >
+      <ul
+        className={cn(
+          glass,
+          "mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[28px] border border-black/[0.08] p-1.5 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.25)] dark:border-white/10 dark:shadow-[0_10px_40px_-12px_rgba(0,0,0,0.8)]"
+        )}
+      >
+        {navBarLinks.map((link) => {
+          const active = isActiveRoute(pathname, link.route);
+          const Icon = link.icon;
+          return (
+            <li key={link.route}>
+              <Link
+                href={link.route}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "relative flex h-14 flex-col items-center justify-center gap-1 rounded-[22px] text-[11px] font-medium transition-colors",
+                  active
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-neutral-600 active:bg-black/5 dark:text-neutral-400 dark:active:bg-white/10"
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="tab-bar-indicator"
+                    aria-hidden
+                    className="absolute inset-0 rounded-[22px] bg-black/[0.06] dark:bg-white/10"
+                    transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                  />
+                )}
+                <Icon aria-hidden className="relative h-[22px] w-[22px]" strokeWidth={active ? 2.25 : 1.75} />
+                <span className="relative">{link.tab}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+const NavBar = () => {
+  const pathname = usePathname();
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <TopBar pathname={pathname} />
+      <TabBar pathname={pathname} />
+    </MotionConfig>
   );
 };
 

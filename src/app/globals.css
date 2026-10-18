@@ -110,7 +110,7 @@ body {
   }
 
   .white-gradient-text{
-    @apply  dark:from-gray-50 dark:to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent from-gray-400 to-gray-900
+    @apply  dark:from-gray-50 dark:to-gray-400 bg-gradient-to-b font-semibold bg-clip-text text-transparent from-neutral-500 to-neutral-950
   }
 
   .insert p{
